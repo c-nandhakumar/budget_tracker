@@ -21,7 +21,11 @@ class _InsightsScreenState extends State<InsightsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          toolbarHeight: SizeConfig.height! * 12,
+          leading: IconButton(
+            icon: Icon(Icons.chevron_left),
+            onPressed: () {},
+          ),
+          toolbarHeight: SizeConfig.height! * 10,
           centerTitle: true,
           title: Text(
             "Insights",

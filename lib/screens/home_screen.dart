@@ -59,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       appBar: AppBar(
+          automaticallyImplyLeading: false,
           toolbarHeight: SizeConfig.height! * 12,
           title: DropDownWidget(),
           actions: [

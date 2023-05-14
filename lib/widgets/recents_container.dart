@@ -20,7 +20,7 @@ class _RecentContainerState extends State<RecentContainer> {
         decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(15)),
             color: Theme.of(context).colorScheme.secondary),
-        height: SizeConfig.height! * 10,
+        height: SizeConfig.height! * 12,
         child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

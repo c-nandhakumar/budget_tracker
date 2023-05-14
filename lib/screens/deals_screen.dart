@@ -21,7 +21,11 @@ class _DealsScreenState extends State<DealsScreen> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.secondary,
             toolbarHeight: SizeConfig.height! * 10,
-            title: SearchBar(),
+            title: SearchBarWidget(),
+            leading: IconButton(
+              icon: Icon(Icons.chevron_left),
+              onPressed: () {},
+            ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(30),
               child: TabBar(
