@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../common/screen_size.dart';
 
@@ -12,6 +13,14 @@ class DateRemainingContainer extends StatefulWidget {
 class _DateRemainingContainerState extends State<DateRemainingContainer> {
   @override
   Widget build(BuildContext context) {
+    //current date
+    DateTime datenow = DateTime.now();
+    String formattedDate = DateFormat('MMM dd').format(datenow);
+//remaining days
+    DateTime firstDayOfNextMonth = DateTime(datenow.year, datenow.month + 1, 1);
+    Duration remainingDuration = firstDayOfNextMonth.difference(datenow);
+    int remainingDays = remainingDuration.inDays;
+
     return Container(
       height: SizeConfig.width! * 44,
       width: SizeConfig.width! * 44,
@@ -27,7 +36,7 @@ class _DateRemainingContainerState extends State<DateRemainingContainer> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              "May 02",
+              formattedDate,
               style: Theme.of(context)
                   .textTheme
                   .headlineMedium!
@@ -36,7 +45,7 @@ class _DateRemainingContainerState extends State<DateRemainingContainer> {
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: Text(
-                "29",
+                remainingDays.toString(),
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.w600,
                       color: Colors.white,

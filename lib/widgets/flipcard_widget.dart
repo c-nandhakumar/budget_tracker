@@ -39,13 +39,21 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "${widget.name}",
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall!
-                  .copyWith(fontWeight: FontWeight.w600),
-            ),
+            Text("${widget.name}",
+                style: widget.name!.length <= 6
+                    ? Theme.of(context)
+                        .textTheme
+                        .headlineSmall!
+                        .copyWith(fontWeight: FontWeight.w600)
+                    : widget.name!.length <= 11
+                        ? Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(fontWeight: FontWeight.w600)
+                        : Theme.of(context)
+                            .textTheme
+                            .labelLarge!
+                            .copyWith(fontWeight: FontWeight.w600)),
             Padding(
               padding: const EdgeInsets.only(top: 5.0),
               child: Text(

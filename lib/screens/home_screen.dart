@@ -1,6 +1,7 @@
 import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:budget_app/widgets/category_dialog.dart';
+import 'package:budget_app/widgets/category_grid.dart';
 import 'package:budget_app/widgets/date_remaining_container.dart';
 import 'package:budget_app/widgets/dialog_widget.dart';
 import 'package:budget_app/widgets/flipcard_widget.dart';
@@ -39,16 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // doStuff();
-    const expenses_list = [
-      {"name": "Food", "cost": "\$160"},
-      {"name": "Rent", "cost": "\$160"},
-      {"name": "Gas", "cost": "\$160"},
-      {"name": "Travel", "cost": "\$160"},
-      {"name": "Gift", "cost": "\$160"},
-      {"name": "Gas", "cost": "\$160"}
-    ];
-    final provider = Provider.of<BackEndProvider>(context).budget;
     SizeConfig().init(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -108,22 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   fontWeight: FontWeight.bold),
             ),
           ),
-          GridView.count(
-            shrinkWrap: true,
-            primary: false,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            crossAxisCount: 3,
-            children: <Widget>[
-              ...expenses_list.map(
-                (e) => FlipCardWidget(
-                  name: e['name'],
-                  cost: e['cost'],
-                ),
-              )
-            ],
-          )
+          CategoryGrid(),
         ],
       ),
     );

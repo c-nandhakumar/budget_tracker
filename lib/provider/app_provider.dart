@@ -1,4 +1,5 @@
 import 'package:budget_app/models/budget_model.dart';
+import 'package:budget_app/models/category_model.dart';
 import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert';
@@ -13,7 +14,11 @@ class BackEndProvider with ChangeNotifier {
   }
 
   String jwt = "";
+
   Budget? budget;
+  List<Categories>? categories;
+  Map<String, dynamic>? categoriesPriceJson;
+  List<Map<String, int>> categoriesPriceList = [];
   String? selectedBudget = "Jan2023";
   int selectedBudgetIndex = 0;
   void setSelectedBudget(String selectedBudget) {
@@ -23,6 +28,27 @@ class BackEndProvider with ChangeNotifier {
 
   void setSelectedIndex(int index) {
     this.selectedBudgetIndex = index;
+    notifyListeners();
+  }
+
+  void setRawData(data) {
+    categoriesPriceJson = data;
+    notifyListeners();
+  }
+
+  void setCategoryPrice() {
+    categories!.map((e) => {
+          if (categoriesPriceJson![e.categoryname] != null)
+            {
+              categoriesPriceList
+                ..add({e.categoryname: categoriesPriceJson![e.categoryname]})
+            }
+          else
+            {
+              categoriesPriceList.add({e.categoryname: 0})
+            }
+        });
+    print(categoriesPriceList);
     notifyListeners();
   }
 
@@ -44,6 +70,12 @@ class BackEndProvider with ChangeNotifier {
 
   void setBudgets(String payload) {
     budget = budgetFromJson(payload);
+    selectedBudget = budget!.budgets[0].budgetname;
+    notifyListeners();
+  }
+
+  void setCategories(String payload) {
+    categories = categoriesFromJson(payload);
     notifyListeners();
   }
 }
@@ -73,7 +105,8 @@ Future<String> getTotal(
   if (res.statusCode == 200) {
     print("Success in getting total");
     final data = json.decode(res.body);
-    print(data["Total"]);
+    provider.setRawData(data);
+
     provider.setTotal(data["Total"] as int);
     provider.getBalance(index);
     return res.body;
@@ -86,6 +119,26 @@ Future<String> getTotal(
     return res.body;
   } else {
     print("500 - Internal SERVER error");
+  }
+  return "";
+}
+
+Future<String> getCategories(BackEndProvider provider) async {
+  var res = await http.get(Uri.parse("$SERVER_URL/categories/user/$USER_ID"));
+
+  if (res.statusCode == 200) {
+    print("Success in getting categories");
+    // print(res.body);
+
+    provider.setCategories(res.body);
+    provider.setCategoryPrice();
+    return res.body;
+  }
+  if (res.statusCode == 422) {
+    print("Error");
+    return res.body;
+  } else {
+    print(res);
   }
   return "";
 }
