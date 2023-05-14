@@ -1,4 +1,5 @@
 import 'package:budget_app/common/screen_size.dart';
+import 'package:budget_app/provider/app_provider.dart';
 import 'package:budget_app/widgets/category_dialog.dart';
 import 'package:budget_app/widgets/date_remaining_container.dart';
 import 'package:budget_app/widgets/dialog_widget.dart';
@@ -7,6 +8,7 @@ import 'package:budget_app/widgets/remaining_container_widget.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/drop_down_widget.dart';
 
@@ -46,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       {"name": "Gift", "cost": "\$160"},
       {"name": "Gas", "cost": "\$160"}
     ];
+    final provider = Provider.of<BackEndProvider>(context).budget;
     SizeConfig().init(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(

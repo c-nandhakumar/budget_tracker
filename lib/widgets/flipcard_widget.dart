@@ -59,7 +59,7 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
         ),
       ),
       back: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(5)),

@@ -1,5 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+
 import 'package:budget_app/common/screen_size.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../provider/app_provider.dart';
 
 class DialogWidget extends StatefulWidget {
   const DialogWidget({super.key});
@@ -11,8 +19,34 @@ class DialogWidget extends StatefulWidget {
 class _DialogWidgetState extends State<DialogWidget> {
   final _namecontroller = TextEditingController();
   final _costcontroller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    Future createBudget() async {
+      String budgetname = _namecontroller.text;
+      String budgetamount = _costcontroller.text;
+      String time = DateTime.now().toIso8601String();
+
+      var res = await http.post(
+        Uri.parse("$SERVER_URL/budgets"),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode({
+          "userid": USER_ID,
+          "budgetname": budgetname,
+          "budgetamount": budgetamount,
+          "budgetcreated": time
+        }),
+      );
+      print(res.body);
+      Navigator.of(context).pop();
+      // ignore: use_build_context_synchronously
+      final provider = Provider.of<BackEndProvider>(context, listen: false);
+      getBudgetData(provider);
+    }
+
     return Dialog(
       child: Container(
         height: SizeConfig.height! * 42.5,
@@ -29,9 +63,10 @@ class _DialogWidgetState extends State<DialogWidget> {
                   color: Theme.of(context).colorScheme.tertiary,
                   fontWeight: FontWeight.w600),
             ),
-            const TextField(
+            TextField(
+                controller: _namecontroller,
                 decoration:
-                    InputDecoration(hintStyle: TextStyle(fontSize: 16))),
+                    const InputDecoration(hintStyle: TextStyle(fontSize: 16))),
             const SizedBox(
               height: 30,
             ),
@@ -41,7 +76,8 @@ class _DialogWidgetState extends State<DialogWidget> {
                   color: Theme.of(context).colorScheme.tertiary,
                   fontWeight: FontWeight.w600),
             ),
-            const TextField(
+            TextField(
+              controller: _costcontroller,
               keyboardType: TextInputType.number,
             ),
             const SizedBox(
@@ -55,7 +91,7 @@ class _DialogWidgetState extends State<DialogWidget> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               ),
-              onPressed: () {},
+              onPressed: createBudget,
               child: const Text("Add"),
             ),
           ],

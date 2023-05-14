@@ -27,7 +27,7 @@ class _RecentContainerState extends State<RecentContainer> {
             children: [
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 child: Text(
                   "${widget.name}",
                   style: Theme.of(context)
