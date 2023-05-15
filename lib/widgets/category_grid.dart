@@ -13,11 +13,13 @@ class CategoryGrid extends StatefulWidget {
 
 class _CategoryGridState extends State<CategoryGrid> {
   late Future<String> categories;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
+    // final provider = Provider.of<BackEndProvider>(context, listen: false);
     categories = getCategories(provider);
   }
 
@@ -28,6 +30,18 @@ class _CategoryGridState extends State<CategoryGrid> {
         future: categories,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            Map<String, dynamic>? categoriesPriceJson =
+                provider.categoriesPriceJson;
+            List<Map<String, int>> categoriesPriceList = [];
+            for (var e in provider.categories!) {
+              {
+                print(categoriesPriceJson![e.categoryname]);
+                if (categoriesPriceJson[e.categoryname] != null) {
+                } else {
+                  categoriesPriceList.add({e.categoryname: 0});
+                }
+              }
+            }
             return GridView.count(
               shrinkWrap: true,
               primary: false,
@@ -36,7 +50,7 @@ class _CategoryGridState extends State<CategoryGrid> {
               mainAxisSpacing: 10,
               crossAxisCount: 3,
               children: <Widget>[
-                ...provider.categoriesPriceList.map(
+                ...categoriesPriceList.map(
                   (e) => FlipCardWidget(
                     name: e.keys.first,
                     cost: "\$${e.values.first}",

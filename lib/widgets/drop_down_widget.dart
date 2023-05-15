@@ -21,7 +21,7 @@ class DropDownWidget extends StatefulWidget {
 class _DropDownWidgetState extends State<DropDownWidget> {
   // List<String>? list;
   late Future<String> budgetData;
-  
+
   @override
   void initState() {
     // TODO: implement initState
@@ -30,10 +30,11 @@ class _DropDownWidgetState extends State<DropDownWidget> {
     budgetData = getBudgetData(provider);
   }
 
-  int index = 0;
+  // int index = 0;
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
+    int index = provider.selectedBudgetIndex;
     final provider2 = Provider.of<BackEndProvider>(context, listen: false);
     //  WidgetsBinding.instance.addPostFrameCallback((_) {
     //           // Add Your Code here.
@@ -52,7 +53,6 @@ class _DropDownWidgetState extends State<DropDownWidget> {
             List<String> list = [
               ...provider.budget!.budgets.map((e) => e.budgetname)
             ];
-           
 
             String dropdownValue = list[index];
             return DropdownButton<String>(

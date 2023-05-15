@@ -21,21 +21,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late FlipCardController _controller;
-
   @override
   void initState() {
     super.initState();
-    _controller = FlipCardController();
-  }
-
-  void doStuff() {
-    // Flip the card a bit and back to indicate that it can be flipped (for example on page load)
-    _controller.hint(
-        duration: Duration(seconds: 1), total: Duration(seconds: 1));
-
-    // Flip the card programmatically
-    _controller.toggleCard();
   }
 
   @override
@@ -44,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          
           showDialog(context: context, builder: (context) => CategoryDialog());
         },
         backgroundColor: Theme.of(context).colorScheme.primary,

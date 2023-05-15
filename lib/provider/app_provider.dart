@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert';
 
+import '../models/expense_model.dart';
+
 const SERVER_URL =
     "http://ec2-3-110-68-255.ap-south-1.compute.amazonaws.com:8000";
 const USER_ID = 'gCyuWfM3TuYcx71B3Za99qQjeRz2';
@@ -17,17 +19,21 @@ class BackEndProvider with ChangeNotifier {
 
   Budget? budget;
   List<Categories>? categories;
+  List<Expenses>? expenses;
+
   Map<String, dynamic>? categoriesPriceJson;
   List<Map<String, int>> categoriesPriceList = [];
+
   String? selectedBudget = "Jan2023";
   int selectedBudgetIndex = 0;
+
   void setSelectedBudget(String selectedBudget) {
     this.selectedBudget = selectedBudget;
     notifyListeners();
   }
 
   void setSelectedIndex(int index) {
-    this.selectedBudgetIndex = index;
+    selectedBudgetIndex = index;
     notifyListeners();
   }
 
@@ -36,21 +42,12 @@ class BackEndProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setCategoryPrice() {
-    categories!.map((e) => {
-          if (categoriesPriceJson![e.categoryname] != null)
-            {
-              categoriesPriceList
-                ..add({e.categoryname: categoriesPriceJson![e.categoryname]})
-            }
-          else
-            {
-              categoriesPriceList.add({e.categoryname: 0})
-            }
-        });
-    print(categoriesPriceList);
-    notifyListeners();
-  }
+  // void setCategoryPrice() {
+  //   categoriesPriceList = [];
+   
+  //   //print(categoriesPriceList);
+  //   notifyListeners();
+  // }
 
   int total = 0;
   int balance = 0;
@@ -76,6 +73,12 @@ class BackEndProvider with ChangeNotifier {
 
   void setCategories(String payload) {
     categories = categoriesFromJson(payload);
+    notifyListeners();
+  }
+
+  void setExpenses(String payload) {
+    expenses = expensesFromJson(payload);
+
     notifyListeners();
   }
 }
@@ -106,7 +109,7 @@ Future<String> getTotal(
     print("Success in getting total");
     final data = json.decode(res.body);
     provider.setRawData(data);
-
+    getCategories(provider);
     provider.setTotal(data["Total"] as int);
     provider.getBalance(index);
     return res.body;
@@ -128,10 +131,10 @@ Future<String> getCategories(BackEndProvider provider) async {
 
   if (res.statusCode == 200) {
     print("Success in getting categories");
-    // print(res.body);
+    print(res.body);
 
     provider.setCategories(res.body);
-    provider.setCategoryPrice();
+    // provider.setCategoryPrice();
     return res.body;
   }
   if (res.statusCode == 422) {
@@ -141,4 +144,35 @@ Future<String> getCategories(BackEndProvider provider) async {
     print(res);
   }
   return "";
+}
+
+Future<String> getExpenses(BackEndProvider provider) async {
+  var res = await http.get(Uri.parse("$SERVER_URL/expenses/user/$USER_ID"));
+
+  if (res.statusCode == 200) {
+    print("Success in getting expenses");
+    // print(res.body);
+
+    provider.setExpenses(res.body);
+    return res.body;
+  }
+  if (res.statusCode == 422) {
+    print("Error");
+    return res.body;
+  } else {
+    print(res);
+  }
+  return "";
+}
+
+Future<String> deleteExpenses(String expenseId) async {
+  var res = await http.delete(
+    Uri.parse("$SERVER_URL/expenses/$expenseId"),
+  );
+  print(res.body);
+  if (res.statusCode == 200) {
+    print("Deleted Successfully");
+    return "Deleted Successfully";
+  }
+  return "Error Occured!";
 }

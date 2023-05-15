@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../common/screen_size.dart';
+import '../provider/app_provider.dart';
 
 class CategoryDialog extends StatefulWidget {
   const CategoryDialog({super.key});
@@ -12,8 +16,51 @@ class CategoryDialog extends StatefulWidget {
 class _CategoryDialogState extends State<CategoryDialog> {
   final _namecontroller = TextEditingController();
   final _costcontroller = TextEditingController();
+
+  Future createBudget(String budgetname) async {
+    String categoryname = _namecontroller.text;
+    String expensecost = _costcontroller.text;
+    String time = DateTime.now().toIso8601String();
+
+    var categoryres = await http.post(Uri.parse("$SERVER_URL/categories"),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode({
+          "userid": USER_ID,
+          "categoryname": categoryname,
+          "categorycreated": time,
+        }));
+    print(categoryres.body);
+    if (categoryres.statusCode == 200) {
+      var res = await http.post(
+        Uri.parse("$SERVER_URL/expenses"),
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: jsonEncode({
+          "userid": USER_ID,
+          "budgetname": budgetname,
+          "categoryname": categoryname,
+          "expensecost": expensecost,
+          "expensetransaction": time,
+          "expensedate": time
+        }),
+      );
+      print(res.body);
+      Navigator.of(context).pop();
+    } else {
+      print("Oops! .. Error Occured");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<BackEndProvider>(context);
+    String budgetname = provider.selectedBudget!;
+    print(provider.selectedBudget);
     return Dialog(
       child: Container(
         height: SizeConfig.height! * 42.5,
@@ -31,6 +78,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
                   fontWeight: FontWeight.w600),
             ),
             TextField(
+                controller: _namecontroller,
                 decoration:
                     InputDecoration(hintStyle: TextStyle(fontSize: 16))),
             const SizedBox(
@@ -43,6 +91,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
                   fontWeight: FontWeight.w600),
             ),
             TextField(
+              controller: _costcontroller,
               keyboardType: TextInputType.number,
             ),
             const SizedBox(
@@ -56,7 +105,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               ),
-              onPressed: () {},
+              onPressed: () => createBudget(budgetname),
               child: const Text("Add"),
             ),
           ],
