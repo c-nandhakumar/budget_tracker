@@ -19,7 +19,6 @@ class _CategoryGridState extends State<CategoryGrid> {
     // TODO: implement initState
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
-    // final provider = Provider.of<BackEndProvider>(context, listen: false);
     categories = getCategories(provider);
   }
 
@@ -32,16 +31,24 @@ class _CategoryGridState extends State<CategoryGrid> {
           if (snapshot.hasData) {
             Map<String, dynamic>? categoriesPriceJson =
                 provider.categoriesPriceJson;
-            List<Map<String, int>> categoriesPriceList = [];
+            Map<String, int> categoriesPriceMap = {};
             for (var e in provider.categories!) {
-              {
-                print(categoriesPriceJson![e.categoryname]);
-                if (categoriesPriceJson[e.categoryname] != null) {
-                } else {
-                  categoriesPriceList.add({e.categoryname: 0});
-                }
+              categoriesPriceMap.putIfAbsent(e.categoryname, () => 0);
+              if (categoriesPriceJson![e.categoryname] != null) {
+                categoriesPriceMap.update(
+                    e.categoryname,
+                    (value) =>
+                        value + categoriesPriceJson[e.categoryname] as int);
               }
             }
+
+            List<Widget> categoryGrid = [];
+            categoriesPriceMap.forEach((key, value) => categoryGrid.add(
+                  FlipCardWidget(
+                    name: key,
+                    cost: "\$$value",
+                  ),
+                ));
             return GridView.count(
               shrinkWrap: true,
               primary: false,
@@ -49,14 +56,7 @@ class _CategoryGridState extends State<CategoryGrid> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
               crossAxisCount: 3,
-              children: <Widget>[
-                ...categoriesPriceList.map(
-                  (e) => FlipCardWidget(
-                    name: e.keys.first,
-                    cost: "\$${e.values.first}",
-                  ),
-                )
-              ],
+              children: <Widget>[...categoryGrid],
             );
           } else {
             return Center(child: CircularProgressIndicator());

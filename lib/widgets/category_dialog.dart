@@ -17,7 +17,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
   final _namecontroller = TextEditingController();
   final _costcontroller = TextEditingController();
 
-  Future createBudget(String budgetname) async {
+  Future createCategory(String budgetname) async {
     String categoryname = _namecontroller.text;
     String expensecost = _costcontroller.text;
     String time = DateTime.now().toIso8601String();
@@ -33,7 +33,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
           "categorycreated": time,
         }));
     print(categoryres.body);
-    if (categoryres.statusCode == 200) {
+    /* if (categoryres.statusCode == 200) {
       var res = await http.post(
         Uri.parse("$SERVER_URL/expenses"),
         headers: {
@@ -52,8 +52,8 @@ class _CategoryDialogState extends State<CategoryDialog> {
       print(res.body);
       Navigator.of(context).pop();
     } else {
-      print("Oops! .. Error Occured");
-    }
+      print("Oops! .. Error Occured"); 
+    }*/
   }
 
   @override
@@ -84,7 +84,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
             const SizedBox(
               height: 30,
             ),
-            Text(
+            /*Text(
               "Add Expense",
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   color: Theme.of(context).colorScheme.tertiary,
@@ -96,7 +96,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
             ),
             const SizedBox(
               height: 45,
-            ),
+            ),*/
             FilledButton(
               style: FilledButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -105,7 +105,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               ),
-              onPressed: () => createBudget(budgetname),
+              onPressed: () => createCategory(budgetname),
               child: const Text("Add"),
             ),
           ],

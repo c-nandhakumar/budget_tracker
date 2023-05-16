@@ -25,10 +25,17 @@ class BackEndProvider with ChangeNotifier {
   List<Map<String, int>> categoriesPriceList = [];
 
   String? selectedBudget = "Jan2023";
+  String? selectedInsights = "Jan2023";
   int selectedBudgetIndex = 0;
 
   void setSelectedBudget(String selectedBudget) {
     this.selectedBudget = selectedBudget;
+    selectedInsights = selectedBudget;
+    notifyListeners();
+  }
+
+  void setSelectedInsights(String selectedText) {
+    selectedInsights = selectedText;
     notifyListeners();
   }
 
@@ -41,13 +48,6 @@ class BackEndProvider with ChangeNotifier {
     categoriesPriceJson = data;
     notifyListeners();
   }
-
-  // void setCategoryPrice() {
-  //   categoriesPriceList = [];
-   
-  //   //print(categoriesPriceList);
-  //   notifyListeners();
-  // }
 
   int total = 0;
   int balance = 0;
@@ -108,6 +108,7 @@ Future<String> getTotal(
   if (res.statusCode == 200) {
     print("Success in getting total");
     final data = json.decode(res.body);
+    print(data);
     provider.setRawData(data);
     getCategories(provider);
     provider.setTotal(data["Total"] as int);
@@ -117,7 +118,9 @@ Future<String> getTotal(
   if (res.statusCode == 404) {
     print("There is no expense total");
     print(res.body);
+    provider.setRawData({"Total": 0});
     provider.setTotal(0);
+
     provider.getBalance(index);
     return res.body;
   } else {
@@ -131,7 +134,7 @@ Future<String> getCategories(BackEndProvider provider) async {
 
   if (res.statusCode == 200) {
     print("Success in getting categories");
-    print(res.body);
+    //print(res.body);
 
     provider.setCategories(res.body);
     // provider.setCategoryPrice();

@@ -1,6 +1,11 @@
+import 'dart:convert';
+
+import 'package:budget_app/provider/app_provider.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class FlipCardWidget extends StatefulWidget {
   final String? name;
@@ -13,15 +18,48 @@ class FlipCardWidget extends StatefulWidget {
 
 class _FlipCardWidgetState extends State<FlipCardWidget> {
   late FlipCardController _controller;
+  TextEditingController? amountController;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _controller = FlipCardController();
+    amountController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    amountController!.dispose();
+  }
+
+  Future<void> addAmount(String budgetname) async {
+    final expensecost = amountController!.text;
+    String time = DateTime.now().toIso8601String();
+    var res = await http.post(
+      Uri.parse("$SERVER_URL/expenses"),
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({
+        "userid": USER_ID,
+        "budgetname": budgetname,
+        "categoryname": widget.name,
+        "expensecost": expensecost,
+        "expensetransaction": time,
+        "expensedate": time
+      }),
+    );
+    print(res.body);
+    // Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<BackEndProvider>(context);
+    String budgetname = provider.selectedBudget!;
     return FlipCard(
       key: ValueKey(widget.name),
       controller: _controller,
@@ -40,26 +78,21 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("${widget.name}",
-                style: widget.name!.length <= 6
+                style: widget.name!.length <= 11
                     ? Theme.of(context)
                         .textTheme
-                        .headlineSmall!
+                        .titleMedium!
                         .copyWith(fontWeight: FontWeight.w600)
-                    : widget.name!.length <= 11
-                        ? Theme.of(context)
-                            .textTheme
-                            .titleMedium!
-                            .copyWith(fontWeight: FontWeight.w600)
-                        : Theme.of(context)
-                            .textTheme
-                            .labelLarge!
-                            .copyWith(fontWeight: FontWeight.w600)),
+                    : Theme.of(context)
+                        .textTheme
+                        .labelLarge!
+                        .copyWith(fontWeight: FontWeight.w600)),
             Padding(
               padding: const EdgeInsets.only(top: 5.0),
               child: Text(
                 "${widget.cost}",
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    fontWeight: FontWeight.w500,
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    fontWeight: FontWeight.w600,
                     color: const Color(0xFF808080)),
               ),
             ),
@@ -85,9 +118,11 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
             // ignore: prefer_const_constructors
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
-              child: const TextField(
+              child: TextField(
+                textAlign: TextAlign.center,
+                controller: amountController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   isDense: true,
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -104,8 +139,14 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   print("Button Works Perfectly ${widget.name}");
+                  if (amountController!.text.isNotEmpty) {
+                    await addAmount(budgetname);
+                    amountController!.clear();
+                    await getTotal(
+                        provider, budgetname, provider.selectedBudgetIndex);
+                  }
                   _controller.toggleCard();
                 },
                 child: const Text("Add"),
