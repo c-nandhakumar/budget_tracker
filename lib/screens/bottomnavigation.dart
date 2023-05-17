@@ -1,9 +1,11 @@
+import 'package:budget_app/provider/app_provider.dart';
 import 'package:budget_app/screens/deals_screen.dart';
 import 'package:budget_app/screens/history_screen.dart';
 import 'package:budget_app/screens/home_screen.dart';
 import 'package:budget_app/screens/insights_screen.dart';
 import 'package:budget_app/screens/logout_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({super.key});
@@ -16,6 +18,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<BackEndProvider>(context);
     const pages = [
       HomeScreen(),
       HistoryScreen(),
@@ -24,7 +27,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       LogoutScreen()
     ];
     return Scaffold(
-      body: pages[index],
+      body: pages[provider.bottomnavIndex],
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Theme.of(context).colorScheme.primary,
@@ -65,11 +68,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 label: "")
           ],
           onTap: (value) {
-            setState(() {
-              index = value;
-            });
+            // setState(() {
+            //   index = value;
+            // });
+            provider.setBottomNavIndex(value);
           },
-          currentIndex: index),
+          currentIndex: provider.bottomnavIndex),
     );
   }
 }

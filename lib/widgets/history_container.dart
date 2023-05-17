@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 class HistoryContainer extends StatelessWidget {
   final String? name;
   final String? date;
+  final String? budgetname;
   final String? cost;
-  const HistoryContainer({super.key, this.name, this.date, this.cost});
+  const HistoryContainer(
+      {super.key, this.name, this.date, this.budgetname, this.cost});
 
   @override
   Widget build(BuildContext context) {
@@ -13,18 +15,23 @@ class HistoryContainer extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(5)),
           color: Theme.of(context).colorScheme.secondary),
-      height: SizeConfig.height! * 12,
+      height: SizeConfig.height! * 12.15,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: EdgeInsets.symmetric(
-                  horizontal: 24, vertical: SizeConfig.height! * 1.75),
+                  horizontal: 24, vertical: SizeConfig.height! * 1.5),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    "${budgetname}",
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        fontWeight: FontWeight.w500, color: Color(0xff808080)),
+                  ),
                   Text(
                     "${name}",
                     style: Theme.of(context)

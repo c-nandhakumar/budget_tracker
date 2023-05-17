@@ -40,12 +40,17 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                     e.categoryname, (value) => value += e.expensecost);
               }
             });
+            var total = 0;
 
+            recentMap.forEach((key, value) {
+              total += value as int;
+            });
             List<Data> data = [];
             int index = 0;
             recentMap.forEach(
               (key, value) {
-                data.add(Data(key, value, getShadeOfPurple(index)));
+                data.add(Data(key, value, getShadeOfPurple(index),
+                    ((value / total) * 100)));
                 index++;
               },
             );
@@ -60,22 +65,58 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                 ),
               ),
               recentMap.isNotEmpty
-                  ? SfCircularChart(
-                      //legend: Legend(isVisible: true),
-                      series: <CircularSeries>[
-                        PieSeries<Data, String>(
-                          dataSource: data,
-                          xValueMapper: (Data data, _) => data.category,
-                          yValueMapper: (Data data, _) => data.value,
-                          pointColorMapper: (Data data, _) => data.color,
-                          dataLabelSettings: const DataLabelSettings(
-                              isVisible: true,
-                              labelAlignment: ChartDataLabelAlignment.top,
-                              labelPosition: ChartDataLabelPosition.outside,
-                              textStyle: TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w500)),
-                          dataLabelMapper: (Data data, _) => '${data.category}',
-                        )
+                  ? Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: SfCircularChart(
+                            //legend: Legend(isVisible: true),
+                            series: <CircularSeries>[
+                              PieSeries<Data, String>(
+                                dataSource: data,
+                                xValueMapper: (Data data, _) => data.category,
+                                yValueMapper: (Data data, _) => data.value,
+                                pointColorMapper: (Data data, _) => data.color,
+                                dataLabelSettings: const DataLabelSettings(
+                                    isVisible: true,
+                                    labelAlignment:
+                                        ChartDataLabelAlignment.outer,
+                                    labelPosition:
+                                        ChartDataLabelPosition.outside,
+                                    textStyle: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500)),
+                                dataLabelMapper: (Data data, _) =>
+                                    '${data.category}',
+                              ),
+                            ],
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: SfCircularChart(
+                            //legend: Legend(isVisible: true),
+                            series: <CircularSeries>[
+                              PieSeries<Data, String>(
+                                dataSource: data,
+                                xValueMapper: (Data data, _) => data.category,
+                                yValueMapper: (Data data, _) => data.value,
+                                pointColorMapper: (Data data, _) => data.color,
+                                dataLabelSettings: const DataLabelSettings(
+                                    isVisible: true,
+                                    labelAlignment:
+                                        ChartDataLabelAlignment.outer,
+                                    labelPosition:
+                                        ChartDataLabelPosition.inside,
+                                    textStyle: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500)),
+                                dataLabelMapper: (Data data, _) =>
+                                    '${data.percent.toStringAsFixed(2)}%',
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     )
                   : Padding(
@@ -126,6 +167,7 @@ class Data {
   final String category;
   final int value;
   final Color color;
+  final double percent;
 
-  Data(this.category, this.value, this.color);
+  Data(this.category, this.value, this.color, this.percent);
 }

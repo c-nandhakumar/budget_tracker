@@ -17,6 +17,12 @@ class BackEndProvider with ChangeNotifier {
 
   String jwt = "";
 
+  int bottomnavIndex = 0;
+  void setBottomNavIndex(int index) {
+    bottomnavIndex = index;
+    notifyListeners();
+  }
+
   Budget? budget;
   List<Categories>? categories;
   List<Expenses>? expenses;

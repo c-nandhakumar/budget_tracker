@@ -48,6 +48,7 @@ class _SwipableCardState extends State<SwipableCard> {
               "name": element.categoryname,
               "cost": element.expensecost.toString(),
               "date": formattedDate,
+              "budgetname": element.budgetname,
               "expenseId": element.expenseid,
             });
           }
@@ -112,7 +113,8 @@ class _SwipableCardState extends State<SwipableCard> {
                         });
 
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('${item['name']} deleted'),
+                          content: Text(
+                              '${item['budgetname']} - ${item['name']} : ${item['cost']}  deleted'),
                           duration: Duration(milliseconds: 1000),
                         ));
                       },
@@ -120,6 +122,7 @@ class _SwipableCardState extends State<SwipableCard> {
                         name: item['name'],
                         cost: item['cost'],
                         date: item['date'],
+                        budgetname: item['budgetname'],
                       )),
                 );
               });

@@ -31,7 +31,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.chevron_left),
-          onPressed: () {},
+          onPressed: () {
+            provider.setBottomNavIndex(0);
+          },
         ),
         toolbarHeight: SizeConfig.height! * 10,
         centerTitle: true,

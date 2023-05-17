@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:provider/provider.dart';
 
 import '../common/screen_size.dart';
+import '../provider/app_provider.dart';
 import '../widgets/search_bar.dart';
 
 class DealsScreen extends StatefulWidget {
@@ -15,6 +17,7 @@ class DealsScreen extends StatefulWidget {
 class _DealsScreenState extends State<DealsScreen> {
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<BackEndProvider>(context);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -24,7 +27,9 @@ class _DealsScreenState extends State<DealsScreen> {
             title: SearchBarWidget(),
             leading: IconButton(
               icon: Icon(Icons.chevron_left),
-              onPressed: () {},
+              onPressed: () {
+                provider.setBottomNavIndex(0);
+              },
             ),
             bottom: PreferredSize(
               preferredSize: Size.fromHeight(30),

@@ -47,6 +47,8 @@ class _ChartWidgetState extends State<ChartWidget> {
       })
     ];
 
+    data = data.sublist(0, 13);
+
     SfCartesianChart chart = SfCartesianChart(
       // zoomPanBehavior: ZoomPanBehavior(
       //   enablePanning: true, // Enable panning
@@ -91,7 +93,7 @@ class _ChartWidgetState extends State<ChartWidget> {
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SizedBox(
-            width: 1500, height: SizeConfig.height! * 27.5, child: chart),
+            width: 1200, height: SizeConfig.height! * 27.5, child: chart),
       ),
     );
   }
