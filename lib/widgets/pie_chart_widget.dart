@@ -13,72 +13,93 @@ class PieChartWidget extends StatefulWidget {
 }
 
 class _PieChartWidgetState extends State<PieChartWidget> {
-  final List<Data> data = [];
+  late Future<String> expenses;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final provider = Provider.of<BackEndProvider>(context, listen: false);
+    expenses = getExpenses(provider);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<BackEndProvider>(context);
-    final recentMap = {};
-    provider.expenses!.forEach((e) {
-      if (e.budgetname == provider.selectedInsights) {
-        recentMap.putIfAbsent(e.categoryname, () => e.expensecost);
-        recentMap.update(e.categoryname, (value) => value += e.expensecost);
-      }
-    });
+    return FutureBuilder(
+        future: expenses,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final provider = Provider.of<BackEndProvider>(context);
+            // getTotal(provider, provider.selectedBudget!, provider.selectedBudgetIndex);
+            final recentMap = {};
 
-    List<Data> data = [];
-    int index = 0;
-    recentMap.forEach(
-      (key, value) {
-        data.add(Data(key, value, getShadeOfPurple(index)));
-        index++;
-      },
-    );
+            //Work on this
+            provider.expenses!.forEach((e) {
+              if (e.budgetname == provider.selectedInsights) {
+                recentMap.putIfAbsent(e.categoryname, () => e.expensecost);
+                recentMap.update(
+                    e.categoryname, (value) => value += e.expensecost);
+              }
+            });
 
-    return Column(children: [
-      Container(
-        padding: const EdgeInsets.only(top: 24.0),
-        child: Text(
-          '${provider.selectedInsights}',
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-      ),
-      recentMap.isNotEmpty
-          ? SfCircularChart(
-              //legend: Legend(isVisible: true),
-              series: <CircularSeries>[
-                PieSeries<Data, String>(
-                  dataSource: data,
-                  xValueMapper: (Data data, _) => data.category,
-                  yValueMapper: (Data data, _) => data.value,
-                  pointColorMapper: (Data data, _) => data.color,
-                  dataLabelSettings: const DataLabelSettings(
-                      isVisible: true,
-                      labelAlignment: ChartDataLabelAlignment.top,
-                      labelPosition: ChartDataLabelPosition.outside,
-                      textStyle:
-                          TextStyle(fontSize: 12, fontWeight: FontWeight.w500)),
-                  dataLabelMapper: (Data data, _) => '${data.category}',
-                )
-              ],
-            )
-          : Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Container(
-                  height: SizeConfig.height! * 20,
-                  width: SizeConfig.width! * 70,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Theme.of(context).colorScheme.secondary),
-                  padding: EdgeInsets.all(30),
-                  child: const Center(
-                    child: Text(
-                      "There is no enough content to show charts",
-                      textAlign: TextAlign.center,
+            List<Data> data = [];
+            int index = 0;
+            recentMap.forEach(
+              (key, value) {
+                data.add(Data(key, value, getShadeOfPurple(index)));
+                index++;
+              },
+            );
+
+            return Column(children: [
+              Container(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: Text(
+                  '${provider.selectedInsights}',
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+              recentMap.isNotEmpty
+                  ? SfCircularChart(
+                      //legend: Legend(isVisible: true),
+                      series: <CircularSeries>[
+                        PieSeries<Data, String>(
+                          dataSource: data,
+                          xValueMapper: (Data data, _) => data.category,
+                          yValueMapper: (Data data, _) => data.value,
+                          pointColorMapper: (Data data, _) => data.color,
+                          dataLabelSettings: const DataLabelSettings(
+                              isVisible: true,
+                              labelAlignment: ChartDataLabelAlignment.top,
+                              labelPosition: ChartDataLabelPosition.outside,
+                              textStyle: TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w500)),
+                          dataLabelMapper: (Data data, _) => '${data.category}',
+                        )
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(24.0),
+                      child: Container(
+                          height: SizeConfig.height! * 20,
+                          width: SizeConfig.width! * 70,
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              color: Theme.of(context).colorScheme.secondary),
+                          padding: EdgeInsets.all(30),
+                          child: const Center(
+                            child: Text(
+                              "There is no enough content to show charts",
+                              textAlign: TextAlign.center,
+                            ),
+                          )),
                     ),
-                  )),
-            ),
-    ]);
+            ]);
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        });
   }
 }
 

@@ -37,6 +37,7 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
   Future<void> addAmount(String budgetname) async {
     final expensecost = amountController!.text;
     String time = DateTime.now().toIso8601String();
+    print("----Budget Name---- ${budgetname}");
     var res = await http.post(
       Uri.parse("$SERVER_URL/expenses"),
       headers: {

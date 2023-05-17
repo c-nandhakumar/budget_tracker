@@ -32,6 +32,8 @@ class _CategoryGridState extends State<CategoryGrid> {
             Map<String, dynamic>? categoriesPriceJson =
                 provider.categoriesPriceJson;
             Map<String, int> categoriesPriceMap = {};
+
+            //Categories and price mapping
             for (var e in provider.categories!) {
               categoriesPriceMap.putIfAbsent(e.categoryname, () => 0);
               if (categoriesPriceJson![e.categoryname] != null) {

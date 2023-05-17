@@ -109,6 +109,8 @@ Future<String> getTotal(
     print("Success in getting total");
     final data = json.decode(res.body);
     print(data);
+    provider.setSelectedBudget(budgetname);
+    provider.setSelectedIndex(index);
     provider.setRawData(data);
     getCategories(provider);
     provider.setTotal(data["Total"] as int);

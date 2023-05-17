@@ -18,30 +18,39 @@ class _RemainingContainerState extends State<RemainingContainer> {
     // TODO: implement initState
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
-    
-    total = getTotal(provider, provider.selectedBudget!,provider.selectedBudgetIndex);
+
+    total = getTotal(
+        provider, provider.selectedBudget!, provider.selectedBudgetIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
-    return Container(
-      height: SizeConfig.width! * 44,
-      width: SizeConfig.width! * 44,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary,
-        borderRadius: const BorderRadius.all(
-          Radius.circular(16),
-        ),
-      ),
-      child: Center(
-        child: FutureBuilder(
-          future: total,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final balance = provider.balance;
-              final budgetAmount = provider.budgetAmount;
-              return Column(
+
+    return FutureBuilder(
+        future: total,
+        builder: (context, snapshot) {
+          final balance = provider.balance;
+          final budgetAmount = provider.budgetAmount;
+          double percentage = 0;
+          if (budgetAmount > 0 && balance >= 0 && budgetAmount >= balance) {
+            percentage = balance / budgetAmount;
+          }
+
+          Color? color = Color.lerp(Colors.red, Colors.green, percentage);
+          if (snapshot.hasData) {
+            return Container(
+              height: SizeConfig.width! * 44,
+              width: SizeConfig.width! * 44,
+              decoration: BoxDecoration(
+                //color: Theme.of(context).colorScheme.primary,
+                color: color,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(16),
+                ),
+              ),
+              child: Center(
+                  child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -67,15 +76,25 @@ class _RemainingContainerState extends State<RemainingContainer> {
                     ),
                   ),
                 ],
-              );
-            } else {
-              return CircularProgressIndicator(
-                color: Colors.white,
-              );
-            }
-          },
-        ),
-      ),
-    );
+              )),
+            );
+          } else {
+            return Container(
+              height: SizeConfig.width! * 44,
+              width: SizeConfig.width! * 44,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(16),
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+            );
+          }
+        });
   }
 }

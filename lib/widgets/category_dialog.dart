@@ -17,7 +17,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
   final _namecontroller = TextEditingController();
   final _costcontroller = TextEditingController();
 
-  Future createCategory(String budgetname) async {
+  Future createCategory(String budgetname, BackEndProvider provider) async {
     String categoryname = _namecontroller.text;
     String expensecost = _costcontroller.text;
     String time = DateTime.now().toIso8601String();
@@ -32,7 +32,9 @@ class _CategoryDialogState extends State<CategoryDialog> {
           "categoryname": categoryname,
           "categorycreated": time,
         }));
+    getCategories(provider);
     print(categoryres.body);
+    Navigator.of(context).pop();
     /* if (categoryres.statusCode == 200) {
       var res = await http.post(
         Uri.parse("$SERVER_URL/expenses"),
@@ -59,6 +61,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
+    final provider2 = Provider.of<BackEndProvider>(context, listen: false);
     String budgetname = provider.selectedBudget!;
     print(provider.selectedBudget);
     return Dialog(
@@ -105,7 +108,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               ),
-              onPressed: () => createCategory(budgetname),
+              onPressed: () => createCategory(budgetname, provider2),
               child: const Text("Add"),
             ),
           ],
