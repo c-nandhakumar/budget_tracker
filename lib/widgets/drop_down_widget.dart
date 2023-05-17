@@ -20,14 +20,14 @@ class DropDownWidget extends StatefulWidget {
 
 class _DropDownWidgetState extends State<DropDownWidget> {
   // List<String>? list;
-  late Future<String> budgetData;
+  Future<Budget>? budgetData;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
-    budgetData = getBudgetData(provider);
+    budgetData = provider.getBudget();
   }
 
   // int index = 0;
@@ -36,7 +36,7 @@ class _DropDownWidgetState extends State<DropDownWidget> {
     final provider = Provider.of<BackEndProvider>(context);
     int index = provider.selectedBudgetIndex;
     final provider2 = Provider.of<BackEndProvider>(context, listen: false);
-   
+
     return FutureBuilder(
         future: budgetData,
         builder: (context, snapshot) {

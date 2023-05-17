@@ -1,3 +1,4 @@
+import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/screens/bottomnavigation.dart';
 import 'package:budget_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -50,23 +51,24 @@ class LoginForm extends StatelessWidget {
           const SizedBox(height: defaultPadding),
           Hero(
             tag: "login_btn",
-            child: ElevatedButton(
-              onPressed: () async {
-                // final provider =
-                //     Provider.of<BackEndProvider>(context, listen: false);
-                // await getBudgetData(provider);
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => BottomNavBar(),
-                ));
-              },
-            
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  
-                  elevation: 0),
-              child: Text(
-                "Login".toUpperCase(),
+            child: Container(
+              width: SizeConfig.width! * 90,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final provider =
+                      Provider.of<BackEndProvider>(context, listen: false);
+                  await getBudgetData(provider);
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => BottomNavBar(),
+                  ));
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    elevation: 0),
+                child: Text(
+                  "Login".toUpperCase(),
+                ),
               ),
             ),
           ),

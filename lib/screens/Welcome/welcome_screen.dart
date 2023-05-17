@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../common/screen_size.dart';
 import '../../components/background.dart';
 import '../../utility/responsive.dart';
 import 'components/login_signup_btn.dart';
@@ -10,6 +11,7 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Background(
       child: SingleChildScrollView(
         child: SafeArea(

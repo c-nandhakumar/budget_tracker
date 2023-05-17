@@ -21,6 +21,10 @@ class BackEndProvider with ChangeNotifier {
   List<Categories>? categories;
   List<Expenses>? expenses;
 
+  Future<Budget> getBudget(){
+    return budget as Future<Budget>;
+  }
+
   Map<String, dynamic>? categoriesPriceJson;
   List<Map<String, int>> categoriesPriceList = [];
 

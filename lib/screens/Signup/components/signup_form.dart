@@ -2,6 +2,7 @@ import 'package:budget_app/screens/bottomnavigation.dart';
 import 'package:budget_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../../common/screen_size.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../utility/constants.dart';
 
@@ -46,13 +47,16 @@ class SignUpForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: defaultPadding / 2),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => BottomNavBar(),
-              ));
-            },
-            child: Text("Sign Up".toUpperCase()),
+          Container(
+            width: SizeConfig.width! * 90,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => BottomNavBar(),
+                ));
+              },
+              child: Text("Sign Up".toUpperCase()),
+            ),
           ),
           const SizedBox(height: defaultPadding),
           AlreadyHaveAnAccountCheck(
