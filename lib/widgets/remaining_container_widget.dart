@@ -20,7 +20,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
     final provider = Provider.of<BackEndProvider>(context, listen: false);
 
     total = getTotal(
-        provider, provider.selectedBudget!, provider.selectedBudgetIndex);
+        provider, provider.selectedBudget!, provider.selectedBudgetIndex!);
   }
 
   @override

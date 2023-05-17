@@ -21,20 +21,35 @@ class _CategoryDialogState extends State<CategoryDialog> {
     String categoryname = _namecontroller.text;
     String expensecost = _costcontroller.text;
     String time = DateTime.now().toIso8601String();
-
-    var categoryres = await http.post(Uri.parse("$SERVER_URL/categories"),
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode({
-          "userid": USER_ID,
-          "categoryname": categoryname,
-          "categorycreated": time,
-        }));
-    getCategories(provider);
-    print(categoryres.body);
-    Navigator.of(context).pop();
+    if (categoryname.isNotEmpty) {
+      var categoryres = await http.post(Uri.parse("$SERVER_URL/categories"),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: jsonEncode({
+            "userid": USER_ID,
+            "categoryname": categoryname,
+            "categorycreated": time,
+          }));
+      getCategories(provider);
+      print(categoryres.body);
+      Navigator.of(context).pop();
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: Text("Please Enter the category name"),
+          actions: [
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"))
+          ],
+        ),
+      );
+    }
     /* if (categoryres.statusCode == 200) {
       var res = await http.post(
         Uri.parse("$SERVER_URL/expenses"),

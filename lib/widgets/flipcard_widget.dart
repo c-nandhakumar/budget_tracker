@@ -34,33 +34,50 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
     amountController!.dispose();
   }
 
-  Future<void> addAmount(String budgetname) async {
-    final expensecost = amountController!.text;
-    String time = DateTime.now().toIso8601String();
-    print("----Budget Name---- ${budgetname}");
-    var res = await http.post(
-      Uri.parse("$SERVER_URL/expenses"),
-      headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: jsonEncode({
-        "userid": USER_ID,
-        "budgetname": budgetname,
-        "categoryname": widget.name,
-        "expensecost": expensecost,
-        "expensetransaction": time,
-        "expensedate": time
-      }),
-    );
-    print(res.body);
-    // Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
     String budgetname = provider.selectedBudget!;
+
+    Future<void> addAmount(String budgetname) async {
+      final expensecost = amountController!.text;
+      String time = DateTime.now().toIso8601String();
+      print("----Budget Name---- ${budgetname}");
+      if (expensecost.isNotEmpty) {
+        var res = await http.post(
+          Uri.parse("$SERVER_URL/expenses"),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: jsonEncode({
+            "userid": USER_ID,
+            "budgetname": budgetname,
+            "categoryname": widget.name,
+            "expensecost": expensecost,
+            "expensetransaction": time,
+            "expensedate": time
+          }),
+        );
+        //print(res.body);
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Text("Please Enter the Expense"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("OK"))
+            ],
+          ),
+        );
+      }
+      // Navigator.of(context).pop();
+    }
+
     return FlipCard(
       key: ValueKey(widget.name),
       controller: _controller,
@@ -93,8 +110,8 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
               child: Text(
                 "${widget.cost}",
                 style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF808080)),
+                    fontWeight: FontWeight.w700,
+                    color: Color.fromARGB(255, 116, 116, 116)),
               ),
             ),
           ],
@@ -142,12 +159,14 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
                 ),
                 onPressed: () async {
                   print("Button Works Perfectly ${widget.name}");
+
+                  await addAmount(budgetname);
+
                   if (amountController!.text.isNotEmpty) {
-                    await addAmount(budgetname);
-                    amountController!.clear();
                     await getTotal(
-                        provider, budgetname, provider.selectedBudgetIndex);
+                        provider, budgetname, provider.selectedBudgetIndex!);
                   }
+                  amountController!.clear();
                   _controller.toggleCard();
                 },
                 child: const Text("Add"),

@@ -26,25 +26,40 @@ class _DialogWidgetState extends State<DialogWidget> {
       String budgetname = _namecontroller.text;
       String budgetamount = _costcontroller.text;
       String time = DateTime.now().toIso8601String();
-
-      var res = await http.post(
-        Uri.parse("$SERVER_URL/budgets"),
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode({
-          "userid": USER_ID,
-          "budgetname": budgetname,
-          "budgetamount": budgetamount,
-          "budgetcreated": time
-        }),
-      );
-      print(res.body);
-      Navigator.of(context).pop();
-      // ignore: use_build_context_synchronously
-      final provider = Provider.of<BackEndProvider>(context, listen: false);
-      getBudgetData(provider);
+      if (budgetname.isNotEmpty && budgetamount.isNotEmpty) {
+        var res = await http.post(
+          Uri.parse("$SERVER_URL/budgets"),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: jsonEncode({
+            "userid": USER_ID,
+            "budgetname": budgetname,
+            "budgetamount": budgetamount,
+            "budgetcreated": time
+          }),
+        );
+        //print(res.body);
+        Navigator.of(context).pop();
+        // ignore: use_build_context_synchronously
+        final provider = Provider.of<BackEndProvider>(context, listen: false);
+        getBudgetData(provider);
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Text("Please Enter the budget name and amount"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("OK"))
+            ],
+          ),
+        );
+      }
     }
 
     return Dialog(

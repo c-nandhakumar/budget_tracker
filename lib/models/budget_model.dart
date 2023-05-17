@@ -16,7 +16,9 @@ class Budget {
   factory Budget.fromJson(Map<String, dynamic> json) => Budget(
         user: User.fromJson(json["user"]),
         budgets: List<BudgetElement>.from(
-            json["budgets"].map((x) => BudgetElement.fromJson(x))),
+                json["budgets"].map((x) => BudgetElement.fromJson(x)))
+            .reversed
+            .toList(),
       );
 
   Map<String, dynamic> toJson() => {

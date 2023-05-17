@@ -21,16 +21,16 @@ class BackEndProvider with ChangeNotifier {
   List<Categories>? categories;
   List<Expenses>? expenses;
 
-  Future<Budget> getBudget(){
+  Future<Budget> getBudget() {
     return budget as Future<Budget>;
   }
 
   Map<String, dynamic>? categoriesPriceJson;
   List<Map<String, int>> categoriesPriceList = [];
 
-  String? selectedBudget = "Jan2023";
-  String? selectedInsights = "Jan2023";
-  int selectedBudgetIndex = 0;
+  String? selectedBudget;
+  String? selectedInsights;
+  int? selectedBudgetIndex;
 
   void setSelectedBudget(String selectedBudget) {
     this.selectedBudget = selectedBudget;
@@ -71,7 +71,8 @@ class BackEndProvider with ChangeNotifier {
 
   void setBudgets(String payload) {
     budget = budgetFromJson(payload);
-    selectedBudget = budget!.budgets[0].budgetname;
+    selectedBudgetIndex = 0;
+    selectedBudget = budget!.budgets[selectedBudgetIndex!].budgetname;
     notifyListeners();
   }
 
