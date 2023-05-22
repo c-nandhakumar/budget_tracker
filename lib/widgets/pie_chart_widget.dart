@@ -126,9 +126,9 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                           width: SizeConfig.width! * 70,
                           decoration: BoxDecoration(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
+                                  const BorderRadius.all(Radius.circular(20)),
                               color: Theme.of(context).colorScheme.secondary),
-                          padding: EdgeInsets.all(30),
+                          padding: const EdgeInsets.all(30),
                           child: const Center(
                             child: Text(
                               "There is no enough content to show charts",
@@ -138,7 +138,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                     ),
             ]);
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         });
   }

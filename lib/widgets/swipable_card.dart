@@ -66,14 +66,14 @@ class _SwipableCardState extends State<SwipableCard> {
                       key: ValueKey(item),
                       secondaryBackground: Container(
                           decoration: BoxDecoration(
-                              color: Color(0xffEA0000),
+                              color: const Color(0xffEA0000),
                               borderRadius: BorderRadius.circular(5)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                                padding: EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
                                 child: Text(
                                   "Delete",
                                   style: Theme.of(context)
@@ -86,14 +86,14 @@ class _SwipableCardState extends State<SwipableCard> {
                           )),
                       background: Container(
                           decoration: BoxDecoration(
-                              color: Color(0xffEA0000),
+                              color: const Color(0xffEA0000),
                               borderRadius: BorderRadius.circular(5)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                                padding: EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(10),
                                 child: Text(
                                   "Delete",
                                   style: Theme.of(context)
@@ -115,7 +115,7 @@ class _SwipableCardState extends State<SwipableCard> {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(
                               '${item['budgetname']} - ${item['name']} : ${item['cost']}  deleted'),
-                          duration: Duration(milliseconds: 1000),
+                          duration: const Duration(milliseconds: 1000),
                         ));
                       },
                       child: HistoryContainer(
@@ -127,7 +127,7 @@ class _SwipableCardState extends State<SwipableCard> {
                 );
               });
         } else {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );

@@ -1,6 +1,8 @@
 import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/screens/bottomnavigation.dart';
 import 'package:budget_app/screens/home_screen.dart';
+import 'package:budget_app/services/firebase_auth_methods.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -10,10 +12,42 @@ import '../../../utility/constants.dart';
 
 import '../../Signup/signup_screen.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   const LoginForm({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+  }
+
+  Future<void> loginUser() async {
+    await context
+        .read<FirebaseAuthMethods>()
+        .loginWithEmail(
+            email: emailController.text,
+            password: passwordController.text,
+            context: context)
+        .then((value) {
+      final provider = Provider.of<BackEndProvider>(context, listen: false);
+      getBudgetData(provider);
+      return Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => BottomNavBar(),
+      ));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +55,7 @@ class LoginForm extends StatelessWidget {
       child: Column(
         children: [
           TextFormField(
+            controller: emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
@@ -36,6 +71,7 @@ class LoginForm extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: TextFormField(
+              controller: passwordController,
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
@@ -54,14 +90,7 @@ class LoginForm extends StatelessWidget {
             child: Container(
               width: SizeConfig.width! * 90,
               child: ElevatedButton(
-                onPressed: () async {
-                  final provider =
-                      Provider.of<BackEndProvider>(context, listen: false);
-                  await getBudgetData(provider);
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => BottomNavBar(),
-                  ));
-                },
+                onPressed: loginUser,
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,

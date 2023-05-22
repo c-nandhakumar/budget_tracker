@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../common/screen_size.dart';
 import '../../components/background.dart';
+import '../../provider/app_provider.dart';
 import '../../utility/responsive.dart';
 import 'components/login_signup_btn.dart';
 import 'components/welcome_image.dart';
@@ -11,6 +13,9 @@ class WelcomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final provider = Provider.of<BackEndProvider>(context, listen: false);
+
+    // provider.setBottomNavIndex(0);
     SizeConfig().init(context);
     return Background(
       child: SingleChildScrollView(

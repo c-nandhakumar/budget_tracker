@@ -55,7 +55,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "\$${balance}",
+                    "\$$balance",
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         color: Colors.white, fontWeight: FontWeight.w600),
                   ),
@@ -69,7 +69,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      "Budget \$${budgetAmount}",
+                      "Budget \$$budgetAmount",
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
                             color: Colors.white,
                           ),

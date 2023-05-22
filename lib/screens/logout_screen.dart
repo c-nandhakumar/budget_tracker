@@ -1,6 +1,9 @@
+import 'package:budget_app/provider/app_provider.dart';
+import 'package:budget_app/services/firebase_auth_methods.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:provider/provider.dart';
 
 class LogoutScreen extends StatefulWidget {
   const LogoutScreen({super.key});
@@ -36,7 +39,9 @@ class _LogoutScreenState extends State<LogoutScreen> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 40, vertical: 12.5),
             ),
-            onPressed: () {},
+            onPressed: () {
+              context.read<FirebaseAuthMethods>().signOut(context);
+            },
             child: Text(
               "Log out",
               style: Theme.of(context)
