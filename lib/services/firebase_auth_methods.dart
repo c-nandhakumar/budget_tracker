@@ -6,9 +6,10 @@ import '../utility/showsnackbar.dart';
 class FirebaseAuthMethods {
   final FirebaseAuth _auth;
   FirebaseAuthMethods(this._auth);
-
+  // ignore: unused_element
   User get _user => _auth.currentUser!;
-//state persistence
+
+  //state persistence
   Stream<User?> get authState => FirebaseAuth.instance.authStateChanges();
 
   //email signup
@@ -34,11 +35,14 @@ class FirebaseAuthMethods {
       required password,
       required BuildContext context}) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      final value = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       if (!_auth.currentUser!.emailVerified) {
         // ignore: use_build_context_synchronously
         await sendEmailVerification(context);
       }
+
+      return value;
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!);
     }
@@ -60,6 +64,8 @@ class FirebaseAuthMethods {
   Future<void> signOut(BuildContext context) async {
     try {
       await _auth.signOut();
+
+      print("SignedOutSuccessfully");
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!);
     }

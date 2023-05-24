@@ -1,4 +1,5 @@
 import 'package:budget_app/provider/app_provider.dart';
+import 'package:budget_app/screens/Login/login_screen.dart';
 import 'package:budget_app/screens/deals_screen.dart';
 import 'package:budget_app/screens/history_screen.dart';
 import 'package:budget_app/screens/home_screen.dart';
@@ -15,7 +16,16 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  int index = 0;
+  late Future<String> getBudgetDataStr;
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<BackEndProvider>(context, listen: false);
+    // context.read<BackEndProvider>().setBottomNavIndex(0);
+    getBudgetDataStr = getBudgetData(provider);
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
@@ -26,8 +36,30 @@ class _BottomNavBarState extends State<BottomNavBar> {
       DealsScreen(),
       LogoutScreen()
     ];
+    print("Triggered");
     return Scaffold(
-      body: pages[provider.bottomnavIndex],
+      body: FutureBuilder(
+        future: getBudgetDataStr,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasData) {
+            //print(snapshot.data);
+            return pages[provider.bottomnavIndex];
+          }
+          if (snapshot.hasError) {
+            print(snapshot);
+            return Center(
+              child: Text("Oops , Something went wrong"),
+            );
+          } else {
+            return LoginScreen();
+          }
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Theme.of(context).colorScheme.primary,
@@ -68,10 +100,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 label: "")
           ],
           onTap: (value) {
+            print("Tapped ${value}");
+            provider.setBottomNavIndex(value);
             // setState(() {
             //   index = value;
             // });
-            provider.setBottomNavIndex(value);
           },
           currentIndex: provider.bottomnavIndex),
     );

@@ -1,8 +1,8 @@
 import 'package:budget_app/provider/app_provider.dart';
+import 'package:budget_app/screens/Welcome/welcome_screen.dart';
 import 'package:budget_app/services/firebase_auth_methods.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
 
 class LogoutScreen extends StatefulWidget {
@@ -13,6 +13,7 @@ class LogoutScreen extends StatefulWidget {
 }
 
 class _LogoutScreenState extends State<LogoutScreen> {
+  final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +32,16 @@ class _LogoutScreenState extends State<LogoutScreen> {
                   .copyWith(fontWeight: FontWeight.w700),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text(
+              "${user?.email != null ? user?.email : "Email"} ${user?.displayName != null ? user?.displayName : "User"}",
+              style: Theme.of(context)
+                  .textTheme
+                  .labelLarge!
+                  .copyWith(fontWeight: FontWeight.w500),
+            ),
+          ),
           FilledButton(
             style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -41,6 +52,10 @@ class _LogoutScreenState extends State<LogoutScreen> {
             ),
             onPressed: () {
               context.read<FirebaseAuthMethods>().signOut(context);
+              context.read<BackEndProvider>().setUserId();
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => WelcomeScreen(),
+              ));
             },
             child: Text(
               "Log out",

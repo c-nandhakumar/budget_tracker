@@ -34,19 +34,20 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> loginUser() async {
-    await context
+    final UserCredential? value = await context
         .read<FirebaseAuthMethods>()
         .loginWithEmail(
             email: emailController.text,
             password: passwordController.text,
-            context: context)
-        .then((value) {
+            context: context);
+    print("Value ====> ${value?.user!.uid}");
+    if (value != null) {
       final provider = Provider.of<BackEndProvider>(context, listen: false);
-      getBudgetData(provider);
-      return Navigator.of(context).push(MaterialPageRoute(
+      provider.setBottomNavIndex(0);
+      Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => BottomNavBar(),
       ));
-    });
+    }
   }
 
   @override

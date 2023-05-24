@@ -28,7 +28,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
             'Accept': 'application/json',
           },
           body: jsonEncode({
-            "userid": USER_ID,
+            "userid": provider.getUserId(),
             "categoryname": categoryname,
             "categorycreated": time,
           }));

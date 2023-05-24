@@ -14,7 +14,6 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final provider = Provider.of<BackEndProvider>(context, listen: false);
-
     // provider.setBottomNavIndex(0);
     SizeConfig().init(context);
     return Background(

@@ -1,5 +1,6 @@
 import 'package:budget_app/models/budget_model.dart';
 import 'package:budget_app/models/category_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
 import 'dart:convert';
@@ -8,7 +9,8 @@ import '../models/expense_model.dart';
 
 const SERVER_URL =
     "http://ec2-3-110-68-255.ap-south-1.compute.amazonaws.com:8000";
-const USER_ID = 'gCyuWfM3TuYcx71B3Za99qQjeRz2';
+// const USER_ID = 'gCyuWfM3TuYcx71B3Za99qQjeRz2';
+
 
 class BackEndProvider with ChangeNotifier {
   String getServerUrl() {
@@ -16,8 +18,17 @@ class BackEndProvider with ChangeNotifier {
   }
 
   String jwt = "";
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+  String getUserId(){
+    return userId;
+  }
 
+  void setUserId(){
+    userId ="";
+    notifyListeners();
+  }
   int bottomnavIndex = 0;
+
   void setBottomNavIndex(int index) {
     bottomnavIndex = index;
     notifyListeners();
@@ -36,7 +47,7 @@ class BackEndProvider with ChangeNotifier {
 
   String? selectedBudget;
   String? selectedInsights;
-  int? selectedBudgetIndex;
+  int? selectedBudgetIndex ;
 
   void setSelectedBudget(String selectedBudget) {
     this.selectedBudget = selectedBudget;
@@ -77,8 +88,11 @@ class BackEndProvider with ChangeNotifier {
 
   void setBudgets(String payload) {
     budget = budgetFromJson(payload);
-    selectedBudgetIndex = 0;
-    selectedBudget = budget!.budgets[selectedBudgetIndex!].budgetname;
+    if (budget!.budgets.isNotEmpty) {
+      selectedBudgetIndex = 0;
+      selectedBudget = budget!.budgets[selectedBudgetIndex!].budgetname;
+      
+    }
     notifyListeners();
   }
 
@@ -94,8 +108,31 @@ class BackEndProvider with ChangeNotifier {
   }
 }
 
+Future<void> postUser() async {
+  final email = FirebaseAuth.instance.currentUser!.email;
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  final displayName = FirebaseAuth.instance.currentUser!.displayName;
+  var res = await http.post(
+    Uri.parse("$SERVER_URL/user"),
+    headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: jsonEncode(
+        {"userid": uid, "email": email, "display_name": displayName}),
+  );
+
+  if (res.statusCode == 200) {
+    print("Success in Creating user");
+  } else {
+    print(res.body);
+  }
+}
+
 Future<String> getBudgetData(BackEndProvider provider) async {
-  var res = await http.get(Uri.parse("$SERVER_URL/budgets/user/$USER_ID"));
+  print("Backend===> ${FirebaseAuth.instance.currentUser!.uid}");
+
+  var res = await http.get(Uri.parse("$SERVER_URL/budgets/user/${provider.getUserId()}"));
 
   if (res.statusCode == 200) {
     print("Success in getting header");
@@ -113,8 +150,12 @@ Future<String> getBudgetData(BackEndProvider provider) async {
 
 Future<String> getTotal(
     BackEndProvider provider, String budgetname, int index) async {
+  print("Backend Total===> ${provider.getUserId()}");
+  print("User id printed");
+  print("User id ===> ${FirebaseAuth.instance.currentUser?.uid}");
+
   var res = await http.get(
-      Uri.parse("$SERVER_URL/expenses/total-by-category/$budgetname/$USER_ID"));
+      Uri.parse("$SERVER_URL/expenses/total-by-category/$budgetname/$provider.getUserId()"));
   print(budgetname);
   if (res.statusCode == 200) {
     print("Success in getting total");
@@ -143,7 +184,7 @@ Future<String> getTotal(
 }
 
 Future<String> getCategories(BackEndProvider provider) async {
-  var res = await http.get(Uri.parse("$SERVER_URL/categories/user/$USER_ID"));
+  var res = await http.get(Uri.parse("$SERVER_URL/categories/user/$provider.getUserId()"));
 
   if (res.statusCode == 200) {
     print("Success in getting categories");
@@ -163,7 +204,7 @@ Future<String> getCategories(BackEndProvider provider) async {
 }
 
 Future<String> getExpenses(BackEndProvider provider) async {
-  var res = await http.get(Uri.parse("$SERVER_URL/expenses/user/$USER_ID"));
+  var res = await http.get(Uri.parse("$SERVER_URL/expenses/user/${provider.getUserId()}"));
 
   if (res.statusCode == 200) {
     print("Success in getting expenses");

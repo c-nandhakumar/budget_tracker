@@ -51,7 +51,7 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
             'Accept': 'application/json',
           },
           body: jsonEncode({
-            "userid": USER_ID,
+            "userid": provider.getUserId(),
             "budgetname": budgetname,
             "categoryname": widget.name,
             "expensecost": expensecost,

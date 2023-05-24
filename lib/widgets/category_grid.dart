@@ -29,37 +29,43 @@ class _CategoryGridState extends State<CategoryGrid> {
         future: categories,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            Map<String, dynamic>? categoriesPriceJson =
-                provider.categoriesPriceJson;
-            Map<String, int> categoriesPriceMap = {};
+            if (provider.categories != null) {
+              Map<String, dynamic>? categoriesPriceJson =
+                  provider.categoriesPriceJson;
+              Map<String, int> categoriesPriceMap = {};
 
-            //Categories and price mapping
-            for (var e in provider.categories!) {
-              categoriesPriceMap.putIfAbsent(e.categoryname, () => 0);
-              if (categoriesPriceJson![e.categoryname] != null) {
-                categoriesPriceMap.update(
-                    e.categoryname,
-                    (value) =>
-                        value + categoriesPriceJson[e.categoryname] as int);
+              //Categories and price mapping
+              for (var e in provider.categories!) {
+                categoriesPriceMap.putIfAbsent(e.categoryname, () => 0);
+                if (categoriesPriceJson![e.categoryname] != null) {
+                  categoriesPriceMap.update(
+                      e.categoryname,
+                      (value) =>
+                          value + categoriesPriceJson[e.categoryname] as int);
+                }
               }
-            }
 
-            List<Widget> categoryGrid = [];
-            categoriesPriceMap.forEach((key, value) => categoryGrid.add(
-                  FlipCardWidget(
-                    name: key,
-                    cost: "\$$value",
-                  ),
-                ));
-            return GridView.count(
-              shrinkWrap: true,
-              primary: false,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              crossAxisCount: 3,
-              children: <Widget>[...categoryGrid],
-            );
+              List<Widget> categoryGrid = [];
+              categoriesPriceMap.forEach((key, value) => categoryGrid.add(
+                    FlipCardWidget(
+                      name: key,
+                      cost: "\$$value",
+                    ),
+                  ));
+              return GridView.count(
+                shrinkWrap: true,
+                primary: false,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                crossAxisCount: 3,
+                children: <Widget>[...categoryGrid],
+              );
+            } else {
+              return Center(
+                child: Text("Now, Tap the Below \"+\" Button to add category"),
+              );
+            }
           } else {
             return Center(child: CircularProgressIndicator());
           }

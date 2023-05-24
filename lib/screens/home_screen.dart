@@ -29,69 +29,81 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+    final provider = Provider.of<BackEndProvider>(context);
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          
-          showDialog(context: context, builder: (context) => CategoryDialog());
-        },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+                context: context, builder: (context) => CategoryDialog());
+          },
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
-      ),
-      appBar: AppBar(
-          automaticallyImplyLeading: false,
-          toolbarHeight: SizeConfig.height! * 12,
-          title: DropDownWidget(),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: IconButton(
-                padding: const EdgeInsets.all(5),
-                constraints: const BoxConstraints(),
-                style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
+        appBar: AppBar(
+            automaticallyImplyLeading: false,
+            toolbarHeight: SizeConfig.height! * 12,
+            title:
+                provider.budget != null && provider.budget!.budgets.isNotEmpty
+                    ? DropDownWidget()
+                    : Text(
+                        "Tap the \"+\" Icon to add the budget >>>",
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: IconButton(
+                  padding: const EdgeInsets.all(5),
+                  constraints: const BoxConstraints(),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        context: context, builder: (context) => DialogWidget());
+                  },
+                  color: Colors.white,
+                  icon: const Icon(Icons.add),
                 ),
-                onPressed: () {
-                  showDialog(
-                      context: context, builder: (context) => DialogWidget());
-                },
-                color: Colors.white,
-                icon: const Icon(Icons.add),
-              ),
-            )
-          ]),
-      body: ListView(
-        children: [
-          //Two Main Containers
-          Padding(
-            padding: EdgeInsets.only(
-              left: SizeConfig.width! * 5,
-              right: SizeConfig.width! * 5,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                RemainingContainer(),
-                DateRemainingContainer(),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 32.0, left: 24.0, bottom: 16),
-            child: Text(
-              "Expenses",
-              style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.tertiary,
-                  fontWeight: FontWeight.bold),
-            ),
-          ),
-          CategoryGrid(),
-        ],
-      ),
-    );
+              )
+            ]),
+        body: provider.selectedBudget != null
+            ? ListView(
+                children: [
+                  //Two Main Containers
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: SizeConfig.width! * 5,
+                      right: SizeConfig.width! * 5,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        RemainingContainer(),
+                        DateRemainingContainer(),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 32.0, left: 24.0, bottom: 16),
+                    child: Text(
+                      "Expenses",
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  CategoryGrid(),
+                ],
+              )
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Center(child: Text("Add a Budget to display the chart")),
+              ));
   }
 }
 

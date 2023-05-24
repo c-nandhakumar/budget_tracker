@@ -26,7 +26,7 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  final TextEditingController displayNameController = TextEditingController();
   @override
   void dispose() {
     // TODO: implement dispose
@@ -36,21 +36,30 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   Future<void> signUpWithEmail() async {
-    await context
-        .read<FirebaseAuthMethods>()
-        .signUpWithEmail(
-            email: emailController.text,
-            password: passwordController.text,
-            context: context)
-        .then((value) {
-      print("Sign up ====> ${value!.user!.emailVerified}");
-    });
+    if (displayNameController.text.isNotEmpty) {
+      final UserCredential? value = await context
+          .read<FirebaseAuthMethods>()
+          .signUpWithEmail(
+              email: emailController.text,
+              password: passwordController.text,
+              context: context);
+      try {
+        await FirebaseAuth.instance.currentUser!
+            .updateDisplayName(displayNameController.text);
+            await postUser();
+      } on FirebaseAuthException catch (e) {
+        showSnackBar(context, e.message.toString());
+      }
+       
+      
 
-    final provider = Provider.of<BackEndProvider>(context, listen: false);
-    await getBudgetData(provider);
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => BottomNavBar(),
-    ));
+      // ignore: use_build_context_synchronously
+      if (value != null) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => BottomNavBar(),
+        ));
+      }
+    }
   }
 
   @override
@@ -58,22 +67,42 @@ class _SignUpFormState extends State<SignUpForm> {
     return Form(
       child: Column(
         children: [
-          TextFormField(
-            controller: emailController,
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.next,
-            cursorColor: kPrimaryColor,
-            onSaved: (email) {},
-            decoration: InputDecoration(
-              hintText: "Your email",
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.person),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+            child: TextFormField(
+              controller: displayNameController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              onSaved: (email) {},
+              decoration: InputDecoration(
+                hintText: "Your name",
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.person),
+                ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+            padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+            child: TextFormField(
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              onSaved: (email) {},
+              decoration: InputDecoration(
+                hintText: "Your email",
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.mail),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
             child: TextFormField(
               controller: passwordController,
               textInputAction: TextInputAction.done,

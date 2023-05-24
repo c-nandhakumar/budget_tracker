@@ -34,68 +34,80 @@ class _ChartWidgetState extends State<ChartWidget> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
-    var maximum = 0;
-    int index = -1;
-    int selectedIndex = 0;
-    data = [
-      ...provider.budget!.budgets.map((e) {
-        if (e.budgetamount > maximum) {
-          maximum = e.budgetamount;
-        }
-        index++;
-        return _ChartData(e.budgetname, e.budgetamount, getColorByIndex(index));
-      })
-    ];
+    if (provider.budget != null && provider.budget!.budgets.isNotEmpty) {
+      var maximum = 0;
+      int index = -1;
+      int selectedIndex = 0;
+      data = [
+        ...provider.budget!.budgets.map((e) {
+          if (e.budgetamount > maximum) {
+            maximum = e.budgetamount;
+          }
+          index++;
+          return _ChartData(
+              e.budgetname, e.budgetamount, getColorByIndex(index));
+        })
+      ];
 
-    data = data.sublist(0, 13);
+      data = data.sublist(0, data.length % 13);
 
-    SfCartesianChart chart = SfCartesianChart(
-      // zoomPanBehavior: ZoomPanBehavior(
-      //   enablePanning: true, // Enable panning
-      //   enablePinching: true, // Enable zooming
-      //   enableDoubleTapZooming: true,
-      //   // Enable double-tap zooming
-      // ),
+      SfCartesianChart chart = SfCartesianChart(
+        // zoomPanBehavior: ZoomPanBehavior(
+        //   enablePanning: true, // Enable panning
+        //   enablePinching: true, // Enable zooming
+        //   enableDoubleTapZooming: true,
+        //   // Enable double-tap zooming
+        // ),
 
-      plotAreaBorderWidth: 0,
-      primaryXAxis: CategoryAxis(
+        plotAreaBorderWidth: 0,
+        primaryXAxis: CategoryAxis(
+            majorGridLines: const MajorGridLines(width: 0),
+            minorGridLines: const MinorGridLines(width: 0)),
+        primaryYAxis: NumericAxis(
+          minimum: 0,
+          maximum: maximum + 100,
+          interval: maximum / 5,
+          borderColor: const Color.fromARGB(0, 255, 255, 255),
           majorGridLines: const MajorGridLines(width: 0),
-          minorGridLines: const MinorGridLines(width: 0)),
-      primaryYAxis: NumericAxis(
-        minimum: 0,
-        maximum: maximum + 100,
-        interval: maximum / 5,
-        borderColor: const Color.fromARGB(0, 255, 255, 255),
-        majorGridLines: const MajorGridLines(width: 0),
-        minorGridLines: const MinorGridLines(width: 0),
-        //edgeLabelPlacement: EdgeLabelPlacement.shift
-      ),
-      tooltipBehavior: _tooltip,
-      onAxisLabelTapped: (axisLabelTapArgs) {
-        print(axisLabelTapArgs.text);
+          minorGridLines: const MinorGridLines(width: 0),
+          //edgeLabelPlacement: EdgeLabelPlacement.shift
+        ),
+        tooltipBehavior: _tooltip,
+        onAxisLabelTapped: (axisLabelTapArgs) {
+          print(axisLabelTapArgs.text);
 
-        provider.setSelectedInsights(axisLabelTapArgs.text);
-      },
-      series: <ChartSeries<_ChartData, String>>[
-        ColumnSeries<_ChartData, String>(
-            dataSource: data,
-            borderRadius: BorderRadius.circular(3.5),
-            xValueMapper: (_ChartData data, _) => data.x,
-            yValueMapper: (_ChartData data, _) => data.y,
-            //pointColorMapper: (_ChartData data, _) => data.color,
-            name: 'Expense',
-            color: Theme.of(context).colorScheme.primary),
-      ],
-    );
+          provider.setSelectedInsights(axisLabelTapArgs.text);
+        },
+        series: <ChartSeries<_ChartData, String>>[
+          ColumnSeries<_ChartData, String>(
+              dataSource: data,
+              borderRadius: BorderRadius.circular(3.5),
+              xValueMapper: (_ChartData data, _) => data.x,
+              yValueMapper: (_ChartData data, _) => data.y,
+              //pointColorMapper: (_ChartData data, _) => data.color,
+              name: 'Expense',
+              color: Theme.of(context).colorScheme.primary),
+        ],
+      );
 
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SizedBox(
-            width: 1200, height: SizeConfig.height! * 27.5, child: chart),
-      ),
-    );
+      return Padding(
+        padding: const EdgeInsets.all(12),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+              width: (data.length % 13) * 100 > SizeConfig.width! * 100
+                  ? (data.length % 13) * 100
+                  : SizeConfig.width! * 100,
+              height: SizeConfig.height! * 27.5,
+              child: chart),
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(child: Text("Add a Budget to display the chart")),
+      );
+    }
   }
 }
 

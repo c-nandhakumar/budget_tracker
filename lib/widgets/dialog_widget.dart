@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../models/budget_model.dart';
 import '../provider/app_provider.dart';
 
 class DialogWidget extends StatefulWidget {
@@ -22,6 +23,7 @@ class _DialogWidgetState extends State<DialogWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final mainprovider = Provider.of<BackEndProvider>(context);
     Future createBudget() async {
       String budgetname = _namecontroller.text;
       String budgetamount = _costcontroller.text;
@@ -34,7 +36,7 @@ class _DialogWidgetState extends State<DialogWidget> {
             'Accept': 'application/json',
           },
           body: jsonEncode({
-            "userid": USER_ID,
+            "userid": mainprovider.getUserId(),
             "budgetname": budgetname,
             "budgetamount": budgetamount,
             "budgetcreated": time
@@ -45,6 +47,16 @@ class _DialogWidgetState extends State<DialogWidget> {
         // ignore: use_build_context_synchronously
         final provider = Provider.of<BackEndProvider>(context, listen: false);
         getBudgetData(provider);
+        // if (provider.selectedBudgetIndex != null) {
+        getTotal(provider, budgetname, provider.selectedBudgetIndex!);
+        //     }else{
+        //       final budget = budgetFromJson(payload);
+        // if (budget!.budgets.isNotEmpty) {
+        //   selectedBudgetIndex = 0;
+        //   selectedBudget = budget!.budgets[selectedBudgetIndex!].budgetname;
+
+        // }
+        // }
       } else {
         showDialog(
           context: context,
