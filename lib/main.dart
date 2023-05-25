@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         StreamProvider(
             create: (context) => context.read<FirebaseAuthMethods>().authState,
             initialData: null),
+          
         ChangeNotifierProvider(
           create: (context) => BackEndProvider(),
         )
@@ -56,6 +57,7 @@ class AuthWrapper extends StatelessWidget {
     if (firebaseUser != null) {
       return BottomNavBar();
     } else {
+      
       return WelcomeScreen();
     }
   }

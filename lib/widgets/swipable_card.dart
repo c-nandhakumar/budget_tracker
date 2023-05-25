@@ -19,6 +19,7 @@ class _SwipableCardState extends State<SwipableCard> {
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     expenses = getExpenses(provider);
+    print("Fired init State");
   }
 
   // final List<Map<String, String>> historyList = [
@@ -36,6 +37,7 @@ class _SwipableCardState extends State<SwipableCard> {
       future: expenses,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          historyList = [];
           final provider = Provider.of<BackEndProvider>(context);
           if (provider.expenses != null) {
             provider.expenses!.sort(
@@ -54,6 +56,8 @@ class _SwipableCardState extends State<SwipableCard> {
               });
             }
             if (historyList.isNotEmpty) {
+              print("Deleted and Triggered");
+              print(historyList);
               return ListView.separated(
                   separatorBuilder: (context, index) => const SizedBox(
                         height: 12,
@@ -64,7 +68,8 @@ class _SwipableCardState extends State<SwipableCard> {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Dismissible(
-                          key: ValueKey(item),
+                          // key: ValueKey(item),
+                          key: UniqueKey(),
                           secondaryBackground: Container(
                               decoration: BoxDecoration(
                                   color: const Color(0xffEA0000),
@@ -107,10 +112,12 @@ class _SwipableCardState extends State<SwipableCard> {
                               )),
                           onDismissed: (direction) async {
                             // print("Expense ID : ${historyList[index]}");
+
                             await deleteExpenses(
-                                historyList[index]["expenseId"] as String);
-                            // setState((){
-                            //   historyList.removeAt(index);
+                                historyList[index]["expenseId"] as String,
+                                provider);
+                            // setState(() {
+                            //   // historyList.removeAt(index);
                             // });
 
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(

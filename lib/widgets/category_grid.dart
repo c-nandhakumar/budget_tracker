@@ -20,6 +20,7 @@ class _CategoryGridState extends State<CategoryGrid> {
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     categories = getCategories(provider);
+    print("InitState Fired in Grid List");
   }
 
   @override
@@ -29,7 +30,9 @@ class _CategoryGridState extends State<CategoryGrid> {
         future: categories,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            if (provider.categories != null) {
+            //print("<=======Categories=======> ${provider.categories}");
+            if (provider.categories != null &&
+                provider.categories!.isNotEmpty) {
               Map<String, dynamic>? categoriesPriceJson =
                   provider.categoriesPriceJson;
               Map<String, int> categoriesPriceMap = {};

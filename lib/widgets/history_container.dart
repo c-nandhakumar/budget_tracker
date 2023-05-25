@@ -15,7 +15,7 @@ class HistoryContainer extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(5)),
           color: Theme.of(context).colorScheme.secondary),
-      height: SizeConfig.height! * 12.15,
+      height: SizeConfig.height! * 13,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,

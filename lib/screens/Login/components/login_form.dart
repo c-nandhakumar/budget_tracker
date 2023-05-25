@@ -24,7 +24,8 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  bool isNotVisible = true;
+  bool isLoading = false;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -34,6 +35,9 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> loginUser() async {
+    setState(() {
+      isLoading = !isLoading;
+    });
     final UserCredential? value = await context
         .read<FirebaseAuthMethods>()
         .loginWithEmail(
@@ -44,6 +48,9 @@ class _LoginFormState extends State<LoginForm> {
     if (value != null) {
       final provider = Provider.of<BackEndProvider>(context, listen: false);
       provider.setBottomNavIndex(0);
+      setState(() {
+        isLoading = !isLoading;
+      });
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => BottomNavBar(),
       ));
@@ -70,17 +77,31 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+            padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
             child: TextFormField(
               controller: passwordController,
               textInputAction: TextInputAction.done,
-              obscureText: true,
+              obscureText: isNotVisible,
               cursorColor: kPrimaryColor,
               decoration: InputDecoration(
                 hintText: "Your password",
                 prefixIcon: Padding(
                   padding: const EdgeInsets.all(defaultPadding),
                   child: Icon(Icons.lock),
+                ),
+                suffixIcon: InkWell(
+                  onTap: () => setState(() {
+                    isNotVisible = !isNotVisible;
+                  }),
+                  child: Padding(
+                    padding: const EdgeInsets.all(defaultPadding),
+                    child: isNotVisible
+                        ? Icon(Icons.remove_red_eye_outlined)
+                        : Icon(
+                            Icons.remove_red_eye,
+                            color: Colors.blue,
+                          ),
+                  ),
                 ),
               ),
             ),
@@ -96,9 +117,18 @@ class _LoginFormState extends State<LoginForm> {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Colors.white,
                     elevation: 0),
-                child: Text(
-                  "Login".toUpperCase(),
-                ),
+                child: isLoading
+                    ? SizedBox(
+                        height: 15,
+                        width: 15,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2.5,
+                        ),
+                      )
+                    : Text(
+                        "Login".toUpperCase(),
+                      ),
               ),
             ),
           ),

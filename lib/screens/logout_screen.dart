@@ -52,7 +52,8 @@ class _LogoutScreenState extends State<LogoutScreen> {
             ),
             onPressed: () {
               context.read<FirebaseAuthMethods>().signOut(context);
-              context.read<BackEndProvider>().setUserId();
+              // context.read<BackEndProvider>().setUserId();
+              AppProviders.disposeAllDisposableProviders(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => WelcomeScreen(),
               ));

@@ -27,6 +27,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController displayNameController = TextEditingController();
+  bool isNotVisible = true;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -46,12 +47,10 @@ class _SignUpFormState extends State<SignUpForm> {
       try {
         await FirebaseAuth.instance.currentUser!
             .updateDisplayName(displayNameController.text);
-            await postUser();
+        await postUser();
       } on FirebaseAuthException catch (e) {
         showSnackBar(context, e.message.toString());
       }
-       
-      
 
       // ignore: use_build_context_synchronously
       if (value != null) {
@@ -106,15 +105,28 @@ class _SignUpFormState extends State<SignUpForm> {
             child: TextFormField(
               controller: passwordController,
               textInputAction: TextInputAction.done,
-              obscureText: true,
+              obscureText: isNotVisible,
               cursorColor: kPrimaryColor,
               decoration: InputDecoration(
-                hintText: "Your password",
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
-                ),
-              ),
+                  hintText: "Your password",
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.all(defaultPadding),
+                    child: Icon(Icons.lock),
+                  ),
+                  suffixIcon: InkWell(
+                    onTap: () => setState(() {
+                      isNotVisible = !isNotVisible;
+                    }),
+                    child: Padding(
+                      padding: const EdgeInsets.all(defaultPadding),
+                      child: isNotVisible
+                          ? Icon(Icons.remove_red_eye_outlined)
+                          : Icon(
+                              Icons.remove_red_eye,
+                              color: Colors.blue,
+                            ),
+                    ),
+                  )),
             ),
           ),
           const SizedBox(height: defaultPadding / 2),

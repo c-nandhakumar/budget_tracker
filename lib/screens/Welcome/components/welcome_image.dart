@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:jovial_svg/jovial_svg.dart';
 
 import '../../../utility/constants.dart';
 
@@ -13,8 +14,11 @@ class WelcomeImage extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "WELCOME TO BUDGET APP",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          "Welcome to SimpliBudget",
+          style: Theme.of(context)
+              .textTheme
+              .titleLarge!
+              .copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: defaultPadding * 2),
         Row(

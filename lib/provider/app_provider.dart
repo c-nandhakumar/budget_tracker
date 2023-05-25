@@ -3,6 +3,7 @@ import 'package:budget_app/models/category_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
+import 'package:provider/provider.dart';
 import 'dart:convert';
 
 import '../models/expense_model.dart';
@@ -11,7 +12,26 @@ const SERVER_URL =
     "http://ec2-3-110-68-255.ap-south-1.compute.amazonaws.com:8000";
 // const USER_ID = 'gCyuWfM3TuYcx71B3Za99qQjeRz2';
 
-class BackEndProvider with ChangeNotifier {
+abstract class DisposableProvider with ChangeNotifier {
+  void disposeValues();
+}
+
+class AppProviders {
+  static List<DisposableProvider> getDisposableProviders(BuildContext context) {
+    return [
+      Provider.of<BackEndProvider>(context, listen: false),
+      //...other disposable providers
+    ];
+  }
+
+  static void disposeAllDisposableProviders(BuildContext context) {
+    getDisposableProviders(context).forEach((disposableProvider) {
+      disposableProvider.disposeValues();
+    });
+  }
+}
+
+class BackEndProvider extends DisposableProvider {
   String getServerUrl() {
     return SERVER_URL;
   }
@@ -91,19 +111,46 @@ class BackEndProvider with ChangeNotifier {
     if (budget!.budgets.isNotEmpty) {
       selectedBudgetIndex = 0;
       selectedBudget = budget!.budgets[selectedBudgetIndex!].budgetname;
+      selectedInsights = selectedBudget;
+    } else {
+      selectedBudgetIndex = 0;
     }
     notifyListeners();
   }
 
   void setCategories(String payload) {
-    categories = categoriesFromJson(payload);
-    notifyListeners();
+    if (payload.isNotEmpty) {
+      categories = categoriesFromJson(payload);
+      notifyListeners();
+    } else {
+      categories = [];
+    }
   }
 
   void setExpenses(String payload) {
-    expenses = expensesFromJson(payload);
+    if (payload.isNotEmpty) {
+      expenses = expensesFromJson(payload);
+      notifyListeners();
+    } else {
+      expenses = [];
+    }
+  }
 
-    notifyListeners();
+  @override
+  void disposeValues() {
+    bottomnavIndex = 0;
+    budget = null;
+    categories = null;
+    expenses = null;
+    categoriesPriceJson = null;
+    categoriesPriceList = [];
+
+    selectedBudget = null;
+    selectedInsights = null;
+    selectedBudgetIndex = 0;
+    total = 0;
+    balance = 0;
+    budgetAmount = 0;
   }
 }
 
@@ -133,7 +180,7 @@ Future<String> getBudgetData(BackEndProvider provider) async {
   print(provider.getUserId());
   var res = await http.get(Uri.parse(
       "$SERVER_URL/budgets/user/${FirebaseAuth.instance.currentUser!.uid}"));
-
+  print("<===== Get Budget Data Status Code =====> ${res.statusCode}");
   if (res.statusCode == 200) {
     print("Success in getting header");
     provider.setBudgets(res.body);
@@ -189,10 +236,14 @@ Future<String> getCategories(BackEndProvider provider) async {
 
   if (res.statusCode == 200) {
     print("Success in getting categories");
-    //print(res.body);
+    print(res.body);
 
     provider.setCategories(res.body);
     // provider.setCategoryPrice();
+    return res.body;
+  }
+  if (res.statusCode == 404) {
+    provider.setCategories("");
     return res.body;
   }
   if (res.statusCode == 422) {
@@ -215,22 +266,29 @@ Future<String> getExpenses(BackEndProvider provider) async {
     provider.setExpenses(res.body);
     return res.body;
   }
+  if (res.statusCode == 404) {
+    print("New User Expense");
+    provider.setExpenses("");
+    return res.body;
+  }
   if (res.statusCode == 422) {
     print("Error");
     return res.body;
   } else {
-    print(res);
+    print(res.statusCode);
   }
   return "";
 }
 
-Future<String> deleteExpenses(String expenseId) async {
+Future<String> deleteExpenses(
+    String expenseId, BackEndProvider provider) async {
   var res = await http.delete(
     Uri.parse("$SERVER_URL/expenses/$expenseId"),
   );
   print(res.body);
   if (res.statusCode == 200) {
     print("Deleted Successfully");
+    await getExpenses(provider);
     return "Deleted Successfully";
   }
   return "Error Occured!";

@@ -43,13 +43,13 @@ class _DialogWidgetState extends State<DialogWidget> {
             "budgetcreated": time
           }),
         );
-        //print(res.body);
+        print("BudgetCreation ${res.body}");
         Navigator.of(context).pop();
         // ignore: use_build_context_synchronously
         final provider = Provider.of<BackEndProvider>(context, listen: false);
-        getBudgetData(provider);
+        await getBudgetData(provider);
         // if (provider.selectedBudgetIndex != null) {
-        getTotal(provider, budgetname, provider.selectedBudgetIndex!);
+        await getTotal(provider, budgetname, provider.selectedBudgetIndex!);
         //     }else{
         //       final budget = budgetFromJson(payload);
         // if (budget!.budgets.isNotEmpty) {

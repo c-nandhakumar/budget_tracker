@@ -46,7 +46,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
       ),
       body: ListView(children: [
         ChartWidget(),
-        PieChartWidget(),
+        (provider.budget != null && provider.budget!.budgets.isNotEmpty)
+            ? PieChartWidget()
+            : Container(),
       ]),
     );
   }

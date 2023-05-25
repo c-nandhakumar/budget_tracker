@@ -34,6 +34,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
 
             if (provider.expenses != null) {
               provider.expenses!.forEach((e) {
+                print("Selected budget ======> ${provider.selectedBudget}");
                 if (e.budgetname == provider.selectedInsights) {
                   recentMap.putIfAbsent(e.categoryname, () => e.expensecost);
                   recentMap.update(
@@ -59,7 +60,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                 Container(
                   padding: const EdgeInsets.only(top: 24.0),
                   child: Text(
-                    '${provider.selectedInsights}',
+                    '${provider.selectedInsights ?? provider.selectedBudget}',
                     style: const TextStyle(
                         fontSize: 20, fontWeight: FontWeight.bold),
                   ),
