@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:budget_app/provider/app_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
@@ -51,7 +52,7 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
             'Accept': 'application/json',
           },
           body: jsonEncode({
-            "userid": provider.getUserId(),
+            "userid": FirebaseAuth.instance.currentUser!.uid,
             "budgetname": budgetname,
             "categoryname": widget.name,
             "expensecost": expensecost,

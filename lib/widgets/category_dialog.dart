@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
             'Accept': 'application/json',
           },
           body: jsonEncode({
-            "userid": provider.getUserId(),
+            "userid": FirebaseAuth.instance.currentUser!.uid,
             "categoryname": categoryname,
             "categorycreated": time,
           }));

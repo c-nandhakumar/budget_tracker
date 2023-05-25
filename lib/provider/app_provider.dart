@@ -11,7 +11,6 @@ const SERVER_URL =
     "http://ec2-3-110-68-255.ap-south-1.compute.amazonaws.com:8000";
 // const USER_ID = 'gCyuWfM3TuYcx71B3Za99qQjeRz2';
 
-
 class BackEndProvider with ChangeNotifier {
   String getServerUrl() {
     return SERVER_URL;
@@ -19,14 +18,15 @@ class BackEndProvider with ChangeNotifier {
 
   String jwt = "";
   String userId = FirebaseAuth.instance.currentUser!.uid;
-  String getUserId(){
+  String getUserId() {
     return userId;
   }
 
-  void setUserId(){
-    userId ="";
+  void setUserId() {
+    userId = "";
     notifyListeners();
   }
+
   int bottomnavIndex = 0;
 
   void setBottomNavIndex(int index) {
@@ -47,7 +47,7 @@ class BackEndProvider with ChangeNotifier {
 
   String? selectedBudget;
   String? selectedInsights;
-  int? selectedBudgetIndex ;
+  int? selectedBudgetIndex;
 
   void setSelectedBudget(String selectedBudget) {
     this.selectedBudget = selectedBudget;
@@ -91,7 +91,6 @@ class BackEndProvider with ChangeNotifier {
     if (budget!.budgets.isNotEmpty) {
       selectedBudgetIndex = 0;
       selectedBudget = budget!.budgets[selectedBudgetIndex!].budgetname;
-      
     }
     notifyListeners();
   }
@@ -131,8 +130,9 @@ Future<void> postUser() async {
 
 Future<String> getBudgetData(BackEndProvider provider) async {
   print("Backend===> ${FirebaseAuth.instance.currentUser!.uid}");
-
-  var res = await http.get(Uri.parse("$SERVER_URL/budgets/user/${provider.getUserId()}"));
+  print(provider.getUserId());
+  var res = await http.get(Uri.parse(
+      "$SERVER_URL/budgets/user/${FirebaseAuth.instance.currentUser!.uid}"));
 
   if (res.statusCode == 200) {
     print("Success in getting header");
@@ -154,8 +154,8 @@ Future<String> getTotal(
   print("User id printed");
   print("User id ===> ${FirebaseAuth.instance.currentUser?.uid}");
 
-  var res = await http.get(
-      Uri.parse("$SERVER_URL/expenses/total-by-category/$budgetname/$provider.getUserId()"));
+  var res = await http.get(Uri.parse(
+      "$SERVER_URL/expenses/total-by-category/$budgetname/${FirebaseAuth.instance.currentUser!.uid}"));
   print(budgetname);
   if (res.statusCode == 200) {
     print("Success in getting total");
@@ -184,7 +184,8 @@ Future<String> getTotal(
 }
 
 Future<String> getCategories(BackEndProvider provider) async {
-  var res = await http.get(Uri.parse("$SERVER_URL/categories/user/$provider.getUserId()"));
+  var res = await http.get(Uri.parse(
+      "$SERVER_URL/categories/user/${FirebaseAuth.instance.currentUser!.uid}"));
 
   if (res.statusCode == 200) {
     print("Success in getting categories");
@@ -204,7 +205,8 @@ Future<String> getCategories(BackEndProvider provider) async {
 }
 
 Future<String> getExpenses(BackEndProvider provider) async {
-  var res = await http.get(Uri.parse("$SERVER_URL/expenses/user/${provider.getUserId()}"));
+  var res = await http.get(Uri.parse(
+      "$SERVER_URL/expenses/user/${FirebaseAuth.instance.currentUser!.uid}"));
 
   if (res.statusCode == 200) {
     print("Success in getting expenses");

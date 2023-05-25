@@ -23,10 +23,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
-    final recent_list = [
-      ...provider.budget!.budgets.map((e) =>
-          {"name": e.budgetname.toString(), "cost": e.budgetamount.toString()})
-    ];
+    // final recent_list = [
+    //   ...provider.budget!.budgets.map((e) =>
+    //       {"name": e.budgetname.toString(), "cost": e.budgetamount.toString()})
+    // ];
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(

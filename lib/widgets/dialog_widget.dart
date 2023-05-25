@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:budget_app/common/screen_size.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -36,7 +37,7 @@ class _DialogWidgetState extends State<DialogWidget> {
             'Accept': 'application/json',
           },
           body: jsonEncode({
-            "userid": mainprovider.getUserId(),
+            "userid": FirebaseAuth.instance.currentUser!.uid,
             "budgetname": budgetname,
             "budgetamount": budgetamount,
             "budgetcreated": time
