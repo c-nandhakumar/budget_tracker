@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../../../utility/constants.dart';
 
 class SignUpScreenTopImage extends StatelessWidget {
@@ -17,11 +16,13 @@ class SignUpScreenTopImage extends StatelessWidget {
         ),
         const SizedBox(height: defaultPadding),
         Row(
+          // ignore: prefer_const_literals_to_create_immutables
           children: [
             const Spacer(),
-            Expanded(
-              flex: 8,
-              child: SvgPicture.asset("assets/icons/signup.svg"),
+            const Expanded(
+              flex: 6,
+              child: Image(
+                  image: AssetImage("assets/images/signup_compressed.jpg")),
             ),
             const Spacer(),
           ],

@@ -18,13 +18,6 @@ class _ChartWidgetState extends State<ChartWidget> {
 
   @override
   void initState() {
-    // data = [
-    //   _ChartData('Food', 160),
-    //   _ChartData('Gas', 150),
-    //   _ChartData('Rent', 120),
-    //   _ChartData('Travel', 100),
-    //   _ChartData('Food', 130)
-    // ];
     _tooltip = TooltipBehavior(
       enable: true,
     );
@@ -104,9 +97,32 @@ class _ChartWidgetState extends State<ChartWidget> {
         ),
       );
     } else {
-      return const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Center(child: Text("Add a Budget to display the chart")),
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 48,
+                padding: const EdgeInsets.all(10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  boxShadow: const [
+                    BoxShadow(color: Colors.grey, offset: Offset(-4, 4))
+                  ],
+                  color: Colors.white,
+                  border: Border.all(width: 1),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                ),
+                child: const Text("Add budget to display the chart"),
+              ),
+            ],
+          ),
+        ),
       );
     }
   }

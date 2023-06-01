@@ -146,22 +146,57 @@ class _SwipableCardState extends State<SwipableCard> {
             ///when there is no data in the historyList, then this fallback UI will be displayed
             ///for the existing user, who have cleared all the data in the historyList
             else {
-              return const Padding(
-                padding: EdgeInsets.all(16.0),
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Center(
-                    child: Text(
-                        "No Transactions Yet. To add transaction, Flip the category card and add the expenses")),
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 56,
+                      padding: const EdgeInsets.all(10),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(color: Colors.grey, offset: Offset(-4, 4))
+                        ],
+                        color: Colors.white,
+                        border: Border.all(width: 1),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(5),
+                        ),
+                      ),
+                      child: const Text(
+                          "No Transactions Yet. To add transaction, Flip the category card and add the expenses"),
+                    ),
+                  ],
+                ),),
               );
             }
           }
 
           ///this fallback UI will be displayed for the initial User
           else {
-            return const Padding(
-              padding: EdgeInsets.all(16.0),
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Center(
-                  child: Text(
-                      "No Transactions Yet. To add transaction, Flip the category card and add the expenses")),
+                  child: Container(
+                height: 36,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  boxShadow: const [
+                    BoxShadow(color: Colors.grey, offset: Offset(-4, 4))
+                  ],
+                  color: Colors.white,
+                  border: Border.all(width: 1),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                ),
+                child: const Text(
+                    "No Transactions Yet. To add transaction, Flip the category card and add the expenses"),
+              )),
             );
           }
         }

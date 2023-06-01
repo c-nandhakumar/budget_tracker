@@ -32,6 +32,8 @@ class _LoginFormState extends State<LoginForm> {
     passwordController.dispose();
   }
 
+///Make the user to Login if the credentials are true,
+///if not then it displays a snackbar
   Future<void> loginUser() async {
     setState(() {
       isLoading = !isLoading;

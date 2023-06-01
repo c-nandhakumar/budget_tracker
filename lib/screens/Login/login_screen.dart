@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 import '../../components/background.dart';
 import 'components/login_form.dart';
 import 'components/login_screen_top_image.dart';
@@ -56,7 +55,7 @@ class MobileLoginScreen extends StatelessWidget {
             children: const [
               Spacer(),
               Expanded(
-                flex: 8,
+                flex: 10,
                 child: LoginForm(),
               ),
               Spacer(),

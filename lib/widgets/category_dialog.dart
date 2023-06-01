@@ -83,11 +83,60 @@ class _CategoryDialogState extends State<CategoryDialog> {
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
     final provider2 = Provider.of<BackEndProvider>(context, listen: false);
-    String budgetname = provider.selectedBudget!;
-    print(provider.selectedBudget);
-    return Dialog(
-      child: Container(
-        height: SizeConfig.height! * 25.5,
+    if (provider.selectedBudget != null) {
+      String budgetname = provider.selectedBudget!;
+      print(provider.selectedBudget);
+      return Dialog(
+        child: Container(
+          height: SizeConfig.height! * 30,
+          width: SizeConfig.width! * 90,
+          padding: const EdgeInsets.symmetric(horizontal: 36),
+          decoration: const BoxDecoration(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Add category name",
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.tertiary,
+                    fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              TextField(
+                controller: _namecontroller,
+                decoration: const InputDecoration(
+                  hintText: "Enter the category name",
+                  isDense: true,
+                  contentPadding: EdgeInsets.all(10),
+                  border: OutlineInputBorder(),
+                  hintStyle: TextStyle(fontSize: 16),
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              FilledButton(
+                style: FilledButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  minimumSize: Size.zero,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                ),
+                onPressed: () => createCategory(budgetname, provider2),
+                child: const Text("Add"),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return Dialog(
+          child: Container(
+        height: SizeConfig.height! * 38,
         width: SizeConfig.width! * 90,
         padding: const EdgeInsets.symmetric(horizontal: 36),
         decoration: const BoxDecoration(),
@@ -96,31 +145,14 @@ class _CategoryDialogState extends State<CategoryDialog> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "Add category name",
+              "Create the Budget (By Tapping the \"+\" Icon on the Top) and then use this button to create Categories",
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   color: Theme.of(context).colorScheme.tertiary,
                   fontWeight: FontWeight.w600),
             ),
-            TextField(
-                controller: _namecontroller,
-                decoration:
-                    const InputDecoration(hintStyle: TextStyle(fontSize: 16))),
             const SizedBox(
               height: 30,
             ),
-            /*Text(
-              "Add Expense",
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: Theme.of(context).colorScheme.tertiary,
-                  fontWeight: FontWeight.w600),
-            ),
-            TextField(
-              controller: _costcontroller,
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(
-              height: 45,
-            ),*/
             FilledButton(
               style: FilledButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -129,12 +161,12 @@ class _CategoryDialogState extends State<CategoryDialog> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
               ),
-              onPressed: () => createCategory(budgetname, provider2),
-              child: const Text("Add"),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text("OK"),
             ),
           ],
         ),
-      ),
-    );
+      ));
+    }
   }
 }

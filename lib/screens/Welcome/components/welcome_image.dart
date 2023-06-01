@@ -18,19 +18,19 @@ class WelcomeImage extends StatelessWidget {
               .titleLarge!
               .copyWith(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: defaultPadding * 3),
+        const SizedBox(height: defaultPadding * 2),
         Row(
           children: const [
             Spacer(),
             Expanded(
-                flex: 6,
+                flex: 5,
                 child: Image(
                   image: AssetImage("assets/images/welcome_screen_image.png"),
                 )),
             Spacer(),
           ],
         ),
-        const SizedBox(height: defaultPadding * 3),
+        const SizedBox(height: defaultPadding * 2),
       ],
     );
   }

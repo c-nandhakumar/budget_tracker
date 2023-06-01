@@ -39,7 +39,7 @@ class LoginAndSignupBtn extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         SizedBox(
           width: SizeConfig.width! * 90,
           child: ElevatedButton(

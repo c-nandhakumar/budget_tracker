@@ -16,18 +16,11 @@ class InsightsScreen extends StatefulWidget {
 }
 
 class _InsightsScreenState extends State<InsightsScreen> {
-  // final recent_list = [
-  //   {"name": "Food", "cost": "\$160"},
-  //   {"name": "Gas", "cost": "\$160"},
-  //   {"name": "Rent", "cost": "\$160"}
-  // ];
+ 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
-    // final recent_list = [
-    //   ...provider.budget!.budgets.map((e) =>
-    //       {"name": e.budgetname.toString(), "cost": e.budgetamount.toString()})
-    // ];
+   
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -56,16 +49,4 @@ class _InsightsScreenState extends State<InsightsScreen> {
 }
 
 
-   // Padding(
-            //   padding: const EdgeInsets.only(top: 16.0, left: 24.0, bottom: 9),
-            //   child: Text(
-            //     "Recent",
-            //     style: Theme.of(context).textTheme.titleLarge!.copyWith(
-            //         color: Theme.of(context).colorScheme.tertiary,
-            //         fontWeight: FontWeight.bold),
-            //   ),
-            // ),
-            // ...recent_list.map((e) => RecentContainer(
-            //       name: e['name'],
-            //       cost: e['cost'],
-            //     ))
+

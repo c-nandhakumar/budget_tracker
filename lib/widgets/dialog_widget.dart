@@ -75,7 +75,7 @@ class _DialogWidgetState extends State<DialogWidget> {
 
     return Dialog(
       child: Container(
-        height: SizeConfig.height! * 42.5,
+        height: SizeConfig.height! * 45,
         width: SizeConfig.width! * 90,
         padding: const EdgeInsets.symmetric(horizontal: 36),
         decoration: const BoxDecoration(),
@@ -89,12 +89,21 @@ class _DialogWidgetState extends State<DialogWidget> {
                   color: Theme.of(context).colorScheme.tertiary,
                   fontWeight: FontWeight.w600),
             ),
-            TextField(
-                controller: _namecontroller,
-                decoration:
-                    const InputDecoration(hintStyle: TextStyle(fontSize: 16))),
             const SizedBox(
-              height: 30,
+              height: 7,
+            ),
+            TextField(
+              controller: _namecontroller,
+              decoration: const InputDecoration(
+                isDense: true,
+                contentPadding: EdgeInsets.all(10),
+                hintText: "Enter the Budget Name",
+                border: OutlineInputBorder(),
+                hintStyle: TextStyle(fontSize: 16),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
             ),
             Text(
               "Add Budget",
@@ -102,12 +111,22 @@ class _DialogWidgetState extends State<DialogWidget> {
                   color: Theme.of(context).colorScheme.tertiary,
                   fontWeight: FontWeight.w600),
             ),
+            const SizedBox(
+              height: 7,
+            ),
             TextField(
               controller: _costcontroller,
+              decoration: const InputDecoration(
+                hintText: "\$0",
+                isDense: true,
+                contentPadding: EdgeInsets.all(10),
+                border: OutlineInputBorder(),
+                hintStyle: TextStyle(fontSize: 16),
+              ),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(
-              height: 45,
+              height: 15,
             ),
             FilledButton(
               style: FilledButton.styleFrom(

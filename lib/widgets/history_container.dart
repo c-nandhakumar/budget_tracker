@@ -15,7 +15,7 @@ class HistoryContainer extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(5)),
           color: Theme.of(context).colorScheme.secondary),
-      height: SizeConfig.height! * 13,
+      height: SizeConfig.height! * 13.75,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -42,7 +42,7 @@ class HistoryContainer extends StatelessWidget {
                   ),
                   Text(
                     "$date",
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         fontWeight: FontWeight.w400,
                         color: const Color(0xff808080)),
                   )
