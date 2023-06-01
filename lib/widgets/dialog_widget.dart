@@ -6,9 +6,7 @@ import 'package:budget_app/common/screen_size.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../models/budget_model.dart';
 import '../provider/app_provider.dart';
 
 class DialogWidget extends StatefulWidget {
@@ -24,6 +22,7 @@ class _DialogWidgetState extends State<DialogWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final mainprovider = Provider.of<BackEndProvider>(context);
     Future createBudget() async {
       String budgetname = _namecontroller.text;
@@ -45,7 +44,6 @@ class _DialogWidgetState extends State<DialogWidget> {
         );
         print("BudgetCreation ${res.body}");
         Navigator.of(context).pop();
-        // ignore: use_build_context_synchronously
         final provider = Provider.of<BackEndProvider>(context, listen: false);
         await getBudgetData(provider);
         // if (provider.selectedBudgetIndex != null) {
@@ -62,13 +60,13 @@ class _DialogWidgetState extends State<DialogWidget> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            content: Text("Please Enter the budget name and amount"),
+            content: const Text("Please Enter the budget name and amount"),
             actions: [
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text("OK"))
+                  child: const Text("OK"))
             ],
           ),
         );

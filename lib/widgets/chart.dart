@@ -37,6 +37,7 @@ class _ChartWidgetState extends State<ChartWidget> {
     if (provider.budget != null && provider.budget!.budgets.isNotEmpty) {
       var maximum = 0;
       int index = -1;
+      // ignore: unused_local_variable
       int selectedIndex = 0;
       data = [
         ...provider.budget!.budgets.map((e) {
@@ -103,8 +104,8 @@ class _ChartWidgetState extends State<ChartWidget> {
         ),
       );
     } else {
-      return Padding(
-        padding: const EdgeInsets.all(16.0),
+      return const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Center(child: Text("Add a Budget to display the chart")),
       );
     }

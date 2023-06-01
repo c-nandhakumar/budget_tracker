@@ -1,5 +1,8 @@
 import 'package:flutter/widgets.dart';
 
+
+///Used to get the size of the mobile device
+///Useful for Responsiveness
 class SizeConfig {
   static MediaQueryData? _mediaQueryData;
   static double? screenWidth;

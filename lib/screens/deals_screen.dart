@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
 
 import '../common/screen_size.dart';
@@ -24,14 +22,14 @@ class _DealsScreenState extends State<DealsScreen> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.secondary,
             toolbarHeight: SizeConfig.height! * 10,
-            title: SearchBarWidget(),
+            title: const SearchBarWidget(),
             leading: IconButton(
-              icon: Icon(Icons.chevron_left),
+              icon: const Icon(Icons.chevron_left),
               onPressed: () {
                 provider.setBottomNavIndex(0);
               },
             ),
-            bottom: PreferredSize(
+            bottom: const PreferredSize(
               preferredSize: Size.fromHeight(30),
               child: TabBar(
                 indicatorSize: TabBarIndicatorSize.tab,
@@ -49,13 +47,15 @@ class _DealsScreenState extends State<DealsScreen> {
           body: TabBarView(
             children: [
               Center(
+                // ignore: avoid_unnecessary_containers
                 child: Container(
-                  child: Text("Deals"),
+                  child: const Text("Deals"),
                 ),
               ),
               Center(
+                // ignore: avoid_unnecessary_containers
                 child: Container(
-                  child: Text("Subscription"),
+                  child: const Text("Subscription"),
                 ),
               )
             ],

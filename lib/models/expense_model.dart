@@ -6,6 +6,7 @@ List<Expenses> expensesFromJson(String str) =>
 String expensesToJson(List<Expenses> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+/// This class is used to convert the JSON data into Dart Objects 
 class Expenses {
   String expenseid;
   String userid;

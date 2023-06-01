@@ -16,7 +16,7 @@ class LoginAndSignupBtn extends StatelessWidget {
       children: [
         Hero(
           tag: "login_btn",
-          child: Container(
+          child: SizedBox(
             width: SizeConfig.width! * 90,
             child: ElevatedButton(
               onPressed: () {
@@ -24,23 +24,23 @@ class LoginAndSignupBtn extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return LoginScreen();
+                      return const LoginScreen();
                     },
                   ),
                 );
               },
-              child: Text(
-                "Login".toUpperCase(),
-              ),
               style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
                   elevation: 0),
+              child: Text(
+                "Login".toUpperCase(),
+              ),
             ),
           ),
         ),
         const SizedBox(height: 16),
-        Container(
+        SizedBox(
           width: SizeConfig.width! * 90,
           child: ElevatedButton(
             onPressed: () {
@@ -48,7 +48,7 @@ class LoginAndSignupBtn extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return SignUpScreen();
+                    return const SignUpScreen();
                   },
                 ),
               );
@@ -57,7 +57,7 @@ class LoginAndSignupBtn extends StatelessWidget {
                 backgroundColor: kPrimaryLightColor, elevation: 0),
             child: Text(
               "Sign Up".toUpperCase(),
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
           ),
         ),

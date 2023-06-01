@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-import '../../../utility/constants.dart';
-import '../../../utility/responsive.dart';
 import '../../components/background.dart';
 import 'components/sign_up_top_image.dart';
 import 'components/signup_form.dart';
-import 'components/socal_sign_up.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Background(
         // child: SingleChildScrollView(
         //   child: Responsive(
         //     mobile:
 
-        child: const MobileSignupScreen(),
+        child: MobileSignupScreen(),
         //     desktop: Row(
         //       children: [
         //         const Expanded(

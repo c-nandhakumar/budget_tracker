@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:jovial_svg/jovial_svg.dart';
 
 import '../../../utility/constants.dart';
 
@@ -20,20 +19,20 @@ class WelcomeImage extends StatelessWidget {
               .titleLarge!
               .copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: defaultPadding * 2),
+        const SizedBox(height: defaultPadding * 2),
         Row(
           children: [
-            Spacer(),
+            const Spacer(),
             Expanded(
               flex: 8,
               child: SvgPicture.asset(
                 "assets/icons/chat.svg",
               ),
             ),
-            Spacer(),
+            const Spacer(),
           ],
         ),
-        SizedBox(height: defaultPadding * 2),
+        const SizedBox(height: defaultPadding * 2),
       ],
     );
   }

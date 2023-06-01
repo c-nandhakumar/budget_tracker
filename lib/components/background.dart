@@ -15,6 +15,7 @@ class Background extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      // ignore: sized_box_for_whitespace
       body: Container(
         width: double.infinity,
         height: MediaQuery.of(context).size.height,

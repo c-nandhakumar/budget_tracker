@@ -4,11 +4,8 @@ import 'package:budget_app/widgets/category_dialog.dart';
 import 'package:budget_app/widgets/category_grid.dart';
 import 'package:budget_app/widgets/date_remaining_container.dart';
 import 'package:budget_app/widgets/dialog_widget.dart';
-import 'package:budget_app/widgets/flipcard_widget.dart';
 import 'package:budget_app/widgets/remaining_container_widget.dart';
-import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/drop_down_widget.dart';
@@ -34,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             showDialog(
-                context: context, builder: (context) => CategoryDialog());
+                context: context, builder: (context) => const CategoryDialog());
           },
           backgroundColor: Theme.of(context).colorScheme.primary,
           child: const Icon(
@@ -47,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
             toolbarHeight: SizeConfig.height! * 12,
             title:
                 provider.budget != null && provider.budget!.budgets.isNotEmpty
-                    ? DropDownWidget()
+                    ? const DropDownWidget()
                     : Text(
                         "Tap the \"+\" Icon to add the budget >>>",
                         style: Theme.of(context).textTheme.labelSmall,
@@ -63,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   onPressed: () {
                     showDialog(
-                        context: context, builder: (context) => DialogWidget());
+                        context: context, builder: (context) => const DialogWidget());
                   },
                   color: Colors.white,
                   icon: const Icon(Icons.add),
@@ -97,11 +94,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontWeight: FontWeight.bold),
                     ),
                   ),
-                  CategoryGrid(),
+                  const CategoryGrid(),
                 ],
               )
-            : Padding(
-                padding: const EdgeInsets.all(16.0),
+            : const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Center(child: Text("Add a Budget to display the chart")),
               ));
   }

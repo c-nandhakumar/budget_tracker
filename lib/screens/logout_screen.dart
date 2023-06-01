@@ -35,6 +35,7 @@ class _LogoutScreenState extends State<LogoutScreen> {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Text(
+              // ignore: prefer_if_null_operators
               "${user?.email != null ? user?.email : "Email"} ${user?.displayName != null ? user?.displayName : "User"}",
               style: Theme.of(context)
                   .textTheme
@@ -55,7 +56,7 @@ class _LogoutScreenState extends State<LogoutScreen> {
               // context.read<BackEndProvider>().setUserId();
               AppProviders.disposeAllDisposableProviders(context);
               Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (context) => WelcomeScreen(),
+                builder: (context) => const WelcomeScreen(),
               ));
             },
             child: Text(

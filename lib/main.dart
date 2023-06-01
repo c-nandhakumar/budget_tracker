@@ -1,8 +1,6 @@
-import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:budget_app/screens/Welcome/welcome_screen.dart';
 import 'package:budget_app/screens/bottomnavigation.dart';
-import 'package:budget_app/screens/home_screen.dart';
 import 'package:budget_app/services/firebase_auth_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,7 +40,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Inter',
             textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Inter'),
             useMaterial3: true),
-        home: AuthWrapper(),
+        home: const AuthWrapper(),
       ),
     );
   }
@@ -55,10 +53,10 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
     if (firebaseUser != null) {
-      return BottomNavBar();
+      return const BottomNavBar();
     } else {
       
-      return WelcomeScreen();
+      return const WelcomeScreen();
     }
   }
 }

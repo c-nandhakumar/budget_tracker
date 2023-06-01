@@ -43,10 +43,10 @@ class _DateRemainingContainerState extends State<DateRemainingContainer> {
                   .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 12.0),
               child: Text(
                 remainingDays.toString(),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
@@ -54,8 +54,9 @@ class _DateRemainingContainerState extends State<DateRemainingContainer> {
             ),
             Text(
               "Days remaining",
-              style: Theme.of(context).textTheme.titleSmall!.copyWith(
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Colors.white,
+                    fontWeight: FontWeight.w500,
                   ),
             ),
           ],

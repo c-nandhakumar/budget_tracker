@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+/// This Widget is used in the History Screen
+/// This Enables the user to Swipe and Delete the History Content
 class SwipableCard extends StatefulWidget {
   const SwipableCard({super.key});
 
@@ -15,20 +17,12 @@ class _SwipableCardState extends State<SwipableCard> {
   late Future<String> expenses;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     expenses = getExpenses(provider);
     print("Fired init State");
   }
 
-  // final List<Map<String, String>> historyList = [
-  //   {"name": "Food", "cost": "\$160", "date": "May 02"},
-  //   {"name": "Rent", "cost": "\$160", "date": "May 02"},
-  //   {"name": "Gas", "cost": "\$160", "date": "May 02"},
-  //   {"name": "Travel", "cost": "\$160", "date": "May 02"},
-  //   {"name": "Food", "cost": "\$160", "date": "May 01"}
-  // ];
   List<Map<String, String>> historyList = [];
 
   @override
@@ -39,6 +33,9 @@ class _SwipableCardState extends State<SwipableCard> {
         if (snapshot.hasData) {
           historyList = [];
           final provider = Provider.of<BackEndProvider>(context);
+
+          /// The below implementation is used to sort the expenses based on the date and time
+          /// and it is stored inside the *[historyList]*
           if (provider.expenses != null) {
             provider.expenses!.sort(
                 (a, b) => b.expensetransaction.compareTo(a.expensetransaction));
@@ -55,6 +52,9 @@ class _SwipableCardState extends State<SwipableCard> {
                 "expenseId": element.expenseid,
               });
             }
+
+            ///To have a check whether the historyList is empty or not and display
+            ///the widget accordingly
             if (historyList.isNotEmpty) {
               print("Deleted and Triggered");
               print(historyList);
@@ -79,13 +79,16 @@ class _SwipableCardState extends State<SwipableCard> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(10),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 25),
                                     child: Text(
                                       "Delete",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
-                                          .copyWith(color: Colors.white),
+                                          .copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
                                     ),
                                   )
                                 ],
@@ -99,13 +102,16 @@ class _SwipableCardState extends State<SwipableCard> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.all(10),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 25),
                                     child: Text(
                                       "Delete",
                                       style: Theme.of(context)
                                           .textTheme
                                           .bodyLarge!
-                                          .copyWith(color: Colors.white),
+                                          .copyWith(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
                                     ),
                                   )
                                 ],
@@ -120,6 +126,7 @@ class _SwipableCardState extends State<SwipableCard> {
                             //   // historyList.removeAt(index);
                             // });
 
+                            // ignore: use_build_context_synchronously
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
                                   '${item['budgetname']} - ${item['name']} : ${item['cost']}  deleted'),
@@ -134,23 +141,33 @@ class _SwipableCardState extends State<SwipableCard> {
                           )),
                     );
                   });
-            } else {
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
+            }
+
+            ///when there is no data in the historyList, then this fallback UI will be displayed
+            ///for the existing user, who have cleared all the data in the historyList
+            else {
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Center(
                     child: Text(
                         "No Transactions Yet. To add transaction, Flip the category card and add the expenses")),
               );
             }
-          } else {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
+          }
+
+          ///this fallback UI will be displayed for the initial User
+          else {
+            return const Padding(
+              padding: EdgeInsets.all(16.0),
               child: Center(
                   child: Text(
                       "No Transactions Yet. To add transaction, Flip the category card and add the expenses")),
             );
           }
-        } else {
+        }
+
+        /// UI for Loading State
+        else {
           return const Center(child: CircularProgressIndicator());
         }
       },

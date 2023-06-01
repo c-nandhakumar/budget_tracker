@@ -8,10 +8,14 @@ import 'dart:convert';
 
 import '../models/expense_model.dart';
 
+// ignore: constant_identifier_names
 const SERVER_URL =
     "http://ec2-3-110-68-255.ap-south-1.compute.amazonaws.com:8000";
 // const USER_ID = 'gCyuWfM3TuYcx71B3Za99qQjeRz2';
 
+///This class is useful for resetting the state to its initial snapshot
+///which is getting it back to initial value for the new user
+///this gets triggered when signing out
 abstract class DisposableProvider with ChangeNotifier {
   void disposeValues();
 }
@@ -31,12 +35,16 @@ class AppProviders {
   }
 }
 
+///This will act as the Global State for the Application
+///All data are transferred from this store
 class BackEndProvider extends DisposableProvider {
   String getServerUrl() {
     return SERVER_URL;
   }
 
   String jwt = "";
+
+  ///This will store the current userid, which is used later
   String userId = FirebaseAuth.instance.currentUser!.uid;
   String getUserId() {
     return userId;
@@ -47,8 +55,9 @@ class BackEndProvider extends DisposableProvider {
     notifyListeners();
   }
 
+  ///This is used to set the bottomnavigationindex to zero whenever the user taps
+  ///the back button in the history screen, insights screen
   int bottomnavIndex = 0;
-
   void setBottomNavIndex(int index) {
     bottomnavIndex = index;
     notifyListeners();
@@ -58,6 +67,7 @@ class BackEndProvider extends DisposableProvider {
   List<Categories>? categories;
   List<Expenses>? expenses;
 
+  ///Returns the budget value
   Future<Budget> getBudget() {
     return budget as Future<Budget>;
   }
@@ -69,22 +79,29 @@ class BackEndProvider extends DisposableProvider {
   String? selectedInsights;
   int? selectedBudgetIndex;
 
+  ///This will store the selected budget, this will be
+  ///used to display it in the homepage appbar
   void setSelectedBudget(String selectedBudget) {
     this.selectedBudget = selectedBudget;
     selectedInsights = selectedBudget;
     notifyListeners();
   }
 
+  ///This will selected value from the insights page to the selectedInsights
+  ///(i.e)When the user taps on the below label in the bar chart this will be triggered
   void setSelectedInsights(String selectedText) {
     selectedInsights = selectedText;
     notifyListeners();
   }
 
+  ///This will store the selected budget index, used later to
+  ///fetch the budget and the category and the total details
   void setSelectedIndex(int index) {
     selectedBudgetIndex = index;
     notifyListeners();
   }
 
+//Stores the Raw data (i.e) the total json string
   void setRawData(data) {
     categoriesPriceJson = data;
     notifyListeners();
@@ -93,6 +110,9 @@ class BackEndProvider extends DisposableProvider {
   int total = 0;
   int balance = 0;
   int budgetAmount = 0;
+
+  ///This will retrieve the balance based on the given index
+  ///As a result it will be stored in the Cost Remaining Container in the Home page
   void getBalance(int index) {
     print("Budget : ${budget!.budgets[index].budgetamount}");
     print("Total : $total");
@@ -101,11 +121,14 @@ class BackEndProvider extends DisposableProvider {
     notifyListeners();
   }
 
+  ///Sets the total value, which is the total (sum of the spent categories price)
   void setTotal(int total) {
     this.total = total;
     notifyListeners();
   }
 
+  ///Sets the list of budgetnames from the payload
+  ///Stores the json value as dart object in the [budget]
   void setBudgets(String payload) {
     budget = budgetFromJson(payload);
     if (budget!.budgets.isNotEmpty) {
@@ -118,6 +141,7 @@ class BackEndProvider extends DisposableProvider {
     notifyListeners();
   }
 
+  ///This will set the List of Category names into [categories]
   void setCategories(String payload) {
     if (payload.isNotEmpty) {
       categories = categoriesFromJson(payload);
@@ -127,6 +151,8 @@ class BackEndProvider extends DisposableProvider {
     }
   }
 
+  ///This will set the Every budget's total spent cost and the history of data
+  ///which is then filtered based on the requirement
   void setExpenses(String payload) {
     if (payload.isNotEmpty) {
       expenses = expensesFromJson(payload);
@@ -136,6 +162,9 @@ class BackEndProvider extends DisposableProvider {
     }
   }
 
+  ///Resets all the values to its initial State
+  ///Triggered when the existing user logout
+  ///Resets the memory and makes new memory for the new User;
   @override
   void disposeValues() {
     bottomnavIndex = 0;
@@ -154,6 +183,13 @@ class BackEndProvider extends DisposableProvider {
   }
 }
 
+///This Function is used to send POST request to the server
+///Endpoint "/user" [POST]
+///When the new user is created this function is invoked
+///the request body contains
+///uid ==> Generated from Firebase
+///email ==> Given by user
+///displayName ==> Given by user
 Future<void> postUser() async {
   final email = FirebaseAuth.instance.currentUser!.email;
   final uid = FirebaseAuth.instance.currentUser!.uid;
@@ -175,6 +211,8 @@ Future<void> postUser() async {
   }
 }
 
+///This function is used to send GET request to the server
+///Endpoint "/budgets/user/:userid" [GET]
 Future<String> getBudgetData(BackEndProvider provider) async {
   print("Backend===> ${FirebaseAuth.instance.currentUser!.uid}");
   print(provider.getUserId());
@@ -195,6 +233,9 @@ Future<String> getBudgetData(BackEndProvider provider) async {
   return "";
 }
 
+///This function is used to send GET request to the server
+///Endpoint "/expenses/total-by-category/:budgetname/:userid" [GET]
+///This will retrieve the data and stores it in the provider
 Future<String> getTotal(
     BackEndProvider provider, String budgetname, int index) async {
   print("Backend Total===> ${provider.getUserId()}");
@@ -230,6 +271,8 @@ Future<String> getTotal(
   return "";
 }
 
+///This function is used to send GET request to the server
+///Endpoint "/categories/user/:userid" [GET]
 Future<String> getCategories(BackEndProvider provider) async {
   var res = await http.get(Uri.parse(
       "$SERVER_URL/categories/user/${FirebaseAuth.instance.currentUser!.uid}"));
@@ -255,6 +298,8 @@ Future<String> getCategories(BackEndProvider provider) async {
   return "";
 }
 
+///This function is used to send GET request to the server
+///Endpoint "/expenses/user/:userid" [GET]
 Future<String> getExpenses(BackEndProvider provider) async {
   var res = await http.get(Uri.parse(
       "$SERVER_URL/expenses/user/${FirebaseAuth.instance.currentUser!.uid}"));
@@ -280,6 +325,8 @@ Future<String> getExpenses(BackEndProvider provider) async {
   return "";
 }
 
+///This function is used to send DELETE request to the server
+///Endpoint "/expenses/:expenseId" [DELETE]
 Future<String> deleteExpenses(
     String expenseId, BackEndProvider provider) async {
   var res = await http.delete(

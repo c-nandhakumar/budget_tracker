@@ -28,21 +28,23 @@ class HistoryContainer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${budgetname}",
+                    "$budgetname",
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        fontWeight: FontWeight.w500, color: Color(0xff808080)),
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xff808080)),
                   ),
                   Text(
-                    "${name}",
+                    "$name",
                     style: Theme.of(context)
                         .textTheme
                         .headlineSmall!
                         .copyWith(fontWeight: FontWeight.w600),
                   ),
                   Text(
-                    "${date}",
+                    "$date",
                     style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        fontWeight: FontWeight.w400, color: Color(0xff808080)),
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xff808080)),
                   )
                 ],
               ),
@@ -50,7 +52,7 @@ class HistoryContainer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Text(
-                "${cost}",
+                "\$$cost",
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!

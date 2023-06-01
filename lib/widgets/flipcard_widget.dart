@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:budget_app/provider/app_provider.dart';
@@ -22,7 +23,6 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
   TextEditingController? amountController;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = FlipCardController();
     amountController = TextEditingController();
@@ -30,7 +30,6 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     amountController!.dispose();
   }
@@ -43,8 +42,9 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
     Future<void> addAmount(String budgetname) async {
       final expensecost = amountController!.text;
       String time = DateTime.now().toIso8601String();
-      print("----Budget Name---- ${budgetname}");
+      print("----Budget Name---- $budgetname");
       if (expensecost.isNotEmpty) {
+        // ignore: unused_local_variable
         var res = await http.post(
           Uri.parse("$SERVER_URL/expenses"),
           headers: {
@@ -65,13 +65,13 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            content: Text("Please Enter the Expense"),
+            content: const Text("Please Enter the Expense"),
             actions: [
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: Text("OK"))
+                  child: const Text("OK"))
             ],
           ),
         );
@@ -112,12 +112,15 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
                 "${widget.cost}",
                 style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: Color.fromARGB(255, 113, 113, 113)),
+                    color: const Color.fromARGB(255, 113, 113, 113)),
               ),
             ),
           ],
         ),
       ),
+
+      /// This property displays the back side of the card
+      /// This has an input field to add the expense value to a particular category
       back: Container(
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
@@ -136,12 +139,13 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
             ),
             // ignore: prefer_const_constructors
             Padding(
-              padding: const EdgeInsets.only(top: 8.0),
+              padding: const EdgeInsets.only(top: 6.0, left: 20.0, right: 20.0),
               child: TextField(
                 textAlign: TextAlign.center,
                 controller: amountController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
+                  hintText: "\$0",
                   isDense: true,
                   contentPadding:
                       EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -176,6 +180,14 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
           ],
         ),
       ),
+
+      onFlip: () {
+        if (_controller.state!.isFront) {
+          Timer(const Duration(seconds: 10), () {
+            _controller.toggleCard();
+          });
+        }
+      },
     );
   }
 }

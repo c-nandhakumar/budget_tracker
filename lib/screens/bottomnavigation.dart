@@ -1,6 +1,5 @@
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:budget_app/screens/Login/login_screen.dart';
-import 'package:budget_app/screens/deals_screen.dart';
 import 'package:budget_app/screens/history_screen.dart';
 import 'package:budget_app/screens/home_screen.dart';
 import 'package:budget_app/screens/insights_screen.dart';
@@ -33,7 +32,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       HomeScreen(),
       HistoryScreen(),
       InsightsScreen(),
-      DealsScreen(),
+      // DealsScreen(),
       LogoutScreen()
     ];
     print("Triggered");
@@ -42,7 +41,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         future: getBudgetDataStr,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -52,11 +51,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
           }
           if (snapshot.hasError) {
             print(snapshot);
-            return Center(
+            return const Center(
               child: Text("Oops , Something went wrong"),
             );
           } else {
-            return LoginScreen();
+            return const LoginScreen();
           }
         },
       ),
@@ -88,11 +87,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   Icons.insights,
                 ),
                 label: ""),
-            const BottomNavigationBarItem(
-                icon: Icon(
-                  Icons.monetization_on,
-                ),
-                label: ""),
+            // const BottomNavigationBarItem(
+            //     icon: Icon(
+            //       Icons.monetization_on,
+            //     ),
+            //     label: ""),
             const BottomNavigationBarItem(
                 icon: Icon(
                   Icons.logout,
@@ -100,7 +99,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 label: "")
           ],
           onTap: (value) {
-            print("Tapped ${value}");
+            print("Tapped $value");
             provider.setBottomNavIndex(value);
             // setState(() {
             //   index = value;

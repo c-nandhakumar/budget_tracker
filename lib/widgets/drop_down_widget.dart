@@ -1,9 +1,7 @@
 import 'package:budget_app/common/screen_size.dart';
-import 'package:budget_app/models/budget_model.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import "package:http/http.dart" as http;
 
 class DropDownWidget extends StatefulWidget {
   const DropDownWidget({super.key});
@@ -24,7 +22,6 @@ class _DropDownWidgetState extends State<DropDownWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -61,6 +58,7 @@ class _DropDownWidgetState extends State<DropDownWidget> {
           fontWeight: FontWeight.bold),
       onChanged: (String? value) {
         int selectedValueIndex = list.indexOf(value as String);
+        // ignore: unnecessary_cast
         provider.setSelectedBudget(value as String);
 
         provider.setSelectedIndex(selectedValueIndex);

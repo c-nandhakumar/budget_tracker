@@ -4,6 +4,7 @@ List<Categories> categoriesFromJson(String str) => List<Categories>.from(json.de
 
 String categoriesToJson(List<Categories> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
+/// This class is used to convert the JSON data into Dart Objects 
 class Categories {
     String categoryname;
     DateTime categorycreated;

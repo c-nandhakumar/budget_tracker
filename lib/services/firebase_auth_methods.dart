@@ -9,10 +9,14 @@ class FirebaseAuthMethods {
   // ignore: unused_element
   User get _user => _auth.currentUser!;
 
-  //state persistence
+  ///STATE PERSISTENCE
+  ///this is used to persist the AUTH STATE
+  ///whether there is a user logged in or logged out
   Stream<User?> get authState => FirebaseAuth.instance.authStateChanges();
 
-  //email signup
+  ///EMAIL SIGNUP
+  ///This function will make a new user with password 
+  ///and also it triggers the email verification too
   Future<UserCredential?> signUpWithEmail(
       {required email,
       required password,
@@ -29,7 +33,8 @@ class FirebaseAuthMethods {
     return null;
   }
 
-  //email login
+  ///EMAIL LOGIN
+  ///This function is used to Login to the account
   Future<UserCredential?> loginWithEmail(
       {required email,
       required password,
@@ -49,7 +54,9 @@ class FirebaseAuthMethods {
     return null;
   }
 
-  //email verification
+  ///EMAIL VERIFICATION
+  ///Email verification will be sent to the new users as well as the existing users
+  ///who're not verified yet
   Future<void> sendEmailVerification(BuildContext context) async {
     try {
       await _auth.currentUser!.sendEmailVerification();
@@ -60,7 +67,8 @@ class FirebaseAuthMethods {
     }
   }
 
-  //sign out
+  ///SIGN OUT 
+  ///This function will trigger a signout request to the firebase
   Future<void> signOut(BuildContext context) async {
     try {
       await _auth.signOut();

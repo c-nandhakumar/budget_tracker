@@ -20,8 +20,12 @@ class _CategoryDialogState extends State<CategoryDialog> {
 
   Future createCategory(String budgetname, BackEndProvider provider) async {
     String categoryname = _namecontroller.text;
+    // ignore: unused_local_variable
     String expensecost = _costcontroller.text;
     String time = DateTime.now().toIso8601String();
+
+    ///POST request to add the Category name
+    ///Endpoint /categories [POST]
     if (categoryname.isNotEmpty) {
       var categoryres = await http.post(Uri.parse("$SERVER_URL/categories"),
           headers: {
@@ -35,18 +39,19 @@ class _CategoryDialogState extends State<CategoryDialog> {
           }));
       getCategories(provider);
       print(categoryres.body);
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
     } else {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          content: Text("Please Enter the category name"),
+          content: const Text("Please Enter the category name"),
           actions: [
             ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text("OK"))
+                child: const Text("OK"))
           ],
         ),
       );
@@ -82,10 +87,10 @@ class _CategoryDialogState extends State<CategoryDialog> {
     print(provider.selectedBudget);
     return Dialog(
       child: Container(
-        height: SizeConfig.height! * 42.5,
+        height: SizeConfig.height! * 25.5,
         width: SizeConfig.width! * 90,
-        padding: EdgeInsets.symmetric(horizontal: 36),
-        decoration: BoxDecoration(),
+        padding: const EdgeInsets.symmetric(horizontal: 36),
+        decoration: const BoxDecoration(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +104,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
             TextField(
                 controller: _namecontroller,
                 decoration:
-                    InputDecoration(hintStyle: TextStyle(fontSize: 16))),
+                    const InputDecoration(hintStyle: TextStyle(fontSize: 16))),
             const SizedBox(
               height: 30,
             ),

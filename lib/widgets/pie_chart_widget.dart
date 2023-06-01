@@ -4,7 +4,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../common/screen_size.dart';
 import '../provider/app_provider.dart';
-
+///This widget displays the Pie chart 
 class PieChartWidget extends StatefulWidget {
   const PieChartWidget({super.key});
 
@@ -16,7 +16,6 @@ class _PieChartWidgetState extends State<PieChartWidget> {
   late Future<String> expenses;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     expenses = getExpenses(provider);
@@ -32,7 +31,10 @@ class _PieChartWidgetState extends State<PieChartWidget> {
             // getTotal(provider, provider.selectedBudget!, provider.selectedBudgetIndex);
             final recentMap = {};
 
+            ///This function sums up all the category values and store it in
+            ///a single category of the budget 
             if (provider.expenses != null) {
+              // ignore: avoid_function_literals_in_foreach_calls
               provider.expenses!.forEach((e) {
                 print("Selected budget ======> ${provider.selectedBudget}");
                 if (e.budgetname == provider.selectedInsights) {
@@ -48,6 +50,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
               });
               List<Data> data = [];
               int index = 0;
+              ///This would assign different shades of purple color to different categories
               recentMap.forEach(
                 (key, value) {
                   data.add(Data(key, value, getShadeOfPurple(index),
@@ -89,7 +92,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                                           fontSize: 12,
                                           fontWeight: FontWeight.w500)),
                                   dataLabelMapper: (Data data, _) =>
-                                      '${data.category}',
+                                      data.category,
                                 ),
                               ],
                             ),
@@ -141,8 +144,8 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                       ),
               ]);
             } else {
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Center(
                     child: Text(
                         "No Transactions Yet. To add transaction, Flip the category card and add the expenses")),

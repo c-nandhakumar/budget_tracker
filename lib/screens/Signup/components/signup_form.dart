@@ -1,9 +1,7 @@
 import 'package:budget_app/screens/bottomnavigation.dart';
-import 'package:budget_app/screens/home_screen.dart';
 import 'package:budget_app/services/firebase_auth_methods.dart';
 import 'package:budget_app/utility/showsnackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +28,6 @@ class _SignUpFormState extends State<SignUpForm> {
   bool isNotVisible = true;
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     emailController.dispose();
     passwordController.dispose();
@@ -49,13 +46,15 @@ class _SignUpFormState extends State<SignUpForm> {
             .updateDisplayName(displayNameController.text);
         await postUser();
       } on FirebaseAuthException catch (e) {
+        // ignore: use_build_context_synchronously
         showSnackBar(context, e.message.toString());
       }
 
       // ignore: use_build_context_synchronously
       if (value != null) {
+        // ignore: use_build_context_synchronously
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => BottomNavBar(),
+          builder: (context) => const BottomNavBar(),
         ));
       }
     }
@@ -74,10 +73,10 @@ class _SignUpFormState extends State<SignUpForm> {
               textInputAction: TextInputAction.next,
               cursorColor: kPrimaryColor,
               onSaved: (email) {},
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Your name",
                 prefixIcon: Padding(
-                  padding: const EdgeInsets.all(defaultPadding),
+                  padding: EdgeInsets.all(defaultPadding),
                   child: Icon(Icons.person),
                 ),
               ),
@@ -91,10 +90,10 @@ class _SignUpFormState extends State<SignUpForm> {
               textInputAction: TextInputAction.next,
               cursorColor: kPrimaryColor,
               onSaved: (email) {},
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: "Your email",
                 prefixIcon: Padding(
-                  padding: const EdgeInsets.all(defaultPadding),
+                  padding: EdgeInsets.all(defaultPadding),
                   child: Icon(Icons.mail),
                 ),
               ),
@@ -109,8 +108,8 @@ class _SignUpFormState extends State<SignUpForm> {
               cursorColor: kPrimaryColor,
               decoration: InputDecoration(
                   hintText: "Your password",
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.all(defaultPadding),
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.all(defaultPadding),
                     child: Icon(Icons.lock),
                   ),
                   suffixIcon: InkWell(
@@ -120,8 +119,8 @@ class _SignUpFormState extends State<SignUpForm> {
                     child: Padding(
                       padding: const EdgeInsets.all(defaultPadding),
                       child: isNotVisible
-                          ? Icon(Icons.remove_red_eye_outlined)
-                          : Icon(
+                          ? const Icon(Icons.remove_red_eye_outlined)
+                          : const Icon(
                               Icons.remove_red_eye,
                               color: Colors.blue,
                             ),
@@ -130,6 +129,7 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
           ),
           const SizedBox(height: defaultPadding / 2),
+          // ignore: sized_box_for_whitespace
           Container(
             width: SizeConfig.width! * 90,
             child: ElevatedButton(
@@ -145,7 +145,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return LoginScreen();
+                    return const LoginScreen();
                   },
                 ),
               );

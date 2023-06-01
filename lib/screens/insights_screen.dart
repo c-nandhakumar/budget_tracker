@@ -1,3 +1,4 @@
+// ignore: unused_import
 import 'package:budget_app/widgets/recents_container.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,9 +46,9 @@ class _InsightsScreenState extends State<InsightsScreen> {
         ),
       ),
       body: ListView(children: [
-        ChartWidget(),
+        const ChartWidget(),
         (provider.budget != null && provider.budget!.budgets.isNotEmpty)
-            ? PieChartWidget()
+            ? const PieChartWidget()
             : Container(),
       ]),
     );

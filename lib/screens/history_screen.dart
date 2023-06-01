@@ -19,7 +19,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.chevron_left),
+          icon: const Icon(Icons.chevron_left),
           onPressed: () {
             provider.setBottomNavIndex(0);
           },
@@ -33,7 +33,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               fontWeight: FontWeight.bold),
         ),
       ),
-      body: SwipableCard(),
+      body: const SwipableCard(),
     );
   }
 }

@@ -16,7 +16,6 @@ class _CategoryGridState extends State<CategoryGrid> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     categories = getCategories(provider);
@@ -37,10 +36,12 @@ class _CategoryGridState extends State<CategoryGrid> {
                   provider.categoriesPriceJson;
               Map<String, int> categoriesPriceMap = {};
 
-              //Categories and price mapping
+              ///Categories and price mapping
+              ///Here is where the mapping of the Named Categories and 
+              ///the total sum of expenses of categories under single name takes place here. 
               for (var e in provider.categories!) {
                 categoriesPriceMap.putIfAbsent(e.categoryname, () => 0);
-                if (categoriesPriceJson![e.categoryname] != null) {
+                if (categoriesPriceJson!=null && categoriesPriceJson[e.categoryname] != null) {
                   categoriesPriceMap.update(
                       e.categoryname,
                       (value) =>
@@ -65,12 +66,12 @@ class _CategoryGridState extends State<CategoryGrid> {
                 children: <Widget>[...categoryGrid],
               );
             } else {
-              return Center(
+              return const Center(
                 child: Text("Now, Tap the Below \"+\" Button to add category"),
               );
             }
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         });
   }

@@ -4,6 +4,7 @@ Budget budgetFromJson(String str) => Budget.fromJson(json.decode(str));
 
 String budgetToJson(Budget data) => json.encode(data.toJson());
 
+/// This class is used to convert the JSON data into Dart Objects 
 class Budget {
   User user;
   List<BudgetElement> budgets;
@@ -59,7 +60,6 @@ class BudgetElement {
       };
 }
 
-enum Userid { G_CYU_WF_M3_TU_YCX71_B3_ZA99_Q_QJE_RZ2 }
 
 class User {
   String displayName;
