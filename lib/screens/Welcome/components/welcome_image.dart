@@ -19,20 +19,19 @@ class WelcomeImage extends StatelessWidget {
               .titleLarge!
               .copyWith(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: defaultPadding * 2),
+        const SizedBox(height: defaultPadding * 3),
         Row(
           children: [
             const Spacer(),
             Expanded(
-              flex: 8,
-              child: SvgPicture.asset(
-                "assets/icons/chat.svg",
-              ),
-            ),
+                flex: 6,
+                child: Image(
+                  image: AssetImage("assets/images/welcome_screen_image.png"),
+                )),
             const Spacer(),
           ],
         ),
-        const SizedBox(height: defaultPadding * 2),
+        const SizedBox(height: defaultPadding * 3),
       ],
     );
   }
