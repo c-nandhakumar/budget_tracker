@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../utility/constants.dart';
 
@@ -21,14 +20,14 @@ class WelcomeImage extends StatelessWidget {
         ),
         const SizedBox(height: defaultPadding * 3),
         Row(
-          children: [
-            const Spacer(),
+          children: const [
+            Spacer(),
             Expanded(
                 flex: 6,
                 child: Image(
                   image: AssetImage("assets/images/welcome_screen_image.png"),
                 )),
-            const Spacer(),
+            Spacer(),
           ],
         ),
         const SizedBox(height: defaultPadding * 3),
