@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:budget_app/common/screen_size.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../provider/app_provider.dart';
@@ -116,12 +117,12 @@ class _DialogWidgetState extends State<DialogWidget> {
             ),
             TextField(
               controller: _costcontroller,
-              decoration: const InputDecoration(
-                hintText: "\$0",
+              decoration: InputDecoration(
+                hintText: "${dotenv.get("CURRENCY")}0",
                 isDense: true,
-                contentPadding: EdgeInsets.all(10),
-                border: OutlineInputBorder(),
-                hintStyle: TextStyle(fontSize: 16),
+                contentPadding: const EdgeInsets.all(10),
+                border: const OutlineInputBorder(),
+                hintStyle: const TextStyle(fontSize: 16),
               ),
               keyboardType: TextInputType.number,
             ),

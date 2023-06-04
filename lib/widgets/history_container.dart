@@ -1,5 +1,6 @@
 import 'package:budget_app/common/screen_size.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class HistoryContainer extends StatelessWidget {
   final String? name;
@@ -52,7 +53,7 @@ class HistoryContainer extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(24.0),
               child: Text(
-                "\$$cost",
+                "${dotenv.get("CURRENCY")}$cost",
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!

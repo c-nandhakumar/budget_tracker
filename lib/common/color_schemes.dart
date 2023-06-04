@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
-
-///Color Scheme which corresponds to the App Theme color 
+///Color Scheme which corresponds to the App Theme color
 ///Colors used throughtout the app --> primary, secondary, tertiary
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
+  //Defines the Primary Color
   primary: Color(0xFF7B42B1),
+  //Defines the secondary color
+  secondary: Color(0xFFF0E6FF),
+  //Defines the Tertiary color
+  tertiary: Color(0xFF432063),
   onPrimary: Color(0xFFFFFFFF),
   primaryContainer: Color(0xFFF0DBFF),
   onPrimaryContainer: Color.fromRGBO(44, 0, 80, 1),
-  secondary: Color(0xFFF0E6FF),
   onSecondary: Color(0xFFFFFFFF),
   secondaryContainer: Color(0xFFE9DDFF),
   onSecondaryContainer: Color(0xFF23005C),
-  tertiary: Color(0xFF432063),
+
   onTertiary: Color(0xFFFFFFFF),
   tertiaryContainer: Color(0xFFF1DBFF),
   onTertiaryContainer: Color(0xFF2D0050),

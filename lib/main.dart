@@ -5,12 +5,14 @@ import 'package:budget_app/services/firebase_auth_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'common/color_schemes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await dotenv.load();
   runApp(const MyApp());
 }
 
@@ -55,7 +57,6 @@ class AuthWrapper extends StatelessWidget {
     if (firebaseUser != null) {
       return const BottomNavBar();
     } else {
-      
       return const WelcomeScreen();
     }
   }

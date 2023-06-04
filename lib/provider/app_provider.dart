@@ -2,15 +2,15 @@ import 'package:budget_app/models/budget_model.dart';
 import 'package:budget_app/models/category_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import "package:http/http.dart" as http;
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
 import '../models/expense_model.dart';
 
-// ignore: constant_identifier_names
-const SERVER_URL =
-    "http://ec2-3-110-68-255.ap-south-1.compute.amazonaws.com:8000";
+// ignore: constant_identifier_names, non_constant_identifier_names
+String SERVER_URL = dotenv.get("SERVER_URL");
 // const USER_ID = 'gCyuWfM3TuYcx71B3Za99qQjeRz2';
 
 ///This class is useful for resetting the state to its initial snapshot

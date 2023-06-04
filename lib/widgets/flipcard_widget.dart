@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -139,21 +140,22 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
             ),
             // ignore: prefer_const_constructors
             Padding(
-              padding: const EdgeInsets.only(top: 6.0, left: 20.0, right: 20.0),
+              padding:
+                  const EdgeInsets.only(top: 12.0, left: 20.0, right: 20.0),
               child: TextField(
                 textAlign: TextAlign.center,
                 controller: amountController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  hintText: "\$0",
+                decoration: InputDecoration(
+                  hintText: "${dotenv.get("CURRENCY")}0",
                   isDense: true,
                   contentPadding:
-                      EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                      const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 3.5),
+              padding: const EdgeInsets.only(top: 0),
               child: FilledButton(
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(
@@ -183,7 +185,7 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
 
       onFlip: () {
         if (_controller.state!.isFront) {
-          Timer(const Duration(seconds: 10), () {
+          Timer(const Duration(seconds: 15), () {
             _controller.toggleCard();
           });
         }

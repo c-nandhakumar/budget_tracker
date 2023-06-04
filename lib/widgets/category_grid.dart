@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/app_provider.dart';
@@ -54,7 +55,7 @@ class _CategoryGridState extends State<CategoryGrid> {
               categoriesPriceMap.forEach((key, value) => categoryGrid.add(
                     FlipCardWidget(
                       name: key,
-                      cost: "\$$value",
+                      cost: "${dotenv.get("CURRENCY")}$value",
                     ),
                   ));
               return GridView.count(

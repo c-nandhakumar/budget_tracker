@@ -46,7 +46,7 @@ class _DateRemainingContainerState extends State<DateRemainingContainer> {
               padding: const EdgeInsets.only(top: 12.0),
               child: Text(
                 remainingDays.toString(),
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),

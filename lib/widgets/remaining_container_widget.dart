@@ -1,5 +1,6 @@
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 import '../common/screen_size.dart';
@@ -34,6 +35,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
           final balance = provider.balance;
           final budgetAmount = provider.budgetAmount;
           double percentage = 0;
+
           ///This will find the percentage value so that it can be used to determine the
           ///Color of the container based on its percentage value
           if (budgetAmount > 0 && balance >= 0 && budgetAmount >= balance) {
@@ -62,7 +64,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "\$$balance",
+                    "${dotenv.get("CURRENCY")}$balance",
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         color: Colors.white, fontWeight: FontWeight.w600),
                   ),
@@ -76,7 +78,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
                   Padding(
                     padding: const EdgeInsets.only(top: 12.0),
                     child: Text(
-                      "Budget \$$budgetAmount",
+                      "Budget ${dotenv.get("CURRENCY")}$budgetAmount",
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
