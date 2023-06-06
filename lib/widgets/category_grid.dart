@@ -62,8 +62,8 @@ class _CategoryGridState extends State<CategoryGrid> {
                 shrinkWrap: true,
                 primary: false,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+                crossAxisSpacing: 12.5,
+                mainAxisSpacing: 12.5,
                 crossAxisCount: 3,
                 children: <Widget>[...categoryGrid],
               );

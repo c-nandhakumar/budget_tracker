@@ -71,7 +71,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
                   Text(
                     "Balance",
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w400,
                           color: Colors.white,
                         ),
                   ),
@@ -81,7 +81,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
                       "Budget ${dotenv.get("CURRENCY")}$budgetAmount",
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: Colors.white,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
                           ),
                     ),
                   ),

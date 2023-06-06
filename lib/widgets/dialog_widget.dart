@@ -104,7 +104,7 @@ class _DialogWidgetState extends State<DialogWidget> {
               ),
             ),
             const SizedBox(
-              height: 20,
+              height: 35,
             ),
             Text(
               "Add Budget",

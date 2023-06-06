@@ -92,7 +92,11 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondary,
-            borderRadius: BorderRadius.circular(5)),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                  color: Colors.grey, blurRadius: 4, offset: Offset(-2, 2))
+            ]),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -126,7 +130,11 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondary,
-            borderRadius: BorderRadius.circular(5)),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                  color: Colors.grey, blurRadius: 4, offset: Offset(-2, 2))
+            ]),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,

@@ -14,6 +14,7 @@ class ChartWidget extends StatefulWidget {
 
 class _ChartWidgetState extends State<ChartWidget> {
   late List<_ChartData> data;
+  late List<_ChartData> totalData;
   late TooltipBehavior _tooltip;
 
   @override
@@ -81,6 +82,14 @@ class _ChartWidgetState extends State<ChartWidget> {
               //pointColorMapper: (_ChartData data, _) => data.color,
               name: 'Expense',
               color: Theme.of(context).colorScheme.primary),
+          ColumnSeries<_ChartData, String>(
+              dataSource: [],
+              borderRadius: BorderRadius.circular(3.5),
+              xValueMapper: (_ChartData data, _) => data.x,
+              yValueMapper: (_ChartData data, _) => data.y,
+              //pointColorMapper: (_ChartData data, _) => data.color,
+              name: 'Expense',
+              color: Theme.of(context).colorScheme.inversePrimary),
         ],
       );
 
