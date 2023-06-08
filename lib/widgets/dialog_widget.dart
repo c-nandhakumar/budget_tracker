@@ -104,7 +104,7 @@ class _DialogWidgetState extends State<DialogWidget> {
               ),
             ),
             const SizedBox(
-              height: 35,
+              height: 25,
             ),
             Text(
               "Add Budget",
@@ -127,18 +127,21 @@ class _DialogWidgetState extends State<DialogWidget> {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(
-              height: 15,
+              height: 25,
             ),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0)),
-                minimumSize: Size.zero,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            SizedBox(
+              width: SizeConfig.width! * 100,
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  minimumSize: Size.zero,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                ),
+                onPressed: createBudget,
+                child: const Text("Add"),
               ),
-              onPressed: createBudget,
-              child: const Text("Add"),
             ),
           ],
         ),

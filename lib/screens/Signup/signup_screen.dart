@@ -49,13 +49,13 @@ class MobileSignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return const SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const SignUpScreenTopImage(),
+          SignUpScreenTopImage(),
           Row(
-            children: const [
+            children: [
               Spacer(),
               Expanded(
                 flex: 8,

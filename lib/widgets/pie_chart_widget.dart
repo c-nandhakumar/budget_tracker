@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../common/screen_size.dart';
 import '../provider/app_provider.dart';
-///This widget displays the Pie chart 
+
+///This widget displays the Pie chart
 class PieChartWidget extends StatefulWidget {
   const PieChartWidget({super.key});
 
@@ -29,32 +31,38 @@ class _PieChartWidgetState extends State<PieChartWidget> {
           if (snapshot.hasData) {
             final provider = Provider.of<BackEndProvider>(context);
             // getTotal(provider, provider.selectedBudget!, provider.selectedBudgetIndex);
-            final recentMap = {};
 
             ///This function sums up all the category values and store it in
-            ///a single category of the budget 
+            ///a single category of the budget
+
             if (provider.expenses != null) {
+              final recentMap = {};
               // ignore: avoid_function_literals_in_foreach_calls
               provider.expenses!.forEach((e) {
                 print("Selected budget ======> ${provider.selectedBudget}");
+                print(e.expensecost);
                 if (e.budgetname == provider.selectedInsights) {
+                  if (recentMap.containsKey(e.categoryname)) {
+                    recentMap.update(
+                        e.categoryname, (value) => value += e.expensecost);
+                  }
+
                   recentMap.putIfAbsent(e.categoryname, () => e.expensecost);
-                  recentMap.update(
-                      e.categoryname, (value) => value += e.expensecost);
                 }
               });
-              var total = 0;
+              // var total = 0;
 
-              recentMap.forEach((key, value) {
-                total += value as int;
-              });
+              // recentMap.forEach((key, value) {
+              //   total += value as int;
+              // });
               List<Data> data = [];
               int index = 0;
+
               ///This would assign different shades of purple color to different categories
+              print(recentMap);
               recentMap.forEach(
                 (key, value) {
-                  data.add(Data(key, value, getShadeOfPurple(index),
-                      ((value / total) * 100)));
+                  data.add(Data(key, value, getShadeOfPurple(index), value));
                   index++;
                 },
               );
@@ -103,23 +111,23 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                               //legend: Legend(isVisible: true),
                               series: <CircularSeries>[
                                 PieSeries<Data, String>(
-                                  dataSource: data,
-                                  xValueMapper: (Data data, _) => data.category,
-                                  yValueMapper: (Data data, _) => data.value,
-                                  pointColorMapper: (Data data, _) =>
-                                      data.color,
-                                  dataLabelSettings: const DataLabelSettings(
-                                      isVisible: true,
-                                      labelAlignment:
-                                          ChartDataLabelAlignment.outer,
-                                      labelPosition:
-                                          ChartDataLabelPosition.inside,
-                                      textStyle: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500)),
-                                  dataLabelMapper: (Data data, _) =>
-                                      '${data.percent.toStringAsFixed(2)}%',
-                                ),
+                                    dataSource: data,
+                                    xValueMapper: (Data data, _) =>
+                                        data.category,
+                                    yValueMapper: (Data data, _) => data.value,
+                                    pointColorMapper: (Data data, _) =>
+                                        data.color,
+                                    dataLabelSettings: const DataLabelSettings(
+                                        isVisible: true,
+                                        labelAlignment:
+                                            ChartDataLabelAlignment.outer,
+                                        labelPosition:
+                                            ChartDataLabelPosition.inside,
+                                        textStyle: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500)),
+                                    dataLabelMapper: (Data data, _) =>
+                                        '${dotenv.get("CURRENCY")}${data.percent}'),
                               ],
                             ),
                           ),
@@ -181,7 +189,7 @@ class Data {
   final String category;
   final int value;
   final Color color;
-  final double percent;
+  final int percent;
 
   Data(this.category, this.value, this.color, this.percent);
 }

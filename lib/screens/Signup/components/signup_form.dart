@@ -24,8 +24,12 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final TextEditingController displayNameController = TextEditingController();
   bool isNotVisible = true;
+  bool isConfirmPasswordVisible = true;
+  bool isLoading = false;
   @override
   void dispose() {
     super.dispose();
@@ -34,29 +38,45 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   Future<void> signUpWithEmail() async {
-    if (displayNameController.text.isNotEmpty) {
-      final UserCredential? value = await context
-          .read<FirebaseAuthMethods>()
-          .signUpWithEmail(
-              email: emailController.text,
-              password: passwordController.text,
-              context: context);
-      try {
-        await FirebaseAuth.instance.currentUser!
-            .updateDisplayName(displayNameController.text);
-        await postUser();
-      } on FirebaseAuthException catch (e) {
-        // ignore: use_build_context_synchronously
-        showSnackBar(context, e.message.toString());
-      }
+    if ((passwordController.text.isNotEmpty &&
+            confirmPasswordController.text.isNotEmpty) &&
+        (passwordController.text.isNotEmpty ==
+            confirmPasswordController.text.isNotEmpty)) {
+      if (displayNameController.text.isNotEmpty) {
+        final UserCredential? value = await context
+            .read<FirebaseAuthMethods>()
+            .signUpWithEmail(
+                email: emailController.text,
+                password: passwordController.text,
+                context: context);
 
-      // ignore: use_build_context_synchronously
-      if (value != null) {
+        try {
+          await FirebaseAuth.instance.currentUser!
+              .updateDisplayName(displayNameController.text);
+          await postUser();
+          await createExpenseMethod(
+              emname: "CASH",
+              emdetail: "CASH",
+              emisdefault: true,
+              emshortname: "CASH");
+          // ignore: use_build_context_synchronously
+          final provider = Provider.of<BackEndProvider>(context, listen: false);
+          await getExpenseMethods(provider);
+        } on FirebaseAuthException catch (e) {
+          // ignore: use_build_context_synchronously
+          showSnackBar(context, e.message.toString());
+        }
+
         // ignore: use_build_context_synchronously
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => const BottomNavBar(),
-        ));
+        if (value != null) {
+          // ignore: use_build_context_synchronously
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const BottomNavBar(),
+          ));
+        }
       }
+    } else {
+      showSnackBar(context, "Please enter the same password");
     }
   }
 
@@ -128,13 +148,53 @@ class _SignUpFormState extends State<SignUpForm> {
                   )),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
+            child: TextFormField(
+              controller: confirmPasswordController,
+              textInputAction: TextInputAction.done,
+              obscureText: isNotVisible,
+              cursorColor: kPrimaryColor,
+              decoration: InputDecoration(
+                  hintText: "Confirm password",
+                  prefixIcon: const Padding(
+                    padding: EdgeInsets.all(defaultPadding),
+                    child: Icon(Icons.lock),
+                  ),
+                  suffixIcon: InkWell(
+                    onTap: () => setState(() {
+                      isConfirmPasswordVisible = !isConfirmPasswordVisible;
+                    }),
+                    child: Padding(
+                      padding: const EdgeInsets.all(defaultPadding),
+                      child: isConfirmPasswordVisible
+                          ? const Icon(Icons.remove_red_eye_outlined)
+                          : const Icon(
+                              Icons.remove_red_eye,
+                              color: Colors.blue,
+                            ),
+                    ),
+                  )),
+            ),
+          ),
           const SizedBox(height: defaultPadding / 2),
           // ignore: sized_box_for_whitespace
           Container(
             width: SizeConfig.width! * 90,
             child: ElevatedButton(
-              onPressed: signUpWithEmail,
-              child: Text("Sign Up".toUpperCase()),
+              onPressed: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                await signUpWithEmail();
+                setState(() {
+                  isLoading = false;
+                });
+              },
+              child: isLoading
+                  ? const SizedBox(
+                      height: 10, width: 10, child: CircularProgressIndicator())
+                  : Text("Sign Up".toUpperCase()),
             ),
           ),
           const SizedBox(height: defaultPadding),

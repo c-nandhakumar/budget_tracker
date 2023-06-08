@@ -56,8 +56,8 @@ class _SwipableCardState extends State<SwipableCard> {
             ///To have a check whether the historyList is empty or not and display
             ///the widget accordingly
             if (historyList.isNotEmpty) {
-              print("Deleted and Triggered");
-              print(historyList);
+              // print("Deleted and Triggered");
+              // print(historyList);
               return ListView.separated(
                   separatorBuilder: (context, index) => const SizedBox(
                         height: 12,
@@ -149,29 +149,30 @@ class _SwipableCardState extends State<SwipableCard> {
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 56,
-                      padding: const EdgeInsets.all(10),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(color: Colors.grey, offset: Offset(-4, 4))
-                        ],
-                        color: Colors.white,
-                        border: Border.all(width: 1),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 56,
+                        padding: const EdgeInsets.all(10),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          boxShadow: const [
+                            BoxShadow(color: Colors.grey, offset: Offset(-4, 4))
+                          ],
+                          color: Colors.white,
+                          border: Border.all(width: 1),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(5),
+                          ),
                         ),
+                        child: const Text(
+                            "No Transactions Yet. To add transaction, Flip the category card and add the expenses"),
                       ),
-                      child: const Text(
-                          "No Transactions Yet. To add transaction, Flip the category card and add the expenses"),
-                    ),
-                  ],
-                ),),
+                    ],
+                  ),
+                ),
               );
             }
           }

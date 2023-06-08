@@ -58,7 +58,11 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
             "categoryname": widget.name,
             "expensecost": expensecost,
             "expensetransaction": time,
-            "expensedate": time
+            "expensedate": time,
+            "emname": provider.defaultExpenseMethod!.emname,
+            "emdetail": provider.defaultExpenseMethod!.emdetail,
+            "emshortname": provider.defaultExpenseMethod!.emshortname,
+            "expensenotes": "",
           }),
         );
         //print(res.body);
@@ -192,11 +196,11 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
       ),
 
       onFlip: () {
-        if (_controller.state!.isFront) {
-          Timer(const Duration(seconds: 15), () {
-            _controller.toggleCard();
-          });
-        }
+        // if (!_controller.state!.isFront) {
+        //   Timer(const Duration(seconds: 15), () {
+        //     _controller.toggleCard();
+        //   });
+        // }
       },
     );
   }

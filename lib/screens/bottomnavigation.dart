@@ -28,6 +28,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
+    
     const pages = [
       HomeScreen(),
       HistoryScreen(),

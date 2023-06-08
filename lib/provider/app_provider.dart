@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 
 import '../models/expense_model.dart';
+import '../models/expensemethod_model.dart';
 
 // ignore: constant_identifier_names, non_constant_identifier_names
 String SERVER_URL = dotenv.get("SERVER_URL");
@@ -111,6 +112,16 @@ class BackEndProvider extends DisposableProvider {
   int balance = 0;
   int budgetAmount = 0;
 
+  ///Chart Data Response is stored here
+  ///Due to dynamic mapping of keys it is stored as Map<String,dynamic>
+  Map<String, dynamic> expenseSummary = {};
+
+  ///Expense methods are stored here
+  List<ExpenseMethod> expenseMethods = [];
+
+  ///Default Expense Method
+  ExpenseMethod? defaultExpenseMethod;
+
   ///This will retrieve the balance based on the given index
   ///As a result it will be stored in the Cost Remaining Container in the Home page
   void getBalance(int index) {
@@ -156,10 +167,31 @@ class BackEndProvider extends DisposableProvider {
   void setExpenses(String payload) {
     if (payload.isNotEmpty) {
       expenses = expensesFromJson(payload);
+      print(payload);
       notifyListeners();
     } else {
       expenses = [];
     }
+  }
+
+  ///To set the expense summary
+  void setExpenseSummary(String payload) {
+    expenseSummary = jsonDecode(payload);
+    notifyListeners();
+  }
+
+  ///To set the expense methods
+  void setExpenseMethods(String payload) {
+    expenseMethods = expenseMethodFromJson(payload);
+    for (int i = 0; i < expenseMethods.length; i++) {
+      if (expenseMethods[i].emisdefault) {
+        defaultExpenseMethod = expenseMethods[i];
+        break;
+      }
+    }
+
+    print(defaultExpenseMethod);
+    notifyListeners();
   }
 
   ///Resets all the values to its initial State
@@ -170,7 +202,7 @@ class BackEndProvider extends DisposableProvider {
     bottomnavIndex = 0;
     budget = null;
     categories = null;
-    expenses = null;
+    expenses = [];
     categoriesPriceJson = null;
     categoriesPriceList = [];
 
@@ -180,6 +212,8 @@ class BackEndProvider extends DisposableProvider {
     total = 0;
     balance = 0;
     budgetAmount = 0;
+    expenseSummary = {};
+    expenseMethods = [];
   }
 }
 
@@ -222,6 +256,7 @@ Future<String> getBudgetData(BackEndProvider provider) async {
   if (res.statusCode == 200) {
     print("Success in getting header");
     provider.setBudgets(res.body);
+    await getExpenseMethods(provider);
     return res.body;
   }
   if (res.statusCode == 422) {
@@ -259,7 +294,7 @@ Future<String> getTotal(
   }
   if (res.statusCode == 404) {
     print("There is no expense total");
-    print(res.body);
+    //print(res.body);
     provider.setRawData({"Total": 0});
     provider.setTotal(0);
 
@@ -279,7 +314,7 @@ Future<String> getCategories(BackEndProvider provider) async {
 
   if (res.statusCode == 200) {
     print("Success in getting categories");
-    print(res.body);
+    //print(res.body);
 
     provider.setCategories(res.body);
     // provider.setCategoryPrice();
@@ -325,6 +360,20 @@ Future<String> getExpenses(BackEndProvider provider) async {
   return "";
 }
 
+///To get the Expense Summary
+///Endpoint "/expenses/summary/:userid" [GET]
+Future<String> getSummary(BackEndProvider provider) async {
+  var res = await http.get(Uri.parse(
+      "$SERVER_URL/expenses/summary/${FirebaseAuth.instance.currentUser!.uid}"));
+  print(res.body);
+  if (res.statusCode == 200) {
+    print("Success in getting summary");
+    provider.setExpenseSummary(res.body);
+    return res.body;
+  }
+  return "";
+}
+
 ///This function is used to send DELETE request to the server
 ///Endpoint "/expenses/:expenseId" [DELETE]
 Future<String> deleteExpenses(
@@ -339,4 +388,56 @@ Future<String> deleteExpenses(
     return "Deleted Successfully";
   }
   return "Error Occured!";
+}
+
+///Create the Expense Method [POST]
+///Endpoint "/expensemethod"
+Future<void> createExpenseMethod(
+    {String? emname,
+    String? emdetail,
+    String? emshortname,
+    bool? emisdefault}) async {
+  var res = await http.post(Uri.parse("$SERVER_URL/expensemethod"),
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({
+        "userid": FirebaseAuth.instance.currentUser!.uid,
+        "emname": emname,
+        "emdetail": emdetail,
+        "emshortname": emdetail,
+        "emisdefault": emisdefault,
+        "emcreated": DateTime.now().toIso8601String()
+      }));
+
+  print(res.body);
+}
+
+///To get the expense methods
+///Endpoint "/expensemethods/user/:userid" [GET]
+Future<String> getExpenseMethods(BackEndProvider provider) async {
+  var res = await http.get(Uri.parse(
+      "$SERVER_URL/expensemethods/user/${FirebaseAuth.instance.currentUser!.uid}"));
+
+  if (res.statusCode == 200) {
+    print("Success in getting expensemethods");
+    print(res.body);
+    provider.setExpenseMethods(res.body);
+    return res.body;
+  }
+  return "";
+}
+
+///Changes the default expense method
+///Endpoint "/expensemethods/:emid"
+Future<void> changeDefault(String emid, bool emisdefault) async {
+  var res = await http.post(Uri.parse("$SERVER_URL/expensemethods/$emid"),
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({"emisdefault": emisdefault}));
+
+  print(res.body);
 }

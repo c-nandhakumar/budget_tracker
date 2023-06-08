@@ -16,13 +16,15 @@ class _ChartWidgetState extends State<ChartWidget> {
   late List<_ChartData> data;
   late List<_ChartData> totalData;
   late TooltipBehavior _tooltip;
-
+  late Future<String> expenseSummary;
   @override
   void initState() {
     _tooltip = TooltipBehavior(
       enable: true,
     );
     super.initState();
+    final provider = Provider.of<BackEndProvider>(context, listen: false);
+    expenseSummary = getSummary(provider);
   }
 
   @override
@@ -46,65 +48,90 @@ class _ChartWidgetState extends State<ChartWidget> {
 
       data = data.sublist(0, data.length % 13);
 
-      SfCartesianChart chart = SfCartesianChart(
-        // zoomPanBehavior: ZoomPanBehavior(
-        //   enablePanning: true, // Enable panning
-        //   enablePinching: true, // Enable zooming
-        //   enableDoubleTapZooming: true,
-        //   // Enable double-tap zooming
-        // ),
+      return FutureBuilder(
+          future: expenseSummary,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final provider = Provider.of<BackEndProvider>(context);
+              Map<String, dynamic> expenseSummary = provider.expenseSummary;
 
-        plotAreaBorderWidth: 0,
-        primaryXAxis: CategoryAxis(
-            majorGridLines: const MajorGridLines(width: 0),
-            minorGridLines: const MinorGridLines(width: 0)),
-        primaryYAxis: NumericAxis(
-          minimum: 0,
-          maximum: maximum + 100,
-          interval: maximum / 5,
-          borderColor: const Color.fromARGB(0, 255, 255, 255),
-          majorGridLines: const MajorGridLines(width: 0),
-          minorGridLines: const MinorGridLines(width: 0),
-          //edgeLabelPlacement: EdgeLabelPlacement.shift
-        ),
-        tooltipBehavior: _tooltip,
-        onAxisLabelTapped: (axisLabelTapArgs) {
-          print(axisLabelTapArgs.text);
+              ///Total Amount Spent List [Update]
+              List<TotalSpentData> totalSpentDataList = [];
 
-          provider.setSelectedInsights(axisLabelTapArgs.text);
-        },
-        series: <ChartSeries<_ChartData, String>>[
-          ColumnSeries<_ChartData, String>(
-              dataSource: data,
-              borderRadius: BorderRadius.circular(3.5),
-              xValueMapper: (_ChartData data, _) => data.x,
-              yValueMapper: (_ChartData data, _) => data.y,
-              //pointColorMapper: (_ChartData data, _) => data.color,
-              name: 'Expense',
-              color: Theme.of(context).colorScheme.primary),
-          ColumnSeries<_ChartData, String>(
-              dataSource: [],
-              borderRadius: BorderRadius.circular(3.5),
-              xValueMapper: (_ChartData data, _) => data.x,
-              yValueMapper: (_ChartData data, _) => data.y,
-              //pointColorMapper: (_ChartData data, _) => data.color,
-              name: 'Expense',
-              color: Theme.of(context).colorScheme.inversePrimary),
-        ],
-      );
+              expenseSummary.forEach((key, value) {
+                totalSpentDataList.add(
+                    TotalSpentData(key, value["ExpenseBudgetTotal"] as int));
+              });
 
-      return Padding(
-        padding: const EdgeInsets.all(12),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: SizedBox(
-              width: (data.length % 13) * 100 > SizeConfig.width! * 100
-                  ? (data.length % 13) * 100
-                  : SizeConfig.width! * 100,
-              height: SizeConfig.height! * 27.5,
-              child: chart),
-        ),
-      );
+              SfCartesianChart chart = SfCartesianChart(
+                plotAreaBorderWidth: 0,
+                primaryXAxis: CategoryAxis(
+                    majorGridLines: const MajorGridLines(width: 0),
+                    minorGridLines: const MinorGridLines(width: 0)),
+                primaryYAxis: NumericAxis(
+                  minimum: 0,
+                  maximum: maximum + 100,
+                  interval: maximum / 5,
+                  borderColor: const Color.fromARGB(0, 255, 255, 255),
+                  majorGridLines: const MajorGridLines(width: 0),
+                  minorGridLines: const MinorGridLines(width: 0),
+                  //edgeLabelPlacement: EdgeLabelPlacement.shift
+                ),
+                tooltipBehavior: _tooltip,
+                onAxisLabelTapped: (axisLabelTapArgs) {
+                  print(axisLabelTapArgs.text);
+
+                  provider.setSelectedInsights(axisLabelTapArgs.text);
+                },
+                // series: <ChartSeries<_ChartData, String>>[
+                series: [
+                  ColumnSeries<_ChartData, String>(
+                      dataSource: data,
+                      borderRadius: BorderRadius.circular(3.5),
+                      xValueMapper: (_ChartData data, _) => data.x,
+                      yValueMapper: (_ChartData data, _) => data.y,
+                      //pointColorMapper: (_ChartData data, _) => data.color,
+                      name: 'Expense',
+                      color: Theme.of(context).colorScheme.primary),
+                  ColumnSeries<TotalSpentData, String>(
+                      dataSource: totalSpentDataList,
+                      borderRadius: BorderRadius.circular(3.5),
+                      xValueMapper: (TotalSpentData data, _) => data.x,
+                      yValueMapper: (TotalSpentData data, _) => data.y,
+                      //pointColorMapper: (_ChartData data, _) => data.color,
+                      name: 'Total Spent',
+                      color: Theme.of(context).colorScheme.inversePrimary),
+                ],
+              );
+              return Padding(
+                padding: const EdgeInsets.all(12),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: SizedBox(
+                      width: (data.length % 13) * 100 > SizeConfig.width! * 100
+                          ? (data.length % 13) * 100
+                          : SizeConfig.width! * 100,
+                      height: SizeConfig.height! * 27.5,
+                      child: chart),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              print(snapshot.data);
+              return SizedBox(
+                height: SizeConfig.height! * 27.5,
+                child: const Center(
+                  child: Text("Oops , Something went wrong"),
+                ),
+              );
+            } else {
+              return SizedBox(
+                height: SizeConfig.height! * 27.5,
+                child: const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+          });
     } else {
       return Padding(
         padding: const EdgeInsets.all(16.0),
@@ -148,4 +175,11 @@ class _ChartData {
 Color getColorByIndex(int index) {
   int hue = 360 ~/ (index + 1);
   return HSVColor.fromAHSV(1.0, hue.toDouble(), 1.0, 1.0).toColor();
+}
+
+class TotalSpentData {
+  TotalSpentData(this.x, this.y);
+
+  final String x;
+  final int y;
 }

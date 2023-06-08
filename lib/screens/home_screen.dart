@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     final provider = Provider.of<BackEndProvider>(context);
+    
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {

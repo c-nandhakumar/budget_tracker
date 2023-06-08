@@ -32,8 +32,8 @@ class _LoginFormState extends State<LoginForm> {
     passwordController.dispose();
   }
 
-///Make the user to Login if the credentials are true,
-///if not then it displays a snackbar
+  ///Make the user to Login if the credentials are true,
+  ///if not then it displays a snackbar
   Future<void> loginUser() async {
     setState(() {
       isLoading = !isLoading;
@@ -49,6 +49,7 @@ class _LoginFormState extends State<LoginForm> {
       // ignore: use_build_context_synchronously
       final provider = Provider.of<BackEndProvider>(context, listen: false);
       provider.setBottomNavIndex(0);
+      await getExpenseMethods(provider);
       setState(() {
         isLoading = !isLoading;
       });
