@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final expenses = expensesFromJson(jsonString);
+
 import 'dart:convert';
 
 List<Expenses> expensesFromJson(String str) =>
@@ -6,46 +10,59 @@ List<Expenses> expensesFromJson(String str) =>
 String expensesToJson(List<Expenses> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-/// This class is used to convert the JSON data into Dart Objects 
 class Expenses {
-  String expenseid;
-  String userid;
-  String categoryname;
-  DateTime expensetransaction;
   String budgetname;
+  String expenseid;
   int expensecost;
-  DateTime? expensedate;
+  String emdetail;
+  String expensenotes;
+  DateTime expensedate;
+  String categoryname;
+  String userid;
+  String emname;
+  String emshortname;
+  String expensetransaction;
 
   Expenses({
-    required this.expenseid,
-    required this.userid,
-    required this.categoryname,
-    required this.expensetransaction,
     required this.budgetname,
+    required this.expenseid,
     required this.expensecost,
-    this.expensedate,
+    required this.emdetail,
+    required this.expensenotes,
+    required this.expensedate,
+    required this.categoryname,
+    required this.userid,
+    required this.emname,
+    required this.emshortname,
+    required this.expensetransaction,
   });
 
   factory Expenses.fromJson(Map<String, dynamic> json) => Expenses(
-        expenseid: json["expenseid"],
-        userid: json["userid"],
-        categoryname: json["categoryname"],
-        expensetransaction: DateTime.parse(json["expensetransaction"]),
         budgetname: json["budgetname"],
+        expenseid: json["expenseid"],
         expensecost: json["expensecost"],
-        expensedate: json["expensedate"] == null
-            ? null
-            : DateTime.parse(json["expensedate"]),
+        emdetail: json["emdetail"],
+        expensenotes: json["expensenotes"],
+        expensedate: DateTime.parse(json["expensedate"]),
+        categoryname: json["categoryname"],
+        userid: json["userid"],
+        emname: json["emname"],
+        emshortname: json["emshortname"],
+        expensetransaction: json["expensetransaction"],
       );
 
   Map<String, dynamic> toJson() => {
-        "expenseid": expenseid,
-        "userid": userid,
-        "categoryname": categoryname,
-        "expensetransaction": expensetransaction.toIso8601String(),
         "budgetname": budgetname,
+        "expenseid": expenseid,
         "expensecost": expensecost,
+        "emdetail": emdetail,
+        "expensenotes": expensenotes,
         "expensedate":
-            "${expensedate!.year.toString().padLeft(4, '0')}-${expensedate!.month.toString().padLeft(2, '0')}-${expensedate!.day.toString().padLeft(2, '0')}",
+            "${expensedate.year.toString().padLeft(4, '0')}-${expensedate.month.toString().padLeft(2, '0')}-${expensedate.day.toString().padLeft(2, '0')}",
+        "categoryname": categoryname,
+        "userid": userid,
+        "emname": emname,
+        "emshortname": emshortname,
+        "expensetransaction": expensetransaction,
       };
 }

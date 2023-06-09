@@ -1,3 +1,4 @@
+import 'package:budget_app/widgets/expense_method_dialog.dart';
 import 'package:budget_app/widgets/swipable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) => const ExpenseMethodDialog());
+        },
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.chevron_left),

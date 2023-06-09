@@ -1,7 +1,7 @@
+import 'package:budget_app/models/expense_model.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:budget_app/widgets/history_container.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 /// This Widget is used in the History Screen
@@ -23,7 +23,7 @@ class _SwipableCardState extends State<SwipableCard> {
     print("Fired init State");
   }
 
-  List<Map<String, String>> historyList = [];
+  List<Expenses> historyList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -37,20 +37,11 @@ class _SwipableCardState extends State<SwipableCard> {
           /// The below implementation is used to sort the expenses based on the date and time
           /// and it is stored inside the *[historyList]*
           if (provider.expenses != null) {
+            ///To sort the list based on the expensetransaction
             provider.expenses!.sort(
                 (a, b) => b.expensetransaction.compareTo(a.expensetransaction));
             for (var element in provider.expenses!) {
-              String timestamp = element.expensetransaction.toIso8601String();
-
-              DateTime dateTime = DateTime.parse(timestamp);
-              String formattedDate = DateFormat('MMM dd').format(dateTime);
-              historyList.add({
-                "name": element.categoryname,
-                "cost": element.expensecost.toString(),
-                "date": formattedDate,
-                "budgetname": element.budgetname,
-                "expenseId": element.expenseid,
-              });
+              historyList.add(element);
             }
 
             ///To have a check whether the historyList is empty or not and display
@@ -120,7 +111,7 @@ class _SwipableCardState extends State<SwipableCard> {
                             // print("Expense ID : ${historyList[index]}");
 
                             await deleteExpenses(
-                                historyList[index]["expenseId"] as String,
+                                historyList[index].expenseid,
                                 provider);
                             // setState(() {
                             //   // historyList.removeAt(index);
@@ -129,15 +120,12 @@ class _SwipableCardState extends State<SwipableCard> {
                             // ignore: use_build_context_synchronously
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(
-                                  '${item['budgetname']} - ${item['name']} : ${item['cost']}  deleted'),
+                                  '${item.budgetname} - ${item.categoryname} : ${item.expensecost}  deleted'),
                               duration: const Duration(milliseconds: 1000),
                             ));
                           },
                           child: HistoryContainer(
-                            name: item['name'],
-                            cost: item['cost'],
-                            date: item['date'],
-                            budgetname: item['budgetname'],
+                            expense: item
                           )),
                     );
                   });

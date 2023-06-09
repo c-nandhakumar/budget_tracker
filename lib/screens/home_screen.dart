@@ -76,9 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     left: SizeConfig.width! * 5,
                     right: SizeConfig.width! * 5,
                   ),
-                  child: Row(
+                  child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children:  [
                       RemainingContainer(),
                       DateRemainingContainer(),
                     ],
