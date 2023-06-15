@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import "package:http/http.dart" as http;
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
@@ -433,27 +432,44 @@ Future<String> getExpenseMethods(BackEndProvider provider) async {
 }
 
 ///Change the Expense Method of Expense
-///Endpoint "/expense/:expenseid}" [PUT]
+///Endpoint "/expense/:expenseid" [PUT]
 Future<void> changeExpenseMethod(
     {String? expenseid,
-    String? expenseNotes,
     String? emdetail,
     String? emname,
     String? emshortname,
-    String? expensetransaction,
-    String? expensedate,
     BackEndProvider? provider}) async {
-  ///To format DateTime from 2023-06-08 00:00:00.000 to 2023-06-08
-  DateTime originalDate = DateTime.parse(expensedate!);
-  DateTime dateOnly =
-      DateTime(originalDate.year, originalDate.month, originalDate.day);
-  expensedate = DateFormat('yyyy-MM-dd').format(dateOnly);
-  print(emname);
-  print(emdetail);
-  print(emshortname);
-  print(expenseid);
+  // ///To format DateTime from 2023-06-08 00:00:00.000 to 2023-06-08
+  // DateTime originalDate = DateTime.parse(expensedate!);
+  // DateTime dateOnly =
+  //     DateTime(originalDate.year, originalDate.month, originalDate.day);
+  // expensedate = DateFormat('yyyy-MM-dd').format(dateOnly);
+
   var res = await http.put(
-    Uri.parse("$SERVER_URL/expense/$expenseid}"),
+    Uri.parse("$SERVER_URL/expense/$expenseid"),
+    headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: jsonEncode(
+      {
+        "emname": emname,
+        "emdetail": emdetail,
+        "emshortname": emshortname,
+      },
+    ),
+  );
+  print(res.statusCode);
+  print(res.body);
+  await getExpenses(provider!);
+}
+
+Future<void> changeNotes(
+    {String? expenseNotes,
+    String? expenseId,
+    BackEndProvider? provider}) async {
+  var res = await http.put(
+    Uri.parse("$SERVER_URL/expense/$expenseId"),
     headers: {
       'Content-type': 'application/json',
       'Accept': 'application/json',
@@ -461,11 +477,6 @@ Future<void> changeExpenseMethod(
     body: jsonEncode(
       {
         "expensenotes": expenseNotes,
-        "emname": emname,
-        "emdetail": emdetail,
-        "emshortname": emshortname,
-        "expensetransaction": expensetransaction,
-        "expensedate": expensedate
       },
     ),
   );
@@ -476,13 +487,14 @@ Future<void> changeExpenseMethod(
 
 ///Changes the default expense method
 ///Endpoint "/expensemethods/:emid" [PUT]
-Future<void> changeDefault(String emid, bool emisdefault) async {
+Future<void> changeDefault(
+    String emid, bool emisdefault, BackEndProvider provider) async {
   var res = await http.put(Uri.parse("$SERVER_URL/expensemethods/$emid"),
       headers: {
         'Content-type': 'application/json',
         'Accept': 'application/json',
       },
       body: jsonEncode({"emisdefault": emisdefault}));
-
+  await getExpenseMethods(provider);
   print(res.body);
 }

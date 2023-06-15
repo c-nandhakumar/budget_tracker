@@ -1,4 +1,5 @@
 import 'package:budget_app/widgets/expense_method_dialog.dart';
+import 'package:budget_app/widgets/expense_methods_list_widget.dart';
 import 'package:budget_app/widgets/swipable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
       ),
       appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const AlertDialog(
+                      insetPadding: EdgeInsets.zero,
+                      contentPadding: EdgeInsets.zero,
+                      content: ExpenseMethodsListWidget(),
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.more_vert))
+        ],
         leading: IconButton(
           icon: const Icon(Icons.chevron_left),
           onPressed: () {

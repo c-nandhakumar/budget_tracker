@@ -36,7 +36,8 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
           _expenseShortNameController.text.length <= 4) {
         if (isChecked) {
           final defaultEmid = mainprovider.defaultExpenseMethod!.emid;
-          await changeDefault(defaultEmid, false);
+          final provider = Provider.of<BackEndProvider>(context, listen: false);
+          await changeDefault(defaultEmid, false, provider);
         }
         final provider = Provider.of<BackEndProvider>(context, listen: false);
         await createExpenseMethod(
@@ -64,8 +65,9 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
     }
 
     return Dialog(
+      insetPadding: EdgeInsets.zero,
       child: Container(
-        height: SizeConfig.height! * 45,
+        height: SizeConfig.height! * 60,
         width: SizeConfig.width! * 90,
         padding: const EdgeInsets.symmetric(horizontal: 36),
         decoration: const BoxDecoration(),
@@ -73,50 +75,105 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            DropdownButton<String>(
-                borderRadius: BorderRadius.circular(10),
-                isDense: true,
-                padding: EdgeInsets.zero,
-                value: initialValue,
-                underline: SizedBox(),
-                elevation: 5,
-                onChanged: (String? value) {
-                  setState(() {
-                    initialValue = value!;
-                  });
-                },
-                items: expenseNameList.map((String value) {
-                  return DropdownMenuItem(
-                      onTap: () {}, value: value, child: Text(value));
-                }).toList()),
+            Text("Create Expense Method",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(
-              height: 15,
+              height: 24,
             ),
-            TextField(
-              controller: _expenseDetailController,
-              decoration: const InputDecoration(
-                hintText: "Expense Detail",
-                isDense: true,
-                contentPadding: EdgeInsets.all(10),
-                border: OutlineInputBorder(),
-                hintStyle: TextStyle(fontSize: 16),
-              ),
+            Row(
+              children: [
+                Text("Expense Type : ",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontWeight: FontWeight.w600)),
+                const SizedBox(
+                  width: 8,
+                ),
+                PopupMenuButton<String>(
+                  itemBuilder: (context) {
+                    return expenseNameList.map((str) {
+                      return PopupMenuItem(
+                        value: str,
+                        child: Text(str),
+                      );
+                    }).toList();
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(initialValue),
+                      Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
+                  onSelected: (value) {
+                    setState(() {
+                      initialValue = value;
+                    });
+                  },
+                ),
+              ],
             ),
             const SizedBox(
-              height: 15,
+              height: 30,
+              child: Divider(),
             ),
-            TextField(
-              controller: _expenseShortNameController,
-              decoration: const InputDecoration(
-                hintText: "Expense Short Name (Max 4 characters)",
-                isDense: true,
-                contentPadding: EdgeInsets.all(10),
-                border: OutlineInputBorder(),
-                hintStyle: TextStyle(fontSize: 16),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Expense Detail : ",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontWeight: FontWeight.w600)),
+                Container(
+                  width: SizeConfig.width! * 40,
+                  child: TextField(
+                    controller: _expenseDetailController,
+                    decoration: const InputDecoration(
+                      // hintText: "Expense Detail",
+                      isDense: true,
+                      contentPadding: EdgeInsets.all(10),
+                      border: OutlineInputBorder(),
+                      hintStyle: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(
-              height: 15,
+              height: 30,
+              child: Divider(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Short Name : ",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(fontWeight: FontWeight.w600)),
+                Container(
+                  width: SizeConfig.width! * 40,
+                  child: TextField(
+                    controller: _expenseShortNameController,
+                    decoration: const InputDecoration(
+                      // hintText: "Expense Short Name (Max 4 characters)",
+                      isDense: true,
+                      contentPadding: EdgeInsets.all(10),
+                      border: OutlineInputBorder(),
+                      hintStyle: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 30,
+              child: Divider(),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +186,7 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
                     });
                   },
                 ),
-                const Text("Default Expense Method")
+                const Text("Make this as default")
               ],
             ),
             const SizedBox(
