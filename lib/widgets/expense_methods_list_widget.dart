@@ -36,7 +36,7 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
 
     return Container(
         height: SizeConfig.height! * 60,
-        width: SizeConfig.width! * 85,
+        width: SizeConfig.width! * 90,
         child: ListView(
           children: [
             Padding(
@@ -56,7 +56,7 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
                     Row(
                       children: [
                         Expanded(
-                          flex: 4,
+                          flex: 6,
                           child: RadioListTile(
                             contentPadding: EdgeInsets.only(left: 12),
                             value: element.emid,

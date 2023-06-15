@@ -1,3 +1,4 @@
+
 import 'package:budget_app/models/budget_model.dart';
 import 'package:budget_app/models/category_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -122,6 +123,51 @@ class BackEndProvider extends DisposableProvider {
   ///Default Expense Method
   ExpenseMethod? defaultExpenseMethod;
 
+  ///FilteredExpenses
+  List<Expenses>? filteredExpenses;
+  List<Expenses>? unsortedExpenses;
+
+  bool isFilterCleared = true;
+
+  ///SelectedFilteredList
+  Map<String, int> selectedRadioButtons = {
+    "Budget": -1,
+    "Category": -1,
+    "Expense": -1,
+  };
+
+  Map<String, String> selectedRadioButtonsData = {
+    "Budget": "",
+    "Category": "",
+    "Expense": "",
+  };
+
+  bool isAscending = false;
+  bool isDescending = false;
+
+  void setAscending(bool value) {
+    isAscending = value;
+    notifyListeners();
+  }
+
+  void setDescending(bool value) {
+    isDescending = value;
+    notifyListeners();
+  }
+
+  void changeToUnsorted() {
+    filteredExpenses = [...unsortedExpenses!];
+    notifyListeners();
+  }
+
+  void setSearchResults(List<Expenses> expense) {
+    filteredExpenses = expense;
+    notifyListeners();
+  }
+
+  DateTime? startDate;
+  DateTime? endDate;
+
   ///This will retrieve the balance based on the given index
   ///As a result it will be stored in the Cost Remaining Container in the Home page
   void getBalance(int index) {
@@ -167,11 +213,78 @@ class BackEndProvider extends DisposableProvider {
   void setExpenses(String payload) {
     if (payload.isNotEmpty) {
       expenses = expensesFromJson(payload);
-      print(payload);
+      filteredExpenses = expensesFromJson(payload);
+      String selectedBudget = selectedRadioButtonsData["Budget"]!;
+      String selectedCategory = selectedRadioButtonsData["Category"]!;
+      String selectedExpenseMethod = selectedRadioButtonsData["Expense"]!;
+      print(selectedBudget);
+      print(selectedCategory);
+      print(selectedExpenseMethod);
+      var result = [];
+
+      if (selectedBudget.isNotEmpty) {
+        result = filteredExpenses!
+            .where((element) => element.budgetname == selectedBudget)
+            .toList();
+
+        filteredExpenses = [...result];
+      }
+      if (selectedCategory.isNotEmpty) {
+        result = filteredExpenses!
+            .where((element) => element.categoryname == selectedCategory)
+            .toList();
+
+        filteredExpenses = [...result];
+      }
+      if (selectedExpenseMethod.isNotEmpty) {
+        result = filteredExpenses!
+            .where((element) => element.emshortname == selectedExpenseMethod)
+            .toList();
+
+        filteredExpenses = [...result];
+      }
+      unsortedExpenses = [...filteredExpenses!];
+      print(filteredExpenses);
       notifyListeners();
     } else {
       expenses = [];
     }
+  }
+
+  ///Stores the selected data from radio button
+  void setSelectedRadioData(String name, int value, String selectedData) {
+    selectedRadioButtons[name] = value;
+    selectedRadioButtonsData[name] = selectedData;
+    notifyListeners();
+  }
+
+  // void setfilteredData(List<Expenses> filteredExpensesData) {
+  //   filteredExpenses = filteredExpensesData;
+  //   // unsortedExpenses = filteredExpensesData;
+  //   notifyListeners();
+  // }
+
+  void resetFilteredData() {
+    filteredExpenses = expenses;
+    selectedRadioButtons = {
+      "Budget": -1,
+      "Category": -1,
+      "Expense": -1,
+    };
+    selectedRadioButtonsData = {
+      "Budget": "",
+      "Category": "",
+      "Expense": "",
+    };
+
+    notifyListeners();
+  }
+
+  void setFilteredData(List<Expenses> expenses) {
+    print(expenses.length);
+    filteredExpenses = expenses;
+    unsortedExpenses = expenses;
+    notifyListeners();
   }
 
   ///To set the expense summary
@@ -214,6 +327,23 @@ class BackEndProvider extends DisposableProvider {
     budgetAmount = 0;
     expenseSummary = {};
     expenseMethods = [];
+    filteredExpenses = [];
+    startDate = null;
+    endDate = null;
+    selectedRadioButtons = {
+      "Budget": -1,
+      "Category": -1,
+      "Expense": -1,
+    };
+
+    selectedRadioButtonsData = {
+      "Budget": "",
+      "Category": "",
+      "Expense": "",
+    };
+    isAscending = false;
+    isDescending = false;
+    unsortedExpenses = [];
   }
 }
 

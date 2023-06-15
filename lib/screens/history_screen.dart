@@ -1,7 +1,10 @@
+import 'package:budget_app/models/expense_model.dart';
 import 'package:budget_app/widgets/expense_method_dialog.dart';
 import 'package:budget_app/widgets/expense_methods_list_widget.dart';
+import 'package:budget_app/widgets/filter_widget.dart';
 import 'package:budget_app/widgets/swipable_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 import '../common/screen_size.dart';
@@ -15,6 +18,7 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
@@ -38,10 +42,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return const AlertDialog(
+                    return const Dialog(
                       insetPadding: EdgeInsets.zero,
-                      contentPadding: EdgeInsets.zero,
-                      content: ExpenseMethodsListWidget(),
+                      child: ExpenseMethodsListWidget(),
                     );
                   },
                 );
@@ -54,6 +57,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
             provider.setBottomNavIndex(0);
           },
         ),
+        elevation: 0,
+        scrolledUnderElevation: 0,
         toolbarHeight: SizeConfig.height! * 10,
         centerTitle: true,
         title: Text(
@@ -63,7 +68,207 @@ class _HistoryScreenState extends State<HistoryScreen> {
               fontWeight: FontWeight.bold),
         ),
       ),
-      body: const SwipableCard(),
+      body: Column(
+        children: [
+          Container(
+            height: 48,
+            padding: const EdgeInsets.only(left: 12, right: 12),
+            // alignment: Alignment.bottomCenter,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                //Search Bar
+                Expanded(
+                  flex: 10,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Container(
+                      // Add padding around the search bar
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary),
+                      // Use a Material design search bar
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          constraints: const BoxConstraints(),
+                          contentPadding: EdgeInsets.zero,
+
+                          hintText: 'Search...',
+                          // Add a clear button to the search bar
+                          suffixIcon: IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            icon: const Icon(Icons.clear),
+                            onPressed: () {
+                              _searchController.clear();
+                              provider.changeToUnsorted();
+                            },
+                          ),
+                          // Add a search icon or button to the search bar
+                          prefixIcon: IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            icon: const Icon(Icons.search),
+                            onPressed: () {
+                              // Perform the search here
+                              List<Expenses> list = provider.expenses!;
+                              var newList = list.where((element) => element
+                                  .categoryname
+                                  .toLowerCase()
+                                  .contains(_searchController.text));
+                              provider.setSearchResults(
+                                  List<Expenses>.from(newList));
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: InkWell(
+                    onTap: () {
+                      if (provider.isAscending == true) {
+                        provider.setAscending(false);
+                        provider.changeToUnsorted();
+                      } else {
+                        provider.setAscending(true);
+                        provider.setDescending(false);
+                        var tempList = provider.filteredExpenses;
+                        if (tempList != null) {
+                          tempList.sort(
+                              (a, b) => a.expensecost.compareTo(b.expensecost));
+                        }
+                      }
+                    },
+                    child: Container(
+                      // height: 42,
+                      // width: 42,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      decoration: BoxDecoration(
+                          color: provider.isAscending
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.secondary,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(children: [
+                        Icon(
+                          Icons.keyboard_arrow_up,
+                          color: provider.isAscending
+                              ? Colors.white
+                              : Colors.black,
+                          size: 18,
+                        ),
+                        Text(
+                          dotenv.get("CURRENCY"),
+                          style:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    color: provider.isAscending
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                        )
+                      ]),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: InkWell(
+                    onTap: () {
+                      if (provider.isDescending == true) {
+                        provider.setDescending(false);
+                        provider.changeToUnsorted();
+                      } else {
+                        provider.setDescending(true);
+                        provider.setAscending(false);
+                        var tempList = provider.filteredExpenses;
+                        if (tempList != null) {
+                          tempList.sort(
+                              (a, b) => b.expensecost.compareTo(a.expensecost));
+                        }
+                        tempList!.forEach((element) {
+                          print(element.expensecost);
+                        });
+                        provider.setFilteredData(List<Expenses>.from(tempList));
+                      }
+                    },
+                    child: Container(
+                      // height: 42,
+                      // width: 42,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      decoration: BoxDecoration(
+                          color: provider.isDescending
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.secondary,
+                          // color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(children: [
+                        Text(
+                          dotenv.get("CURRENCY"),
+                          style:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    color: provider.isDescending
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                        ),
+                        Icon(
+                          Icons.keyboard_arrow_down,
+                          color: provider.isDescending
+                              ? Colors.white
+                              : Colors.black,
+                          size: 18,
+                        ),
+                      ]),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const FilterDialogWidget();
+                        },
+                      );
+                    },
+                    child: Container(
+                      // height: 42,
+                      // width: 42,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.secondary,
+                          // color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: const Icon(
+                        Icons.filter_alt_sharp,
+                        color: Colors.black,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Expanded(
+              flex: 10,
+              child: Padding(
+                padding: EdgeInsets.only(top: 12.0),
+                child: SwipableCard(),
+              )),
+        ],
+      ),
     );
   }
 }

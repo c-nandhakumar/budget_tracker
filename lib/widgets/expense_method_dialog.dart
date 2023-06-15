@@ -124,21 +124,27 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Expense Detail : ",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(fontWeight: FontWeight.w600)),
-                Container(
-                  width: SizeConfig.width! * 40,
-                  child: TextField(
-                    controller: _expenseDetailController,
-                    decoration: const InputDecoration(
-                      // hintText: "Expense Detail",
-                      isDense: true,
-                      contentPadding: EdgeInsets.all(10),
-                      border: OutlineInputBorder(),
-                      hintStyle: TextStyle(fontSize: 16),
+                Expanded(
+                  flex: 2,
+                  child: Text("Expense Detail : ",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(fontWeight: FontWeight.w600)),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    // width: SizeConfig.width! * 40,
+                    child: TextField(
+                      controller: _expenseDetailController,
+                      decoration: const InputDecoration(
+                        // hintText: "Expense Detail",
+                        isDense: true,
+                        contentPadding: EdgeInsets.all(10),
+                        border: OutlineInputBorder(),
+                        hintStyle: TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
                 ),
@@ -151,21 +157,27 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Short Name : ",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(fontWeight: FontWeight.w600)),
-                Container(
-                  width: SizeConfig.width! * 40,
-                  child: TextField(
-                    controller: _expenseShortNameController,
-                    decoration: const InputDecoration(
-                      // hintText: "Expense Short Name (Max 4 characters)",
-                      isDense: true,
-                      contentPadding: EdgeInsets.all(10),
-                      border: OutlineInputBorder(),
-                      hintStyle: TextStyle(fontSize: 16),
+                Expanded(
+                  flex: 2,
+                  child: Text("Short Name : ",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(fontWeight: FontWeight.w600)),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    width: SizeConfig.width! * 40,
+                    child: TextField(
+                      controller: _expenseShortNameController,
+                      decoration: const InputDecoration(
+                        // hintText: "Expense Short Name (Max 4 characters)",
+                        isDense: true,
+                        contentPadding: EdgeInsets.all(10),
+                        border: OutlineInputBorder(),
+                        hintStyle: TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
                 ),
