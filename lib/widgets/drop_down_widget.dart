@@ -76,6 +76,7 @@ class _DropDownWidgetState extends State<DropDownWidget> {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
             child: Text(
               value,
+              overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                   color: Theme.of(context).colorScheme.tertiary,
                   fontWeight: FontWeight.bold),

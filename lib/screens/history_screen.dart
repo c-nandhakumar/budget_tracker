@@ -1,4 +1,5 @@
 import 'package:budget_app/models/expense_model.dart';
+import 'package:budget_app/utility/showsnackbar.dart';
 import 'package:budget_app/widgets/expense_method_dialog.dart';
 import 'package:budget_app/widgets/expense_methods_list_widget.dart';
 import 'package:budget_app/widgets/filter_widget.dart';
@@ -192,9 +193,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           tempList.sort(
                               (a, b) => b.expensecost.compareTo(a.expensecost));
                         }
-                        tempList!.forEach((element) {
+                        for (var element in tempList!) {
                           print(element.expensecost);
-                        });
+                        }
                         provider.setFilteredData(List<Expenses>.from(tempList));
                       }
                     },
@@ -234,12 +235,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   padding: const EdgeInsets.all(4.0),
                   child: InkWell(
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return const FilterDialogWidget();
-                        },
-                      );
+                      if (provider.budget != null &&
+                          provider.budget!.budgets.isNotEmpty &&
+                          provider.categories!.isNotEmpty) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const FilterDialogWidget();
+                          },
+                        );
+                      } else {
+                        showSnackBar(context, "No enough data to filter");
+                      }
                     },
                     child: Container(
                       // height: 42,

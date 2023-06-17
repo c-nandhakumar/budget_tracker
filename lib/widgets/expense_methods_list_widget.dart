@@ -16,7 +16,6 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
   late String initialValue;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     initialValue = provider.defaultExpenseMethod!.emid;
@@ -34,6 +33,7 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
       }
     }
 
+    // ignore: sized_box_for_whitespace
     return Container(
         height: SizeConfig.height! * 60,
         width: SizeConfig.width! * 90,
@@ -58,7 +58,7 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
                         Expanded(
                           flex: 6,
                           child: RadioListTile(
-                            contentPadding: EdgeInsets.only(left: 12),
+                            contentPadding: const EdgeInsets.only(left: 12),
                             value: element.emid,
                             groupValue: initialValue,
                             title: Row(children: [
@@ -97,13 +97,20 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
                                                   Provider.of<BackEndProvider>(
                                                       context,
                                                       listen: false);
+
+                                              ///Changing the old default to false
                                               await changeDefault(
                                                   provider.defaultExpenseMethod!
                                                       .emid,
                                                   false,
                                                   provider);
+
+                                              ///Changing the new default
                                               await changeDefault(
                                                   value!, true, provider);
+                                              setState(() {
+                                                initialValue = value;
+                                              });
                                               // ignore: use_build_context_synchronously
                                               Navigator.of(context).pop();
                                             },
@@ -119,17 +126,22 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
                                         content: const Text(
                                             "Do you want to make this as default payment method ?"),
                                       ));
-
-                              setState(() {
-                                initialValue = value!;
-                              });
                             },
                           ),
                         ),
                         Expanded(
                           flex: 1,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () async {
+                              final provider1 = Provider.of<BackEndProvider>(
+                                  context,
+                                  listen: false);
+                              if (element.emshortname != "CASH" &&
+                                  element.emisdefault == false) {
+                                await deleteExpenseMethod(
+                                    element.emid, provider1);
+                              }
+                            },
                             child: SizedBox(
                               height: 56,
                               child: Ink(

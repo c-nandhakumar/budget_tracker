@@ -200,7 +200,10 @@ class _SwipableCardState extends State<SwipableCard> {
         }
 
         /// UI for Loading State
-        else {
+        else if (snapshot.hasError) {
+          print(snapshot.error);
+          return const Center(child: CircularProgressIndicator());
+        } else {
           return const Center(child: CircularProgressIndicator());
         }
       },

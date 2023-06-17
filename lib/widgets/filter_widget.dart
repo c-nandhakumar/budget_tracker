@@ -19,7 +19,7 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
   bool isLoading = false;
   @override
   void initState() {
-    // TODO: implement initState
+   
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     filterDataList = getFilterDataList(provider);
@@ -29,19 +29,19 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
     List<List<String>> finalResultList = [];
     List<String> tempList = [];
 
-    provider.budget!.budgets.forEach((element) {
+    for (var element in provider.budget!.budgets) {
       tempList.add(element.budgetname);
-    });
+    }
     finalResultList.add(tempList);
     tempList = [];
-    provider.categories!.forEach((element) {
+    for (var element in provider.categories!) {
       tempList.add(element.categoryname);
-    });
+    }
     finalResultList.add(tempList);
     tempList = [];
-    provider.expenseMethods.forEach((element) {
+    for (var element in provider.expenseMethods) {
       tempList.add(element.emshortname);
-    });
+    }
     finalResultList.add(tempList);
     // final budgetList = provider.budget!.budgets.;
     return finalResultList;
@@ -69,7 +69,7 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                     Container(
                       width: double.infinity,
                       alignment: Alignment.center,
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.secondary,
                           borderRadius: const BorderRadius.only(
@@ -119,7 +119,7 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                               ],
                             ),
                           ),
-                          VerticalDivider(),
+                          const VerticalDivider(),
                           Expanded(
                               flex: 2,
                               child: selectedIndex < 3
@@ -152,9 +152,177 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                                         );
                                       },
                                     )
-                                  : IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(Icons.calendar_month)))
+
+                                  ///Date Filter
+                                  : Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "Start date :",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall!
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                          ),
+                                          Row(
+                                            children: [
+                                              provider.startDate != null
+                                                  ? Text(
+                                                      " ${provider.startDate!.day}/${provider.startDate!.month}/${provider.startDate!.year}")
+                                                  : const Text("Pick a date"),
+                                              IconButton(
+                                                  onPressed: () async {
+                                                    DateTime? startDate =
+                                                        await showDatePicker(
+                                                            initialDate:
+                                                                provider.startDate !=
+                                                                        null
+                                                                    ? provider
+                                                                        .startDate!
+                                                                    : DateTime
+                                                                        .now(),
+                                                            context: context,
+                                                            firstDate: DateTime(
+                                                                1999, 12, 1),
+                                                            lastDate: DateTime(
+                                                                2100, 12, 1));
+                                                    print(startDate);
+                                                    if (startDate != null) {
+                                                      if (startDate.isBefore(
+                                                              provider
+                                                                          .endDate !=
+                                                                      null
+                                                                  ? provider
+                                                                      .endDate!
+                                                                  : DateTime
+                                                                      .now()) ||
+                                                          startDate.isAtSameMomentAs(
+                                                              provider
+                                                                          .endDate !=
+                                                                      null
+                                                                  ? provider
+                                                                      .endDate!
+                                                                  : DateTime
+                                                                      .now())) {
+                                                        provider.setStartDate(
+                                                            startDate);
+                                                      } else {
+                                                        // ignore: use_build_context_synchronously
+                                                        showDialog(
+                                                            context: context,
+                                                            builder:
+                                                                (context) =>
+                                                                    AlertDialog(
+                                                                      actions: [
+                                                                        ElevatedButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                            child:
+                                                                                const Text("OK"))
+                                                                      ],
+                                                                      content:
+                                                                          const Text(
+                                                                              "Start date should be less than the end date"),
+                                                                    ));
+                                                      }
+                                                    }
+                                                  },
+                                                  icon: const Icon(
+                                                      Icons.calendar_month)),
+                                            ],
+                                          ),
+                                          const Divider(),
+                                          Text(
+                                            "End date :",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall!
+                                                .copyWith(
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                          ),
+                                          Row(
+                                            children: [
+                                              provider.endDate != null
+                                                  ? Text(
+                                                      " ${provider.endDate!.day}/${provider.endDate!.month}/${provider.endDate!.year}")
+                                                  : const Text("Pick a Date"),
+                                              IconButton(
+                                                  onPressed: () async {
+                                                    DateTime? endDate =
+                                                        await showDatePicker(
+                                                            initialDate:
+                                                                provider.endDate !=
+                                                                        null
+                                                                    ? provider
+                                                                        .endDate!
+                                                                    : DateTime
+                                                                        .now(),
+                                                            context: context,
+                                                            firstDate: DateTime(
+                                                                1999, 12, 1),
+                                                            lastDate: DateTime(
+                                                                2100, 12, 1));
+                                                    if (endDate != null) {
+                                                      if (endDate.isAfter(
+                                                              provider.startDate !=
+                                                                      null
+                                                                  ? provider
+                                                                      .startDate!
+                                                                  : DateTime(
+                                                                      1999,
+                                                                      1,
+                                                                      1)) ||
+                                                          endDate.isAtSameMomentAs(
+                                                              provider.startDate !=
+                                                                      null
+                                                                  ? provider
+                                                                      .startDate!
+                                                                  : DateTime(
+                                                                      1999,
+                                                                      1,
+                                                                      1))) {
+                                                        provider.setEndDate(
+                                                            endDate);
+                                                      } else {
+                                                        // ignore: use_build_context_synchronously
+                                                        showDialog(
+                                                            context: context,
+                                                            builder:
+                                                                (context) =>
+                                                                    AlertDialog(
+                                                                      actions: [
+                                                                        ElevatedButton(
+                                                                            onPressed:
+                                                                                () {
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                            child:
+                                                                                const Text("OK"))
+                                                                      ],
+                                                                      content:
+                                                                          const Text(
+                                                                              "End date should be greater than the start date"),
+                                                                    ));
+                                                      }
+                                                    }
+                                                  },
+                                                  icon: const Icon(
+                                                      Icons.calendar_month)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ))
                         ],
                       ),
                     ),
@@ -173,6 +341,7 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                           setState(() {
                             isLoading = true;
                           });
+
                           print(provider.expenses);
                           var tempList = provider.expenses!;
                           String selectedBudget =
@@ -181,38 +350,25 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                               provider.selectedRadioButtonsData["Category"]!;
                           String selectedExpenseMethod =
                               provider.selectedRadioButtonsData["Expense"]!;
+                          DateTime? startDate = provider.startDate != null
+                              ? provider.startDate!
+                              : null;
+                          DateTime? endDate = provider.endDate != null
+                              ? provider.endDate!
+                              : null;
                           print(selectedBudget);
                           print(selectedCategory);
                           print(selectedExpenseMethod);
-                          var result = [];
+                          print(startDate);
+                          print(endDate);
+                          List<dynamic> result = filterFunction(
+                              selectedBudget,
+                              tempList,
+                              selectedCategory,
+                              selectedExpenseMethod,
+                              startDate,
+                              endDate);
 
-                          print(tempList);
-                          if (selectedBudget.isNotEmpty) {
-                            result = tempList
-                                .where((element) =>
-                                    element.budgetname == selectedBudget)
-                                .toList();
-                            print("Something");
-                            print(result);
-                            tempList = [...result];
-                          }
-                          if (selectedCategory.isNotEmpty) {
-                            result = tempList
-                                .where((element) =>
-                                    element.categoryname == selectedCategory)
-                                .toList();
-
-                            tempList = [...result];
-                          }
-                          if (selectedExpenseMethod.isNotEmpty) {
-                            result = tempList
-                                .where((element) =>
-                                    element.emshortname ==
-                                    selectedExpenseMethod)
-                                .toList();
-
-                            tempList = [...result];
-                          }
                           provider.setFilteredData(List<Expenses>.from(result));
 
                           Navigator.of(context).pop();
@@ -228,7 +384,7 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                                   ),
                                 ),
                               )
-                            : const Text("Apply Filter"),
+                            : const Text("Apply Filters"),
                       ),
                     ),
                     Container(
@@ -247,7 +403,7 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
                           provider.resetFilteredData();
                           Navigator.of(context).pop();
                         },
-                        child: const Text("Cancel Filter"),
+                        child: const Text("Clear Filters"),
                       ),
                     ),
                   ],
@@ -261,4 +417,75 @@ class _FilterDialogWidgetState extends State<FilterDialogWidget> {
           }),
     );
   }
+}
+
+List<dynamic> filterFunction(
+    String selectedBudget,
+    List<Expenses> tempList,
+    String selectedCategory,
+    String selectedExpenseMethod,
+    DateTime? startDate,
+    DateTime? endDate) {
+  var result = [];
+  print("Start Date ==> $startDate");
+  print("End Date ==> $endDate");
+
+  ///Filtering Logic Here
+  ///Filter based on budget
+  if (selectedBudget.isNotEmpty) {
+    result = tempList
+        .where((element) => element.budgetname == selectedBudget)
+        .toList();
+    print("Something");
+    print(result);
+    tempList = [...result];
+  }
+
+  ///Filter based on categories
+  if (selectedCategory.isNotEmpty) {
+    result = tempList
+        .where((element) => element.categoryname == selectedCategory)
+        .toList();
+
+    tempList = [...result];
+  }
+
+  ///Filter based on expense method
+  if (selectedExpenseMethod.isNotEmpty) {
+    result = tempList
+        .where((element) => element.emshortname == selectedExpenseMethod)
+        .toList();
+
+    tempList = [...result];
+  }
+
+  ///Filters based on only the start date
+  if (startDate != null && endDate == null) {
+    result = tempList
+        .where((element) => ((element.expensedate.isAfter(startDate) ||
+            element.expensedate.isAtSameMomentAs(startDate))))
+        .toList();
+    tempList = [...result];
+  }
+
+  ///Filters based on only the end date
+  if (endDate != null && startDate == null) {
+    result = tempList
+        .where((element) => ((element.expensedate.isBefore(endDate) ||
+            element.expensedate.isAtSameMomentAs(endDate))))
+        .toList();
+    tempList = [...result];
+  }
+
+  ///Filters based on both start date and end date
+  if (startDate != null && endDate != null) {
+    result = tempList
+        .where((element) => ((element.expensedate.isAfter(startDate) ||
+                element.expensedate.isAtSameMomentAs(startDate)) &&
+            (element.expensedate.isBefore(endDate) ||
+                element.expensedate.isAtSameMomentAs(endDate))))
+        .toList();
+    tempList = [...result];
+  }
+  return tempList;
 }

@@ -9,25 +9,25 @@ class LoginScreenTopImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
-        const Text(
+        Text(
           "LOGIN",
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: defaultPadding * 2),
+        SizedBox(height: defaultPadding * 2),
         Row(
           // ignore: prefer_const_literals_to_create_immutables
           children: [
-            const Spacer(),
-            const Expanded(
+            Spacer(),
+            Expanded(
               flex: 5,
               child: Image(image: AssetImage("assets/images/login.png")),
             ),
-            const Spacer(),
+            Spacer(),
           ],
         ),
-        const SizedBox(height: defaultPadding * 2),
+        SizedBox(height: defaultPadding * 2),
       ],
     );
   }

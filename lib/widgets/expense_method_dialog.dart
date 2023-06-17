@@ -85,11 +85,13 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
             ),
             Row(
               children: [
-                Text("Expense Type : ",
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(fontWeight: FontWeight.w600)),
+                Flexible(
+                  child: Text("Expense Type : ",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(fontWeight: FontWeight.w600)),
+                ),
                 const SizedBox(
                   width: 8,
                 ),
@@ -106,7 +108,7 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(initialValue),
-                      Icon(Icons.arrow_drop_down),
+                      const Icon(Icons.arrow_drop_down),
                     ],
                   ),
                   onSelected: (value) {
@@ -134,6 +136,7 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
                 ),
                 Expanded(
                   flex: 2,
+                  // ignore: avoid_unnecessary_containers
                   child: Container(
                     // width: SizeConfig.width! * 40,
                     child: TextField(
@@ -167,6 +170,7 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
                 ),
                 Expanded(
                   flex: 2,
+                  // ignore: sized_box_for_whitespace
                   child: Container(
                     width: SizeConfig.width! * 40,
                     child: TextField(

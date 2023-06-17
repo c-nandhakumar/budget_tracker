@@ -54,6 +54,7 @@ class _ChartWidgetState extends State<ChartWidget> {
             if (snapshot.hasData) {
               final provider = Provider.of<BackEndProvider>(context);
               Map<String, dynamic> expenseSummary = provider.expenseSummary;
+              // print("Expense Summary ===> $expenseSummary");
 
               ///Total Amount Spent List [Update]
               List<TotalSpentData> totalSpentDataList = [];

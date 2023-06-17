@@ -19,8 +19,8 @@ class WelcomeImage extends StatelessWidget {
               .copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: defaultPadding * 2),
-        Row(
-          children: const [
+        const Row(
+          children: [
             Spacer(),
             Expanded(
                 flex: 5,

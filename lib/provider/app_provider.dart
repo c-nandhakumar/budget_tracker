@@ -1,6 +1,6 @@
-
 import 'package:budget_app/models/budget_model.dart';
 import 'package:budget_app/models/category_model.dart';
+import 'package:budget_app/widgets/filter_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -165,14 +165,25 @@ class BackEndProvider extends DisposableProvider {
     notifyListeners();
   }
 
+  bool isDateChanged = false;
   DateTime? startDate;
   DateTime? endDate;
+
+  void setStartDate(DateTime date) {
+    startDate = date;
+    notifyListeners();
+  }
+
+  void setEndDate(DateTime date) {
+    endDate = date;
+    notifyListeners();
+  }
 
   ///This will retrieve the balance based on the given index
   ///As a result it will be stored in the Cost Remaining Container in the Home page
   void getBalance(int index) {
-    print("Budget : ${budget!.budgets[index].budgetamount}");
-    print("Total : $total");
+    // print("Budget : ${budget!.budgets[index].budgetamount}");
+    // print("Total : $total");
     budgetAmount = budget!.budgets[index].budgetamount;
     balance = budgetAmount - total;
     notifyListeners();
@@ -220,31 +231,12 @@ class BackEndProvider extends DisposableProvider {
       print(selectedBudget);
       print(selectedCategory);
       print(selectedExpenseMethod);
-      var result = [];
-
-      if (selectedBudget.isNotEmpty) {
-        result = filteredExpenses!
-            .where((element) => element.budgetname == selectedBudget)
-            .toList();
-
-        filteredExpenses = [...result];
-      }
-      if (selectedCategory.isNotEmpty) {
-        result = filteredExpenses!
-            .where((element) => element.categoryname == selectedCategory)
-            .toList();
-
-        filteredExpenses = [...result];
-      }
-      if (selectedExpenseMethod.isNotEmpty) {
-        result = filteredExpenses!
-            .where((element) => element.emshortname == selectedExpenseMethod)
-            .toList();
-
-        filteredExpenses = [...result];
-      }
+      var result = filterFunction(selectedBudget, filteredExpenses!,
+          selectedCategory, selectedExpenseMethod, startDate, endDate);
+      print('Inside the Setter Expense Method');
+      filteredExpenses = [...result];
       unsortedExpenses = [...filteredExpenses!];
-      print(filteredExpenses);
+      // print(filteredExpenses);
       notifyListeners();
     } else {
       expenses = [];
@@ -266,6 +258,8 @@ class BackEndProvider extends DisposableProvider {
 
   void resetFilteredData() {
     filteredExpenses = expenses;
+    startDate = null;
+    endDate = null;
     selectedRadioButtons = {
       "Budget": -1,
       "Category": -1,
@@ -303,7 +297,7 @@ class BackEndProvider extends DisposableProvider {
       }
     }
 
-    print(defaultExpenseMethod);
+    // print(defaultExpenseMethod);
     notifyListeners();
   }
 
@@ -341,6 +335,8 @@ class BackEndProvider extends DisposableProvider {
       "Category": "",
       "Expense": "",
     };
+    startDate = null;
+    endDate = null;
     isAscending = false;
     isDescending = false;
     unsortedExpenses = [];
@@ -369,9 +365,9 @@ Future<void> postUser() async {
   );
 
   if (res.statusCode == 200) {
-    print("Success in Creating user");
+    // print("Success in Creating user");
   } else {
-    print(res.body);
+    // print(res.body);
   }
 }
 
@@ -384,7 +380,7 @@ Future<String> getBudgetData(BackEndProvider provider) async {
       "$SERVER_URL/budgets/user/${FirebaseAuth.instance.currentUser!.uid}"));
   print("<===== Get Budget Data Status Code =====> ${res.statusCode}");
   if (res.statusCode == 200) {
-    print("Success in getting header");
+    // print("Success in getting header");
     provider.setBudgets(res.body);
     await getExpenseMethods(provider);
     return res.body;
@@ -409,11 +405,11 @@ Future<String> getTotal(
 
   var res = await http.get(Uri.parse(
       "$SERVER_URL/expenses/total-by-category/$budgetname/${FirebaseAuth.instance.currentUser!.uid}"));
-  print(budgetname);
+  // print(budgetname);
   if (res.statusCode == 200) {
     print("Success in getting total");
     final data = json.decode(res.body);
-    print(data);
+    // print(data);
     provider.setSelectedBudget(budgetname);
     provider.setSelectedIndex(index);
     provider.setRawData(data);
@@ -424,7 +420,7 @@ Future<String> getTotal(
   }
   if (res.statusCode == 404) {
     print("There is no expense total");
-    //print(res.body);
+    print(res.body);
     provider.setRawData({"Total": 0});
     provider.setTotal(0);
 
@@ -495,7 +491,7 @@ Future<String> getExpenses(BackEndProvider provider) async {
 Future<String> getSummary(BackEndProvider provider) async {
   var res = await http.get(Uri.parse(
       "$SERVER_URL/expenses/summary/${FirebaseAuth.instance.currentUser!.uid}"));
-  print(res.body);
+  // print(res.body);
   if (res.statusCode == 200) {
     print("Success in getting summary");
     provider.setExpenseSummary(res.body);
@@ -554,7 +550,7 @@ Future<String> getExpenseMethods(BackEndProvider provider) async {
 
   if (res.statusCode == 200) {
     print("Success in getting expensemethods");
-    print(res.body);
+    // print(res.body);
     provider.setExpenseMethods(res.body);
     return res.body;
   }
@@ -589,7 +585,8 @@ Future<void> changeExpenseMethod(
       },
     ),
   );
-  print(res.statusCode);
+  // print(res.statusCode);
+  print("Changing expense method");
   print(res.body);
   await getExpenses(provider!);
 }
@@ -610,7 +607,7 @@ Future<void> changeNotes(
       },
     ),
   );
-  print(res.statusCode);
+  // print(res.statusCode);
   print(res.body);
   await getExpenses(provider!);
 }
@@ -625,6 +622,25 @@ Future<void> changeDefault(
         'Accept': 'application/json',
       },
       body: jsonEncode({"emisdefault": emisdefault}));
-  await getExpenseMethods(provider);
+  print("Changing Default ==> ${res.statusCode}");
+  if (res.statusCode == 500) {
+    print("Something went wrong ");
+  }
+  if (emisdefault == true && res.statusCode == 200) {
+    await getExpenseMethods(provider);
+  }
+  // print(res.body);
+}
+
+///Delete the expense method
+///Endpoint "/expensemethods/:emid" [DELETE]
+Future<void> deleteExpenseMethod(String emid, BackEndProvider provider) async {
+  var res = await http.delete(
+    Uri.parse("$SERVER_URL/expensemethods/$emid"),
+  );
   print(res.body);
+  if (res.statusCode == 200) {
+    print("Deleted Successfully");
+    await getExpenseMethods(provider);
+  }
 }

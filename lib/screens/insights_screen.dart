@@ -1,5 +1,5 @@
 // ignore: unused_import
-import 'package:budget_app/widgets/recents_container.dart';
+import 'package:budget_app/widgets/expense_methods_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,11 +16,10 @@ class InsightsScreen extends StatefulWidget {
 }
 
 class _InsightsScreenState extends State<InsightsScreen> {
- 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
-   
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -43,10 +42,10 @@ class _InsightsScreenState extends State<InsightsScreen> {
         (provider.budget != null && provider.budget!.budgets.isNotEmpty)
             ? const PieChartWidget()
             : Container(),
+        (provider.budget != null && provider.budget!.budgets.isNotEmpty)
+            ? const ExpenseMethodsChart()
+            : Container(),
       ]),
     );
   }
 }
-
-
-
