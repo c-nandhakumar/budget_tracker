@@ -46,7 +46,7 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
                   "Expense Methods",
                   style: Theme.of(context)
                       .textTheme
-                      .titleMedium!
+                      .titleLarge!
                       .copyWith(fontWeight: FontWeight.w600),
                 ),
               ),

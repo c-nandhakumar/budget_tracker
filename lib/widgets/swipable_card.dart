@@ -33,11 +33,12 @@ class _SwipableCardState extends State<SwipableCard> {
         if (snapshot.hasData) {
           return Consumer<BackEndProvider>(builder: (context, value, child) {
             historyList = [];
+            // print("<===========Listening in swipable card============>");
             final provider = Provider.of<BackEndProvider>(context);
 
             /// The below implementation is used to sort the expenses based on the date and time
             /// and it is stored inside the *[historyList]*
-            if (provider.filteredExpenses != null) {
+            if (value.expenses!.isNotEmpty) {
               ///To sort the list based on the expensetransaction
 
               if (provider.isAscending) {
@@ -57,19 +58,19 @@ class _SwipableCardState extends State<SwipableCard> {
 
               ///To have a check whether the historyList is empty or not and display
               ///the widget accordingly
-              if (historyList.isNotEmpty) {
+              if (value.expenses!.isNotEmpty) {
                 return ListView.separated(
                     separatorBuilder: (context, index) => const SizedBox(
                           height: 12,
                         ),
-                    itemCount: historyList.length,
+                    itemCount: value.expenses!.length,
                     itemBuilder: (context, index) {
                       final item = historyList[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Dismissible(
                             // key: ValueKey(item),
-                            key: UniqueKey(),
+                            key: ValueKey(item.expenseid),
                             secondaryBackground: Container(
                                 decoration: BoxDecoration(
                                     color: const Color(0xffEA0000),
@@ -179,7 +180,8 @@ class _SwipableCardState extends State<SwipableCard> {
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
                     child: Container(
-                  height: 36,
+                  height: 56,
+                  padding: const EdgeInsets.all(5.0),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     boxShadow: const [

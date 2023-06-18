@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
         StreamProvider(
             create: (context) => context.read<FirebaseAuthMethods>().authState,
             initialData: null),
-          
         ChangeNotifierProvider(
           create: (context) => BackEndProvider(),
         )
@@ -38,6 +37,25 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Budget App',
         theme: ThemeData(
+            dialogTheme: DialogTheme.of(context).copyWith(
+                shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            )),
+            floatingActionButtonTheme: const FloatingActionButtonThemeData(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(50)))),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            )))),
+            filledButtonTheme: FilledButtonThemeData(
+                style: ButtonStyle(
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            )))),
             colorScheme: lightColorScheme,
             fontFamily: 'Inter',
             textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Inter'),

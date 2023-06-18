@@ -86,10 +86,16 @@ class _CategoryDialogState extends State<CategoryDialog> {
     if (provider.selectedBudget != null) {
       String budgetname = provider.selectedBudget!;
       print(provider.selectedBudget);
+
       return Dialog(
+        // surfaceTintColor: Colors.white,
+        insetPadding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
         child: Container(
           height: SizeConfig.height! * 30,
-          width: SizeConfig.width! * 90,
+          width: SizeConfig.width! * 75,
           padding: const EdgeInsets.symmetric(horizontal: 36),
           decoration: const BoxDecoration(),
           child: Column(
@@ -103,31 +109,34 @@ class _CategoryDialogState extends State<CategoryDialog> {
                     fontWeight: FontWeight.w600),
               ),
               const SizedBox(
-                height: 15,
+                height: 16,
               ),
               TextField(
                 controller: _namecontroller,
                 decoration: const InputDecoration(
                   hintText: "Enter the category name",
                   isDense: true,
-                  contentPadding: EdgeInsets.all(10),
+                  contentPadding: EdgeInsets.all(8),
                   border: OutlineInputBorder(),
-                  hintStyle: TextStyle(fontSize: 16),
+                  hintStyle: TextStyle(fontSize: 14),
                 ),
               ),
               const SizedBox(
-                height: 15,
+                height: 24,
               ),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
-                  minimumSize: Size.zero,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              SizedBox(
+                width: SizeConfig.width! * 100,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                    minimumSize: Size.zero,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 10),
+                  ),
+                  onPressed: () => createCategory(budgetname, provider2),
+                  child: const Text("Add"),
                 ),
-                onPressed: () => createCategory(budgetname, provider2),
-                child: const Text("Add"),
               ),
             ],
           ),

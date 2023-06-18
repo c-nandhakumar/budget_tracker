@@ -78,10 +78,10 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
             Text("Create Expense Method",
                 style: Theme.of(context)
                     .textTheme
-                    .titleMedium!
+                    .titleLarge!
                     .copyWith(fontWeight: FontWeight.w700)),
             const SizedBox(
-              height: 24,
+              height: 26,
             ),
             Row(
               children: [

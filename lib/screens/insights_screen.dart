@@ -40,7 +40,19 @@ class _InsightsScreenState extends State<InsightsScreen> {
       body: ListView(children: [
         const ChartWidget(),
         (provider.budget != null && provider.budget!.budgets.isNotEmpty)
+            ? const Divider(
+                endIndent: 12,
+                indent: 12,
+              )
+            : Container(),
+        (provider.budget != null && provider.budget!.budgets.isNotEmpty)
             ? const PieChartWidget()
+            : Container(),
+        (provider.budget != null && provider.budget!.budgets.isNotEmpty)
+            ? const Divider(
+                endIndent: 12,
+                indent: 12,
+              )
             : Container(),
         (provider.budget != null && provider.budget!.budgets.isNotEmpty)
             ? const ExpenseMethodsChart()

@@ -75,11 +75,16 @@ class _DialogWidgetState extends State<DialogWidget> {
     }
 
     return Dialog(
+      // surfaceTintColor: Colors.white,
+      insetPadding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       child: Container(
         height: SizeConfig.height! * 45,
-        width: SizeConfig.width! * 90,
+        width: SizeConfig.width! * 75,
         padding: const EdgeInsets.symmetric(horizontal: 36),
-        decoration: const BoxDecoration(),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -91,20 +96,20 @@ class _DialogWidgetState extends State<DialogWidget> {
                   fontWeight: FontWeight.w600),
             ),
             const SizedBox(
-              height: 7,
+              height: 16,
             ),
             TextField(
               controller: _namecontroller,
               decoration: const InputDecoration(
                 isDense: true,
-                contentPadding: EdgeInsets.all(10),
+                contentPadding: EdgeInsets.all(8),
                 hintText: "Enter the Budget Name",
                 border: OutlineInputBorder(),
-                hintStyle: TextStyle(fontSize: 16),
+                hintStyle: TextStyle(fontSize: 14),
               ),
             ),
             const SizedBox(
-              height: 25,
+              height: 36,
             ),
             Text(
               "Add Budget",
@@ -113,28 +118,28 @@ class _DialogWidgetState extends State<DialogWidget> {
                   fontWeight: FontWeight.w600),
             ),
             const SizedBox(
-              height: 7,
+              height: 16,
             ),
             TextField(
               controller: _costcontroller,
               decoration: InputDecoration(
                 hintText: "${dotenv.get("CURRENCY")}0",
                 isDense: true,
-                contentPadding: const EdgeInsets.all(10),
+                contentPadding: const EdgeInsets.all(8),
                 border: const OutlineInputBorder(),
-                hintStyle: const TextStyle(fontSize: 16),
+                hintStyle: const TextStyle(fontSize: 14),
               ),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(
-              height: 25,
+              height: 24,
             ),
             SizedBox(
               width: SizeConfig.width! * 100,
               child: FilledButton(
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+                      borderRadius: BorderRadius.circular(8.0)),
                   minimumSize: Size.zero,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),

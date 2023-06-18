@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flip_card/flip_card_controller.dart';
@@ -70,9 +71,23 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            content: const Text("Please Enter the Expense"),
+            // contentPadding: EdgeInsets.all(24),
+            // insetPadding: EdgeInsets.zero,
+
+            content: Container(
+              width: SizeConfig.width! * 100,
+              alignment: Alignment.center,
+              height: 48,
+              // padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "Please Enter the Expense",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            // insetPadding: EdgeInsets.zero,
+            actionsAlignment: MainAxisAlignment.center,
             actions: [
-              ElevatedButton(
+              FilledButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -171,7 +186,7 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
               child: FilledButton(
                 style: FilledButton.styleFrom(
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+                      borderRadius: BorderRadius.circular(6.0)),
                   minimumSize: Size.zero,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 5),

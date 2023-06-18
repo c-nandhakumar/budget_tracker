@@ -23,6 +23,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
+    // print("<((((((((Listening in history screen))))))))>");
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -43,9 +44,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return const Dialog(
+                    return Dialog(
+                      surfaceTintColor: Colors.white,
                       insetPadding: EdgeInsets.zero,
-                      child: ExpenseMethodsListWidget(),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      child: const ExpenseMethodsListWidget(),
                     );
                   },
                 );
