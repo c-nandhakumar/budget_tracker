@@ -100,6 +100,7 @@ class _DialogWidgetState extends State<DialogWidget> {
             ),
             TextField(
               controller: _namecontroller,
+              maxLength: 20,
               decoration: const InputDecoration(
                 isDense: true,
                 contentPadding: EdgeInsets.all(8),
@@ -109,7 +110,7 @@ class _DialogWidgetState extends State<DialogWidget> {
               ),
             ),
             const SizedBox(
-              height: 36,
+              height: 16,
             ),
             Text(
               "Add Budget",
@@ -122,6 +123,7 @@ class _DialogWidgetState extends State<DialogWidget> {
             ),
             TextField(
               controller: _costcontroller,
+              maxLength: 6,
               decoration: InputDecoration(
                 hintText: "${dotenv.get("CURRENCY")}0",
                 isDense: true,
@@ -132,7 +134,7 @@ class _DialogWidgetState extends State<DialogWidget> {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(
-              height: 24,
+              height: 16,
             ),
             SizedBox(
               width: SizeConfig.width! * 100,

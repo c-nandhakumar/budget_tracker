@@ -25,6 +25,7 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
+    initialValue = provider.defaultExpenseMethod!.emid;
     List<ExpenseMethod> expenseMethodsList = [];
     for (var element in provider.expenseMethods) {
       if (element.emid == provider.defaultExpenseMethod!.emid) {
@@ -153,16 +154,19 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
 
                                                     if (element.emisdefault ==
                                                         false) {
-                                                      if (element.emisdefault ==
-                                                          true) {
-                                                        await changeDefault(
-                                                            cash.emid,
-                                                            true,
-                                                            provider1);
-                                                        await deleteExpenseMethod(
-                                                            element.emid,
-                                                            provider1);
-                                                      }
+                                                      await deleteExpenseMethod(
+                                                          element.emid,
+                                                          provider1);
+                                                    }
+                                                    if (element.emisdefault ==
+                                                        true) {
+                                                      await changeDefault(
+                                                          cash.emid,
+                                                          true,
+                                                          provider1);
+                                                      await deleteExpenseMethod(
+                                                          element.emid,
+                                                          provider1);
                                                     }
                                                     // ignore: use_build_context_synchronously
                                                     Navigator.of(context).pop();

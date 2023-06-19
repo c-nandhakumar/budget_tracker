@@ -56,27 +56,6 @@ class _CategoryDialogState extends State<CategoryDialog> {
         ),
       );
     }
-    /* if (categoryres.statusCode == 200) {
-      var res = await http.post(
-        Uri.parse("$SERVER_URL/expenses"),
-        headers: {
-          'Content-type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode({
-          "userid": USER_ID,
-          "budgetname": budgetname,
-          "categoryname": categoryname,
-          "expensecost": expensecost,
-          "expensetransaction": time,
-          "expensedate": time
-        }),
-      );
-      print(res.body);
-      Navigator.of(context).pop();
-    } else {
-      print("Oops! .. Error Occured"); 
-    }*/
   }
 
   @override
@@ -112,6 +91,7 @@ class _CategoryDialogState extends State<CategoryDialog> {
                 height: 16,
               ),
               TextField(
+                maxLength: 13,
                 controller: _namecontroller,
                 decoration: const InputDecoration(
                   hintText: "Enter the category name",

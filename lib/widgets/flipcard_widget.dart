@@ -134,9 +134,13 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
               padding: const EdgeInsets.only(top: 5.0),
               child: Text(
                 "${widget.cost}",
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: const Color.fromARGB(255, 113, 113, 113)),
+                style: widget.cost!.length > 6
+                    ? Theme.of(context).textTheme.titleLarge!.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: const Color.fromARGB(255, 113, 113, 113))
+                    : Theme.of(context).textTheme.headlineSmall!.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: const Color.fromARGB(255, 113, 113, 113)),
               ),
             ),
           ],

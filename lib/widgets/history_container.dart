@@ -47,17 +47,27 @@ class _HistoryContainerState extends State<HistoryContainer> {
                     Text(
                       widget.expense!.categoryname,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineSmall!
-                          .copyWith(fontWeight: FontWeight.w600),
+                      style: widget.expense!.categoryname.length > 11
+                          ? Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(fontWeight: FontWeight.w600)
+                          : Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(fontWeight: FontWeight.w600),
                     ),
                     Text(
                       "${dotenv.get("CURRENCY")}${widget.expense!.expensecost}",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge!
-                          .copyWith(fontWeight: FontWeight.w600),
+                      style: widget.expense!.expensecost.toString().length > 5
+                          ? Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(fontWeight: FontWeight.w600)
+                          : Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(fontWeight: FontWeight.w600),
                     ),
                     Row(
                       children: [
@@ -170,9 +180,6 @@ class _HistoryContainerState extends State<HistoryContainer> {
                               return Container();
                             }
                           }),
-                        ),
-                        const SizedBox(
-                          width: 20,
                         ),
                       ],
                     ),

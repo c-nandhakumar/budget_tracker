@@ -19,8 +19,8 @@ class _SwipableCardState extends State<SwipableCard> {
   void initState() {
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
-    provider.setAscending(false);
-    provider.setDescending(false);
+    // provider.setAscending(false);
+    // provider.setDescending(false);
     expenses = getExpenses(provider);
   }
 
@@ -39,7 +39,6 @@ class _SwipableCardState extends State<SwipableCard> {
             /// The below implementation is used to sort the expenses based on the date and time
             /// and it is stored inside the *[historyList]*
             if (value.expenses!.isNotEmpty) {
-            
               if (provider.isAscending) {
                 ///To sort the list based on cost in ascending order
                 provider.filteredExpenses!

@@ -181,8 +181,6 @@ class BackEndProvider extends DisposableProvider {
   ///This will retrieve the balance based on the given index
   ///As a result it will be stored in the Cost Remaining Container in the Home page
   void getBalance(int index) {
-    // print("Budget : ${budget!.budgets[index].budgetamount}");
-    // print("Total : $total");
     budgetAmount = budget!.budgets[index].budgetamount;
     balance = budgetAmount - total;
     notifyListeners();
@@ -224,18 +222,23 @@ class BackEndProvider extends DisposableProvider {
     if (payload.isNotEmpty) {
       expenses = expensesFromJson(payload);
       filteredExpenses = expensesFromJson(payload);
-      String selectedBudget = selectedRadioButtonsData["Budget"]!;
+
+      ///These lines would remember the filters when changing the screens
+      /* String selectedBudget = selectedRadioButtonsData["Budget"]!;
       String selectedCategory = selectedRadioButtonsData["Category"]!;
       String selectedExpenseMethod = selectedRadioButtonsData["Expense"]!;
       print(selectedBudget);
       print(selectedCategory);
       print(selectedExpenseMethod);
 
-      ///These 4 lines would remember the filters when changing the screens
-      /* var result = filterFunction(selectedBudget, filteredExpenses!,
+    
+       var result = filterFunction(selectedBudget, filteredExpenses!,
           selectedCategory, selectedExpenseMethod, startDate, endDate);
       print('Inside the Setter Expense Method');
       filteredExpenses = [...result]; */
+
+      isAscending = false;
+      isDescending = false;
       unsortedExpenses = [...filteredExpenses!];
       // print(filteredExpenses);
       notifyListeners();
