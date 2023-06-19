@@ -2,6 +2,7 @@ import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/models/expense_model.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -18,21 +19,16 @@ class HistoryContainer extends StatefulWidget {
 
 class _HistoryContainerState extends State<HistoryContainer> {
   bool isTapped = false;
+  int nameLength = 0;
   @override
   Widget build(BuildContext context) {
-    // print("<===========Listening in history container============>");
     final provider = Provider.of<BackEndProvider>(context);
     if (provider.expenses!.isNotEmpty) {
       ///Formatting the date to display in the history list
       String timestamp = widget.expense!.expensetransaction;
       DateTime dateTime = DateTime.parse(timestamp);
       String formattedDate = DateFormat('MMM dd').format(dateTime);
-      List<ExpenseMethod> expenseMethodList = provider.expenseMethods;
-
-      // ExpenseMethod initialValue = expenseMethodList.firstWhere((element) =>
-      //     (element.emname == widget.expense!.emname &&
-      //         element.emshortname == widget.expense!.emshortname &&
-      //         element.emdetail == widget.expense!.emdetail));
+      // List<ExpenseMethod> expenseMethodList = provider.expenseMethods;
       return Container(
         decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(5)),
@@ -75,91 +71,101 @@ class _HistoryContainerState extends State<HistoryContainer> {
                           child: Consumer<BackEndProvider>(
                               builder: (context, value, child) {
                             if (value.expenseMethods.isNotEmpty) {
-                              ExpenseMethod initialValue = value.expenseMethods
-                                  .firstWhere((element) =>
-                                      (element.emshortname ==
-                                              widget.expense!.emshortname &&
-                                          element.emdetail ==
-                                              widget.expense!.emdetail));
+                              ///Finds the initial value (i.e) the expensemethod of the expense
+                              ///if there is no data, then it would be stored null
+                              ExpenseMethod? initialValue =
+                                  value.expenseMethods.firstWhereOrNull(
+                                (element) => (element.emshortname ==
+                                        widget.expense!.emshortname &&
+                                    element.emdetail ==
+                                        widget.expense!.emdetail),
+                              );
 
-                              return DropdownButton<ExpenseMethod>(
-                                  dropdownColor: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  isDense: true,
-                                  padding: EdgeInsets.zero,
-                                  iconEnabledColor: Colors.white,
-                                  value: initialValue,
-                                  underline: const SizedBox(),
-                                  elevation: 8,
-                                  selectedItemBuilder: (context) =>
-                                      expenseMethodList
-                                          .map((ExpenseMethod value) {
-                                        // ignore: avoid_unnecessary_containers
-                                        return Container(
-                                            child: Text(
-                                          value.emshortname,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .titleSmall!
-                                              .copyWith(color: Colors.white),
-                                        ));
-                                      }).toList(),
-                                  onChanged: (ExpenseMethod? value) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                              actions: [
-                                                ElevatedButton(
-                                                  onPressed: () async {
-                                                    final provider = Provider
-                                                        .of<BackEndProvider>(
-                                                            context,
-                                                            listen: false);
-                                                    await changeExpenseMethod(
-                                                        provider: provider,
-                                                        expenseid: widget
-                                                            .expense!.expenseid,
-                                                        emdetail:
-                                                            value!.emdetail,
-                                                        emshortname:
-                                                            value.emshortname,
-                                                        emname: value.emname);
-                                                    // ignore: use_build_context_synchronously
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text("Yes"),
-                                                ),
-                                                FilledButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text("No"),
-                                                )
-                                              ],
-                                              content: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  "Do you want to change this payment method to \"${value!.emshortname}\"",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleMedium,
-                                                ),
+                              return PopupMenuButton<ExpenseMethod>(
+                                offset: const Offset(0, 24),
+                                itemBuilder: (context) {
+                                  return value.expenseMethods.map((str) {
+                                    return PopupMenuItem(
+                                      value: str,
+                                      child: Text(str.emshortname),
+                                    );
+                                  }).toList();
+                                },
+                                child: SizedBox(
+                                  width: 64,
+                                  child: Row(
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      ///If the expensemethod is not found in the expensemethod list.
+                                      ///then it might be deleted and the initialvalue would be null
+                                      ///soo it displays the expensemethod of the expense previously
+                                      ///and displays other expensemethods other than its previous expense methods
+                                      Text(
+                                        initialValue != null
+                                            ? initialValue.emshortname
+                                            : widget.expense!.emshortname,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(color: Colors.white),
+                                      ),
+                                      const Spacer(),
+                                      const Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                onSelected: (value) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () async {
+                                                  final provider = Provider.of<
+                                                          BackEndProvider>(
+                                                      context,
+                                                      listen: false);
+                                                  await changeExpenseMethod(
+                                                      provider: provider,
+                                                      expenseid: widget
+                                                          .expense!.expenseid,
+                                                      emdetail: value.emdetail,
+                                                      emshortname:
+                                                          value.emshortname,
+                                                      emname: value.emname);
+                                                  // ignore: use_build_context_synchronously
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text("Yes"),
                                               ),
-                                            ));
-                                    print(value!.emshortname);
-                                    // This is called when the user selects an item.
-                                  },
-                                  items: expenseMethodList
-                                      .map((ExpenseMethod value) {
-                                    return DropdownMenuItem(
-                                        value: value,
-                                        child: Text(
-                                          value.emshortname,
-                                          style: const TextStyle(
-                                              color: Colors.black),
-                                        ));
-                                  }).toList());
+                                              FilledButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text("No"),
+                                              )
+                                            ],
+                                            content: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Text(
+                                                "Do you want to change this payment method to \"${value.emshortname}\"",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleMedium,
+                                              ),
+                                            ),
+                                          ));
+                                  print(value.emshortname);
+                                  // This is called when the user selects an item.
+                                  setState(() {
+                                    initialValue = value;
+                                  });
+                                },
+                              );
                             } else {
                               return Container();
                             }
@@ -168,19 +174,6 @@ class _HistoryContainerState extends State<HistoryContainer> {
                         const SizedBox(
                           width: 20,
                         ),
-                        InkWell(
-                          onTap: () async {
-                            final provider1 = Provider.of<BackEndProvider>(
-                                context,
-                                listen: false);
-                            await deleteExpenses(
-                                widget.expense!.expenseid, provider1);
-                          },
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                        )
                       ],
                     ),
                   ]),
@@ -191,6 +184,7 @@ class _HistoryContainerState extends State<HistoryContainer> {
                     (element.expenseid == widget.expense!.expenseid));
                 final expenseNotesEditingController =
                     TextEditingController(text: initialValue.expensenotes);
+
                 return Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12.0),
                   child: Row(
@@ -269,6 +263,8 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                   height: 30,
                                   // width: SizeConfig.width! * 40,
                                   child: TextFormField(
+                                    // controller: TextEditingController(text: ""),
+
                                     onFieldSubmitted: (value) async {
                                       print(value);
                                       final provider1 =
@@ -279,7 +275,21 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                           expenseId: widget.expense!.expenseid,
                                           expenseNotes: value);
                                     },
+                                    maxLength: 30,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        nameLength = value.length;
+                                      });
+                                    },
+
                                     decoration: InputDecoration(
+                                      suffixText: "$nameLength/30",
+                                      suffixStyle: const TextStyle(
+                                          color: Colors.grey, fontSize: 12),
+                                      counterText: "",
+                                      counterStyle: const TextStyle(
+                                        fontSize: 10,
+                                      ),
                                       isDense: true,
                                       contentPadding:
                                           const EdgeInsets.only(bottom: 10),
@@ -337,6 +347,5 @@ class _HistoryContainerState extends State<HistoryContainer> {
   }
 }
 
-
- /*
+/*
    */

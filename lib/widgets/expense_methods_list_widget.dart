@@ -14,6 +14,7 @@ class ExpenseMethodsListWidget extends StatefulWidget {
 
 class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
   late String initialValue;
+  late ExpenseMethod cash;
   @override
   void initState() {
     super.initState();
@@ -30,6 +31,9 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
         expenseMethodsList.insert(0, element);
       } else {
         expenseMethodsList.add(element);
+      }
+      if (element.emname == 'CASH') {
+        cash = element;
       }
     }
 
@@ -129,31 +133,66 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
                             },
                           ),
                         ),
-                        Expanded(
-                          flex: 1,
-                          child: InkWell(
-                            onTap: () async {
-                              final provider1 = Provider.of<BackEndProvider>(
-                                  context,
-                                  listen: false);
-                              if (element.emshortname != "CASH" &&
-                                  element.emisdefault == false) {
-                                await deleteExpenseMethod(
-                                    element.emid, provider1);
-                              }
-                            },
-                            child: SizedBox(
-                              height: 56,
-                              child: Ink(
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                  size: 24.0,
+
+                        ///If the Expense is Cash, then this condition wont display the delete button
+                        element.emshortname != "CASH"
+                            ? Expanded(
+                                flex: 1,
+                                child: InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                              actions: [
+                                                ElevatedButton(
+                                                  onPressed: () async {
+                                                    final provider1 = Provider
+                                                        .of<BackEndProvider>(
+                                                            context,
+                                                            listen: false);
+
+                                                    if (element.emisdefault ==
+                                                        false) {
+                                                      if (element.emisdefault ==
+                                                          true) {
+                                                        await changeDefault(
+                                                            cash.emid,
+                                                            true,
+                                                            provider1);
+                                                        await deleteExpenseMethod(
+                                                            element.emid,
+                                                            provider1);
+                                                      }
+                                                    }
+                                                    // ignore: use_build_context_synchronously
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text("Yes"),
+                                                ),
+                                                FilledButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text("No"),
+                                                )
+                                              ],
+                                              content: const Text(
+                                                  "Do you want to delete this expense method for sure? "),
+                                            ));
+                                  },
+                                  child: SizedBox(
+                                    height: 56,
+                                    child: Ink(
+                                      child: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                        size: 24.0,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        )
+                              )
+                            : Container()
                       ],
                     ),
                     const Divider(

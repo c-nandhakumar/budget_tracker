@@ -12,7 +12,6 @@ class ExpenseMethodDialog extends StatefulWidget {
 }
 
 List<String> expenseNameList = [
-  "CASH",
   "CREDIT CARD",
   "DEBIT CARD",
   "MOBILE TRANSFER",
@@ -24,7 +23,7 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
   final _expenseShortNameController = TextEditingController();
 
   bool isChecked = false;
-
+  int nameLength = 0;
   String initialValue = expenseNameList[0];
   @override
   Widget build(BuildContext context) {
@@ -45,7 +44,7 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
             emname: initialValue,
             emdetail: _expenseDetailController.text,
             emisdefault: isChecked,
-            emshortname: _expenseShortNameController.text);
+            emshortname: _expenseShortNameController.text.toUpperCase());
         Navigator.of(context).pop();
       } else {
         showDialog(
@@ -85,7 +84,8 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
             ),
             Row(
               children: [
-                Flexible(
+                Expanded(
+                  flex: 2,
                   child: Text("Expense Type : ",
                       style: Theme.of(context)
                           .textTheme
@@ -95,27 +95,38 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
                 const SizedBox(
                   width: 8,
                 ),
-                PopupMenuButton<String>(
-                  itemBuilder: (context) {
-                    return expenseNameList.map((str) {
-                      return PopupMenuItem(
-                        value: str,
-                        child: Text(str),
-                      );
-                    }).toList();
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Text(initialValue),
-                      const Icon(Icons.arrow_drop_down),
-                    ],
+                Expanded(
+                  flex: 2,
+                  child: PopupMenuButton<String>(
+                    offset: const Offset(0, 24),
+                    itemBuilder: (context) {
+                      return expenseNameList.map((str) {
+                        return PopupMenuItem(
+                          value: str,
+                          child: Text(str),
+                        );
+                      }).toList();
+                    },
+                    child: Row(
+                      // mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          initialValue,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(
+                                  fontSize: initialValue.length > 14 ? 12 : 14),
+                        ),
+                        const Icon(Icons.arrow_drop_down),
+                      ],
+                    ),
+                    onSelected: (value) {
+                      setState(() {
+                        initialValue = value;
+                      });
+                    },
                   ),
-                  onSelected: (value) {
-                    setState(() {
-                      initialValue = value;
-                    });
-                  },
                 ),
               ],
             ),
@@ -173,10 +184,23 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
                   // ignore: sized_box_for_whitespace
                   child: Container(
                     width: SizeConfig.width! * 40,
-                    child: TextField(
+                    child: TextFormField(
+                      maxLength: 4,
+                      onChanged: (value) {
+                        setState(() {
+                          nameLength = value.length;
+                        });
+                      },
                       controller: _expenseShortNameController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         // hintText: "Expense Short Name (Max 4 characters)",
+                        suffixText: "$nameLength/4",
+                        suffixStyle:
+                            const TextStyle(color: Colors.grey, fontSize: 12),
+                        counterText: "",
+                        counterStyle: const TextStyle(
+                          fontSize: 10,
+                        ),
                         isDense: true,
                         contentPadding: EdgeInsets.all(10),
                         border: OutlineInputBorder(),

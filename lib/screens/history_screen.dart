@@ -95,6 +95,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           color: Theme.of(context).colorScheme.secondary),
                       // Use a Material design search bar
                       child: TextField(
+                        textInputAction: TextInputAction.search,
+                        onEditingComplete: () {
+                          // Perform the search here
+                          ///Compares the expense notes with the input typed
+                          List<Expenses> list = provider.expenses!;
+                          var newList = list.where((element) => element
+                              .expensenotes
+                              .toLowerCase()
+                              .contains(_searchController.text));
+                          provider
+                              .setSearchResults(List<Expenses>.from(newList));
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
                         controller: _searchController,
                         decoration: InputDecoration(
                           constraints: const BoxConstraints(),
@@ -107,20 +120,27 @@ class _HistoryScreenState extends State<HistoryScreen> {
                             constraints: const BoxConstraints(),
                             icon: const Icon(Icons.clear),
                             onPressed: () {
+                              ///On clicking the clear icon,
+                              ///resets the state back to its old state
                               _searchController.clear();
                               provider.changeToUnsorted();
                             },
                           ),
+
                           // Add a search icon or button to the search bar
                           prefixIcon: IconButton(
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             icon: const Icon(Icons.search),
+
+                            ///On Pressing the search icon..
+                            ///this will be implemented
                             onPressed: () {
                               // Perform the search here
+                              ///Compares the expense notes with the input typed
                               List<Expenses> list = provider.expenses!;
                               var newList = list.where((element) => element
-                                  .categoryname
+                                  .expensenotes
                                   .toLowerCase()
                                   .contains(_searchController.text));
                               provider.setSearchResults(

@@ -19,8 +19,9 @@ class _SwipableCardState extends State<SwipableCard> {
   void initState() {
     super.initState();
     final provider = Provider.of<BackEndProvider>(context, listen: false);
+    provider.setAscending(false);
+    provider.setDescending(false);
     expenses = getExpenses(provider);
-    print("Fired init State");
   }
 
   List<Expenses> historyList = [];
@@ -33,21 +34,22 @@ class _SwipableCardState extends State<SwipableCard> {
         if (snapshot.hasData) {
           return Consumer<BackEndProvider>(builder: (context, value, child) {
             historyList = [];
-            // print("<===========Listening in swipable card============>");
             final provider = Provider.of<BackEndProvider>(context);
 
             /// The below implementation is used to sort the expenses based on the date and time
             /// and it is stored inside the *[historyList]*
             if (value.expenses!.isNotEmpty) {
-              ///To sort the list based on the expensetransaction
-
+            
               if (provider.isAscending) {
+                ///To sort the list based on cost in ascending order
                 provider.filteredExpenses!
                     .sort((a, b) => a.expensecost.compareTo(b.expensecost));
               } else if (provider.isDescending) {
+                ///To sort the list based on cost in descending order
                 provider.filteredExpenses!
                     .sort((a, b) => b.expensecost.compareTo(a.expensecost));
               } else {
+                ///To sort the list based on the expensetransaction
                 provider.filteredExpenses!.sort((a, b) =>
                     b.expensetransaction.compareTo(a.expensetransaction));
               }
@@ -63,14 +65,13 @@ class _SwipableCardState extends State<SwipableCard> {
                     separatorBuilder: (context, index) => const SizedBox(
                           height: 12,
                         ),
-                    itemCount: value.expenses!.length,
+                    itemCount: historyList.length,
                     itemBuilder: (context, index) {
                       final item = historyList[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Dismissible(
-                            // key: ValueKey(item),
-                            key: ValueKey(item.expenseid),
+                            key: UniqueKey(),
                             secondaryBackground: Container(
                                 decoration: BoxDecoration(
                                     color: const Color(0xffEA0000),

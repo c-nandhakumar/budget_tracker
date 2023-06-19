@@ -1,6 +1,5 @@
 import 'package:budget_app/models/budget_model.dart';
 import 'package:budget_app/models/category_model.dart';
-import 'package:budget_app/widgets/filter_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -231,10 +230,12 @@ class BackEndProvider extends DisposableProvider {
       print(selectedBudget);
       print(selectedCategory);
       print(selectedExpenseMethod);
-      var result = filterFunction(selectedBudget, filteredExpenses!,
+
+      ///These 4 lines would remember the filters when changing the screens
+      /* var result = filterFunction(selectedBudget, filteredExpenses!,
           selectedCategory, selectedExpenseMethod, startDate, endDate);
       print('Inside the Setter Expense Method');
-      filteredExpenses = [...result];
+      filteredExpenses = [...result]; */
       unsortedExpenses = [...filteredExpenses!];
       // print(filteredExpenses);
       notifyListeners();
@@ -568,12 +569,6 @@ Future<void> changeExpenseMethod(
     String? emname,
     String? emshortname,
     BackEndProvider? provider}) async {
-  // ///To format DateTime from 2023-06-08 00:00:00.000 to 2023-06-08
-  // DateTime originalDate = DateTime.parse(expensedate!);
-  // DateTime dateOnly =
-  //     DateTime(originalDate.year, originalDate.month, originalDate.day);
-  // expensedate = DateFormat('yyyy-MM-dd').format(dateOnly);
-
   var res = await http.put(
     Uri.parse("$SERVER_URL/expense/$expenseid"),
     headers: {

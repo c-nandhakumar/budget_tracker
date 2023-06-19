@@ -202,6 +202,7 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
                   }
                   amountController!.clear();
                   _controller.toggleCard();
+                  FocusManager.instance.primaryFocus?.unfocus();
                 },
                 child: const Text("Add"),
               ),
