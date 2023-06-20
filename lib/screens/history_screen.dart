@@ -5,7 +5,6 @@ import 'package:budget_app/widgets/expense_methods_list_widget.dart';
 import 'package:budget_app/widgets/filter_widget.dart';
 import 'package:budget_app/widgets/swipable_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
 import '../common/screen_size.dart';
@@ -182,24 +181,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               ? Theme.of(context).colorScheme.primary
                               : Theme.of(context).colorScheme.secondary,
                           borderRadius: BorderRadius.circular(10)),
-                      child: Column(children: [
-                        Icon(
-                          Icons.keyboard_arrow_up,
-                          color: provider.isAscending
-                              ? Colors.white
-                              : Colors.black,
-                          size: 18,
-                        ),
-                        Text(
-                          dotenv.get("CURRENCY"),
-                          style:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(
-                                    color: provider.isAscending
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
-                        )
-                      ]),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: Image(
+                                image: const AssetImage(
+                                    "assets/icons/ascending.png"),
+                                color: provider.isAscending
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                          ]),
                     ),
                   ),
                 ),
@@ -235,24 +232,38 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               : Theme.of(context).colorScheme.secondary,
                           // color: Colors.white,
                           borderRadius: BorderRadius.circular(10)),
-                      child: Column(children: [
-                        Text(
-                          dotenv.get("CURRENCY"),
-                          style:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(
-                                    color: provider.isDescending
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
-                        ),
-                        Icon(
-                          Icons.keyboard_arrow_down,
-                          color: provider.isDescending
-                              ? Colors.white
-                              : Colors.black,
-                          size: 18,
-                        ),
-                      ]),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: Image(
+                                image: const AssetImage(
+                                    "assets/icons/desceding.png"),
+                                color: provider.isDescending
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                            ),
+                            // Text(
+                            //   dotenv.get("CURRENCY"),
+                            //   style:
+                            //       Theme.of(context).textTheme.titleMedium!.copyWith(
+                            //             color: provider.isDescending
+                            //                 ? Colors.white
+                            //                 : Colors.black,
+                            //           ),
+                            // ),
+                            // Icon(
+                            //   Icons.keyboard_arrow_down,
+                            //   color: provider.isDescending
+                            //       ? Colors.white
+                            //       : Colors.black,
+                            //   size: 18,
+                            // ),
+                          ]),
                     ),
                   ),
                 ),

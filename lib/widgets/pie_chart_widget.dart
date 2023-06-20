@@ -16,9 +16,13 @@ class PieChartWidget extends StatefulWidget {
 
 class _PieChartWidgetState extends State<PieChartWidget> {
   late Future<String> expenses;
+  late TooltipBehavior _tooltip;
   @override
   void initState() {
     super.initState();
+    _tooltip = TooltipBehavior(
+      enable: true,
+    );
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     expenses = getExpenses(provider);
   }
@@ -69,7 +73,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
 
               return Column(children: [
                 Container(
-                  padding: const EdgeInsets.only(top: 24.0),
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 16),
                   child: Text(
                     '${provider.selectedInsights ?? provider.selectedBudget}',
                     style: const TextStyle(
@@ -82,22 +86,27 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                           Align(
                             alignment: Alignment.center,
                             child: SfCircularChart(
-                              //legend: Legend(isVisible: true),
+                              // tooltipBehavior: _tooltip,
+                              // legend: Legend(isVisible: true),
                               series: <CircularSeries>[
                                 PieSeries<Data, String>(
+                                  // enableTooltip: true,
                                   dataSource: data,
                                   xValueMapper: (Data data, _) => data.category,
                                   yValueMapper: (Data data, _) => data.value,
                                   pointColorMapper: (Data data, _) =>
                                       data.color,
-                                  dataLabelSettings: const DataLabelSettings(
+                                  dataLabelSettings: DataLabelSettings(
                                       isVisible: true,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                       labelAlignment:
                                           ChartDataLabelAlignment.outer,
                                       labelPosition:
                                           ChartDataLabelPosition.outside,
-                                      textStyle: TextStyle(
-                                          fontSize: 12,
+                                      textStyle: const TextStyle(
+                                          fontSize: 14,
                                           fontWeight: FontWeight.w500)),
                                   dataLabelMapper: (Data data, _) =>
                                       data.category,
@@ -108,9 +117,11 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                           Align(
                             alignment: Alignment.center,
                             child: SfCircularChart(
-                              //legend: Legend(isVisible: true),
+                              tooltipBehavior: _tooltip,
+                              // legend: Legend(isVisible: true),
                               series: <CircularSeries>[
                                 PieSeries<Data, String>(
+                                    enableTooltip: true,
                                     dataSource: data,
                                     xValueMapper: (Data data, _) =>
                                         data.category,
@@ -119,12 +130,15 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                                         data.color,
                                     dataLabelSettings: const DataLabelSettings(
                                         isVisible: true,
+                                        useSeriesColor: true,
                                         labelAlignment:
-                                            ChartDataLabelAlignment.outer,
+                                            ChartDataLabelAlignment.auto,
+                                        alignment: ChartAlignment.far,
+                                        overflowMode: OverflowMode.trim,
                                         labelPosition:
                                             ChartDataLabelPosition.inside,
                                         textStyle: TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 10,
                                             fontWeight: FontWeight.w500)),
                                     dataLabelMapper: (Data data, _) =>
                                         '${dotenv.get("CURRENCY")}${data.percent}'),

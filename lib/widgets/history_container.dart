@@ -59,15 +59,17 @@ class _HistoryContainerState extends State<HistoryContainer> {
                     ),
                     Text(
                       "${dotenv.get("CURRENCY")}${widget.expense!.expensecost}",
-                      style: widget.expense!.expensecost.toString().length > 5
-                          ? Theme.of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(fontWeight: FontWeight.w600)
-                          : Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(fontWeight: FontWeight.w600),
+                      style:
+                          (widget.expense!.expensecost.toString().length > 5 &&
+                                  widget.expense!.categoryname.length > 11)
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(fontWeight: FontWeight.w600)
+                              : Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(fontWeight: FontWeight.w600),
                     ),
                     Row(
                       children: [
