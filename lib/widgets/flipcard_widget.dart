@@ -23,6 +23,7 @@ class FlipCardWidget extends StatefulWidget {
 class _FlipCardWidgetState extends State<FlipCardWidget> {
   late FlipCardController _controller;
   TextEditingController? amountController;
+  bool isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -195,20 +196,43 @@ class _FlipCardWidgetState extends State<FlipCardWidget> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 ),
-                onPressed: () async {
-                  print("Button Works Perfectly ${widget.name}");
 
-                  await addAmount(budgetname);
+                ///When the user tries to press once again when the category expense is added
+                ///then this condition would prevent the event to be fired once again
+                ///(i.e) the user can only attempt one call for one "ADD" button
+                onPressed: isLoading
+                    ? () {}
+                    : () async {
+                        setState(() {
+                          isLoading = true;
+                        });
 
-                  if (amountController!.text.isNotEmpty) {
-                    await getTotal(
-                        provider, budgetname, provider.selectedBudgetIndex!);
-                  }
-                  amountController!.clear();
-                  _controller.toggleCard();
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                child: const Text("Add"),
+                        print("Button Works Perfectly ${widget.name}");
+
+                        await addAmount(budgetname);
+
+                        if (amountController!.text.isNotEmpty) {
+                          await getTotal(provider, budgetname,
+                              provider.selectedBudgetIndex!);
+                        }
+                        amountController!.clear();
+                        _controller.toggleCard();
+
+                        FocusManager.instance.primaryFocus?.unfocus();
+
+                        setState(() {
+                          isLoading = false;
+                        });
+                      },
+                child: isLoading
+                    ? const SizedBox(
+                        height: 12,
+                        width: 12,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: Colors.white),
+                        ))
+                    : const Text("Add"),
               ),
             ),
           ],

@@ -179,22 +179,72 @@ class _SwipableCardState extends State<SwipableCard> {
               return Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
-                    child: Container(
-                  height: 56,
-                  padding: const EdgeInsets.all(5.0),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    boxShadow: const [
-                      BoxShadow(color: Colors.grey, offset: Offset(-4, 4))
-                    ],
-                    color: Colors.white,
-                    border: Border.all(width: 1),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(5),
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 56,
+                      padding: const EdgeInsets.all(5.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        boxShadow: const [
+                          BoxShadow(color: Colors.grey, offset: Offset(-4, 4))
+                        ],
+                        color: Colors.white,
+                        border: Border.all(width: 1),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(5),
+                        ),
+                      ),
+                      child: const Text(
+                          "No Transactions Yet. To add transaction, Flip the category card and add the expenses"),
                     ),
-                  ),
-                  child: const Text(
-                      "No Transactions Yet. To add transaction, Flip the category card and add the expenses"),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Container(
+                                  height: 48,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    boxShadow: const [
+                                      BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(-4, 4))
+                                    ],
+                                    color: Colors.white,
+                                    border: Border.all(width: 1),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(5),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    "Tap the \"+\" Icon to create a new expense method",
+                                    textAlign: TextAlign.center,
+                                  )),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: SizedBox(
+                                  height: 85,
+                                  child: Transform(
+                                    alignment: Alignment.center,
+                                    transform: Matrix4.rotationZ(7.6),
+                                    child:
+                                        Image.asset('assets/images/arrow.png'),
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 )),
               );
             }

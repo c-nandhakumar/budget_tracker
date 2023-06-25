@@ -247,22 +247,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                     : Colors.black,
                               ),
                             ),
-                            // Text(
-                            //   dotenv.get("CURRENCY"),
-                            //   style:
-                            //       Theme.of(context).textTheme.titleMedium!.copyWith(
-                            //             color: provider.isDescending
-                            //                 ? Colors.white
-                            //                 : Colors.black,
-                            //           ),
-                            // ),
-                            // Icon(
-                            //   Icons.keyboard_arrow_down,
-                            //   color: provider.isDescending
-                            //       ? Colors.white
-                            //       : Colors.black,
-                            //   size: 18,
-                            // ),
+                           
                           ]),
                     ),
                   ),

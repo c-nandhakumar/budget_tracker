@@ -45,8 +45,9 @@ class _ExpenseMethodsChartState extends State<ExpenseMethodsChart> {
               ///Total Amount Spent List [Update]
               List<TotalSpentData> totalSpentDataList = [];
 
-              Map<String, int>.from(expenseSummaryData[provider.selectedBudget]
-                      ["ExpenseEmShortTotal"])
+              Map<String, int>.from(
+                      expenseSummaryData[provider.selectedInsights]
+                          ["ExpenseEmShortTotal"])
                   .forEach((key, value) {
                 print("Key  ====> $key");
                 if (value > maximum) {
