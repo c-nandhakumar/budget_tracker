@@ -26,17 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     final provider = Provider.of<BackEndProvider>(context);
-    
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showDialog(
               context: context, builder: (context) => const CategoryDialog());
         },
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         child: const Icon(
           Icons.add,
-          color: Colors.white,
+          color: Colors.black,
         ),
       ),
       appBar: AppBar(
@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children:  [
+                    children: [
                       RemainingContainer(),
                       DateRemainingContainer(),
                     ],
