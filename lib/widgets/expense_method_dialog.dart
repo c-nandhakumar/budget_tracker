@@ -66,7 +66,7 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
     return Dialog(
       insetPadding: EdgeInsets.zero,
       child: Container(
-        height: SizeConfig.height! * 60,
+        height: SizeConfig.height! * 65,
         width: SizeConfig.width! * 90,
         padding: const EdgeInsets.symmetric(horizontal: 36),
         decoration: const BoxDecoration(),

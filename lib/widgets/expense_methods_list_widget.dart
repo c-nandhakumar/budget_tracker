@@ -40,7 +40,7 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
 
     // ignore: sized_box_for_whitespace
     return Container(
-        height: SizeConfig.height! * 60,
+        height: SizeConfig.height! * 65,
         width: SizeConfig.width! * 90,
         child: ListView(
           children: [
@@ -89,7 +89,9 @@ class _ExpenseMethodsListWidgetState extends State<ExpenseMethodsListWidget> {
                                     .copyWith(fontWeight: FontWeight.w600),
                               ),
                             ]),
-                            subtitle: Text(element.emdetail),
+                            subtitle: Text(initialValue == element.emid
+                                ? "${element.emdetail} (Default)"
+                                : element.emdetail),
                             onChanged: (value) {
                               print(value);
                               showDialog(

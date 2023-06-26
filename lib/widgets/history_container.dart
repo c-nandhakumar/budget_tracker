@@ -19,7 +19,48 @@ class HistoryContainer extends StatefulWidget {
 
 class _HistoryContainerState extends State<HistoryContainer> {
   bool isTapped = false;
-  int nameLength = 0;
+  String nameLength = "";
+  String? formLength;
+  FocusNode? _focusNode;
+  FocusNode? _formFocusNode;
+  TextEditingController? textEditingController;
+  TextEditingController? expenseNotesEditingController;
+  String? localText;
+  @override
+  void initState() {
+    super.initState();
+    textEditingController = TextEditingController();
+    _focusNode = FocusNode();
+    _formFocusNode = FocusNode();
+    _focusNode!.addListener(() async {
+      if (!_focusNode!.hasFocus) {
+        print(textEditingController!.text);
+        final provider1 = Provider.of<BackEndProvider>(context, listen: false);
+        await changeNotes(
+            provider: provider1,
+            expenseId: widget.expense!.expenseid,
+            expenseNotes: textEditingController!.text);
+      }
+    });
+    _formFocusNode!.addListener(() async {
+      if (!_focusNode!.hasFocus) {
+        print(expenseNotesEditingController!.text);
+        final provider1 = Provider.of<BackEndProvider>(context, listen: false);
+        await changeNotes(
+            provider: provider1,
+            expenseId: widget.expense!.expenseid,
+            expenseNotes: expenseNotesEditingController!.text);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    textEditingController!.dispose();
+    _focusNode!.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
@@ -191,8 +232,9 @@ class _HistoryContainerState extends State<HistoryContainer> {
               if (value.expenses!.isNotEmpty) {
                 Expenses initialValue = value.expenses!.firstWhere((element) =>
                     (element.expenseid == widget.expense!.expenseid));
-                final expenseNotesEditingController =
-                    TextEditingController(text: initialValue.expensenotes);
+                expenseNotesEditingController = TextEditingController(
+                    text: localText ?? initialValue.expensenotes);
+                formLength ??= localText ?? initialValue.expensenotes;
 
                 return Padding(
                   padding: const EdgeInsets.only(left: 12.0, right: 12.0),
@@ -211,16 +253,29 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                             Provider.of<BackEndProvider>(
                                                 context,
                                                 listen: false);
-                                        changeNotes(
-                                            provider: provider1,
-                                            expenseId:
-                                                widget.expense!.expenseid,
-                                            expenseNotes:
-                                                expenseNotesEditingController
-                                                    .text);
+                                        print(expenseNotesEditingController!
+                                            .text.length);
+                                        if (expenseNotesEditingController!
+                                            .text.isNotEmpty) {
+                                          changeNotes(
+                                              provider: provider1,
+                                              expenseId:
+                                                  widget.expense!.expenseid,
+                                              expenseNotes:
+                                                  expenseNotesEditingController!
+                                                      .text);
+                                        } else {
+                                          changeNotes(
+                                              provider: provider1,
+                                              expenseId:
+                                                  widget.expense!.expenseid,
+                                              expenseNotes: "");
+                                        }
                                       }
                                       setState(() {
                                         isTapped = !isTapped;
+                                        localText =
+                                            expenseNotesEditingController!.text;
                                       });
                                     },
                                     child: isTapped
@@ -243,14 +298,19 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                       child: isTapped
                                           ? TextFormField(
                                               // expands: true,
+                                              maxLength: 30,
+                                              focusNode: _formFocusNode,
                                               autofocus: true,
                                               controller:
                                                   expenseNotesEditingController,
                                               decoration: const InputDecoration(
-                                                  isDense: true),
+                                                counterText: "",
+                                                isDense: true,
+                                              ),
                                             )
                                           : Text(
-                                              initialValue.expensenotes,
+                                              localText ??
+                                                  initialValue.expensenotes,
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
@@ -272,8 +332,8 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                   height: 30,
                                   // width: SizeConfig.width! * 40,
                                   child: TextFormField(
-                                    // controller: TextEditingController(text: ""),
-
+                                    focusNode: _focusNode,
+                                    controller: textEditingController,
                                     onFieldSubmitted: (value) async {
                                       print(value);
                                       final provider1 =
@@ -287,12 +347,11 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                     maxLength: 30,
                                     onChanged: (value) {
                                       setState(() {
-                                        nameLength = value.length;
+                                        nameLength = value;
                                       });
                                     },
-
                                     decoration: InputDecoration(
-                                      suffixText: "$nameLength/30",
+                                      suffixText: "${nameLength.length}/30",
                                       suffixStyle: const TextStyle(
                                           color: Colors.grey, fontSize: 12),
                                       counterText: "",

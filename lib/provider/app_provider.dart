@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:budget_app/models/budget_model.dart';
 import 'package:budget_app/models/category_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -473,14 +475,14 @@ Future<String> getExpenses(BackEndProvider provider) async {
 
   if (res.statusCode == 200) {
     print("Success in getting expenses");
-    print(res.body);
+    // print(res.body);
 
     provider.setExpenses(res.body);
     return res.body;
   }
   if (res.statusCode == 404) {
     print("New User Expense");
-    print(res.body);
+    // print(res.body);
     provider.setExpenses("");
     return res.body;
   }
@@ -514,7 +516,7 @@ Future<String> deleteExpenses(
   var res = await http.delete(
     Uri.parse("$SERVER_URL/expenses/$expenseId"),
   );
-  print(res.body);
+  // print(res.body);
   if (res.statusCode == 200) {
     print("Deleted Successfully");
     await getExpenses(provider);
@@ -545,7 +547,7 @@ Future<void> createExpenseMethod(
         "emcreated": DateTime.now().toIso8601String()
       }));
 
-  print(res.body);
+  // print(res.body);
   getExpenseMethods(provider!);
 }
 
@@ -588,7 +590,7 @@ Future<void> changeExpenseMethod(
   );
   // print(res.statusCode);
   print("Changing expense method");
-  print(res.body);
+  // print(res.body);
   await getExpenses(provider!);
 }
 
@@ -608,9 +610,8 @@ Future<void> changeNotes(
       },
     ),
   );
-  // print(res.statusCode);
-  print(res.body);
-  await getExpenses(provider!);
+  ///Commented to improve performances
+  // await getExpenses(provider!);
 }
 
 ///Changes the default expense method
@@ -639,7 +640,7 @@ Future<void> deleteExpenseMethod(String emid, BackEndProvider provider) async {
   var res = await http.delete(
     Uri.parse("$SERVER_URL/expensemethods/$emid"),
   );
-  print(res.body);
+  // print(res.body);
   if (res.statusCode == 200) {
     print("Deleted Successfully");
     await getExpenseMethods(provider);
