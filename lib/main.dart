@@ -1,3 +1,4 @@
+import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:budget_app/screens/Welcome/welcome_screen.dart';
 import 'package:budget_app/screens/bottomnavigation.dart';
@@ -21,6 +22,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return MultiProvider(
       providers: [
         Provider<FirebaseAuthMethods>(
@@ -58,7 +61,10 @@ class MyApp extends StatelessWidget {
             )))),
             colorScheme: lightColorScheme,
             fontFamily: 'Inter',
-            textTheme: Theme.of(context).textTheme.apply(fontFamily: 'Inter'),
+            textTheme: Theme.of(context).textTheme.apply(
+                fontSizeFactor: (SizeConfig.height! < 600) ? 0.725 : 0.875,
+                fontSizeDelta: 1.75,
+                fontFamily: 'Inter'),
             useMaterial3: true),
         home: const AuthWrapper(),
       ),

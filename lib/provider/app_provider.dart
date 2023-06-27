@@ -476,7 +476,7 @@ Future<String> getExpenses(BackEndProvider provider) async {
   if (res.statusCode == 200) {
     print("Success in getting expenses");
     // print(res.body);
-
+    provider.resetFilteredData();
     provider.setExpenses(res.body);
     return res.body;
   }
@@ -610,6 +610,7 @@ Future<void> changeNotes(
       },
     ),
   );
+
   ///Commented to improve performances
   // await getExpenses(provider!);
 }

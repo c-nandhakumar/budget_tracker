@@ -73,7 +73,9 @@ class _CategoryDialogState extends State<CategoryDialog> {
           borderRadius: BorderRadius.circular(15.0),
         ),
         child: Container(
-          height: SizeConfig.height! * 30,
+          height: (SizeConfig.height! < 600)
+              ? SizeConfig.height! * 35
+              : SizeConfig.height! * 30,
           width: SizeConfig.width! * 75,
           padding: const EdgeInsets.symmetric(horizontal: 36),
           decoration: const BoxDecoration(),

@@ -81,7 +81,9 @@ class _DialogWidgetState extends State<DialogWidget> {
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: Container(
-        height: SizeConfig.height! * 45,
+        height: (SizeConfig.height! < 600)
+            ? SizeConfig.height! * 50
+            : SizeConfig.height! * 45,
         width: SizeConfig.width! * 75,
         padding: const EdgeInsets.symmetric(horizontal: 36),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
