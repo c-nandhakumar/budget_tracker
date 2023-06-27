@@ -87,6 +87,11 @@ class _ChartWidgetState extends State<ChartWidget> {
                 // series: <ChartSeries<_ChartData, String>>[
                 series: [
                   ColumnSeries<_ChartData, String>(
+                      dataLabelSettings: DataLabelSettings(
+                        isVisible: true,
+                        textStyle:
+                            TextStyle(fontSize: (data.length <= 4) ? 12 : 10),
+                      ),
                       dataSource: data,
                       borderRadius: BorderRadius.circular(3.5),
                       xValueMapper: (_ChartData data, _) => data.x,
@@ -95,6 +100,11 @@ class _ChartWidgetState extends State<ChartWidget> {
                       name: 'Expense',
                       color: Theme.of(context).colorScheme.primary),
                   ColumnSeries<TotalSpentData, String>(
+                      dataLabelSettings: DataLabelSettings(
+                        isVisible: true,
+                        textStyle:
+                            TextStyle(fontSize: (data.length <= 4) ? 12 : 10),
+                      ),
                       dataSource: totalSpentDataList,
                       borderRadius: BorderRadius.circular(3.5),
                       xValueMapper: (TotalSpentData data, _) => data.x,

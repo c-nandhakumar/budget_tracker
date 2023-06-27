@@ -95,6 +95,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const CategoryGrid(),
+                const SizedBox(
+                  height: 100,
+                ),
               ],
             )
           : Padding(

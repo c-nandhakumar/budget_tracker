@@ -43,8 +43,6 @@ class _PieChartWidgetState extends State<PieChartWidget> {
               final recentMap = {};
               // ignore: avoid_function_literals_in_foreach_calls
               provider.expenses!.forEach((e) {
-                // print("Selected budget ======> ${provider.selectedBudget}");
-                print(e.expensecost);
                 if (e.budgetname == provider.selectedInsights) {
                   if (recentMap.containsKey(e.categoryname)) {
                     recentMap.update(

@@ -49,7 +49,6 @@ class _ExpenseMethodsChartState extends State<ExpenseMethodsChart> {
                       expenseSummaryData[provider.selectedInsights]
                           ["ExpenseEmShortTotal"])
                   .forEach((key, value) {
-                print("Key  ====> $key");
                 if (value > maximum) {
                   maximum = value;
                 }
@@ -73,13 +72,15 @@ class _ExpenseMethodsChartState extends State<ExpenseMethodsChart> {
                   ),
                   tooltipBehavior: _tooltip,
                   onAxisLabelTapped: (axisLabelTapArgs) {
-                    print(axisLabelTapArgs.text);
-
                     provider.setSelectedInsights(axisLabelTapArgs.text);
                   },
                   // series: <ChartSeries<_ChartData, String>>[
                   series: [
                     ColumnSeries<TotalSpentData, String>(
+                        dataLabelSettings: const DataLabelSettings(
+                          isVisible: true,
+                          textStyle: TextStyle(  fontSize: 12),
+                        ),
                         dataSource: totalSpentDataList,
                         borderRadius: BorderRadius.circular(3.5),
                         xValueMapper: (TotalSpentData data, _) => data.x,
