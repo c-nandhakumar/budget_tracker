@@ -140,7 +140,13 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                   return value.expenseMethods.map((str) {
                                     return PopupMenuItem(
                                       value: str,
-                                      child: Text(str.emshortname),
+                                      child: Text(
+                                        str.emshortname,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(color: Colors.black),
+                                      ),
                                     );
                                   }).toList();
                                 },
