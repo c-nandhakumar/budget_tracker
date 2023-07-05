@@ -15,7 +15,7 @@ class FirebaseAuthMethods {
   Stream<User?> get authState => FirebaseAuth.instance.authStateChanges();
 
   ///EMAIL SIGNUP
-  ///This function will make a new user with password 
+  ///This function will make a new user with password
   ///and also it triggers the email verification too
   Future<UserCredential?> signUpWithEmail(
       {required email,
@@ -45,9 +45,24 @@ class FirebaseAuthMethods {
       if (!_auth.currentUser!.emailVerified) {
         // ignore: use_build_context_synchronously
         await sendEmailVerification(context);
+
+        ///This line will send verification code to the user
+        ///you can make the email verification mandatory by not returing the value
       }
 
+      ///you can add this return value statement in a else block and show a snackbar to notify the user
+      ///that they can only login by verifying the email, like this
+      /// if(!_auth.currentUser!.emailVerified){
+      ///   showSnackBar(context, "Your email is still unverified, Please verify your email to continue")
+      ///   await sendEmailVerification(context);
+      /// }
+      ///
+      /// else{
+      ///  return value;
+      /// }
       return value;
+
+      ///this return value will navigate the user to the next screen
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!);
     }
@@ -61,13 +76,13 @@ class FirebaseAuthMethods {
     try {
       await _auth.currentUser!.sendEmailVerification();
       // ignore: use_build_context_synchronously
-      showSnackBar(context, "Email Verification sent!");
+      // showSnackBar(context, "Email Verification sent!");
     } on FirebaseAuthException catch (e) {
       showSnackBar(context, e.message!);
     }
   }
 
-  ///SIGN OUT 
+  ///SIGN OUT
   ///This function will trigger a signout request to the firebase
   Future<void> signOut(BuildContext context) async {
     try {
