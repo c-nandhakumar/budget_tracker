@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'Inter',
             textTheme: Theme.of(context).textTheme.apply(
                 fontSizeFactor:
-                    (SizeConfig.screenHeight! < 600) ? 0.725 : 0.875,
+                    (SizeConfig.screenHeight! < 750) ? 0.725 : 0.875,
                 fontSizeDelta: 1.75,
                 fontFamily: 'Inter'),
             useMaterial3: true),
