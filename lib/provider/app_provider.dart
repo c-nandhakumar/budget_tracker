@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import "package:http/http.dart" as http;
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
@@ -69,6 +70,14 @@ class BackEndProvider extends DisposableProvider {
   Budget? budget;
   List<Categories>? categories;
   List<Expenses>? expenses;
+
+  bool isNewUser = true;
+
+  ///Sets true if the user is new
+  void setNewUser(bool value) {
+    isNewUser = value;
+    notifyListeners();
+  }
 
   ///Returns the budget value
   Future<Budget> getBudget() {
@@ -348,6 +357,8 @@ class BackEndProvider extends DisposableProvider {
     isAscending = false;
     isDescending = false;
     unsortedExpenses = [];
+
+    isNewUser = false;
   }
 }
 
@@ -549,6 +560,32 @@ Future<void> createExpenseMethod(
 
   // print(res.body);
   getExpenseMethods(provider!);
+}
+
+///Creates the new budget for the user
+///Endpoint "/createnewbudget/:userid" [POST]
+Future<void> createNewBudget(provider) async {}
+
+Future<void> createInitialBudget(provider, int amount) async {
+  String budgetname = DateFormat('MMMM yyyy').format(DateTime.now());
+  String time = DateTime.now().toIso8601String();
+
+  print(budgetname);
+
+  var res = await http.post(
+    Uri.parse("$SERVER_URL/budgets"),
+    headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: jsonEncode({
+      "userid": FirebaseAuth.instance.currentUser!.uid,
+      "budgetname": budgetname,
+      "budgetamount": amount,
+      "budgetcreated": time
+    }),
+  );
+  await getBudgetData(provider);
 }
 
 ///To get the expense methods

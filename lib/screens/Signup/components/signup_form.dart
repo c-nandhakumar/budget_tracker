@@ -49,13 +49,13 @@ class _SignUpFormState extends State<SignUpForm> {
                 email: emailController.text,
                 password: passwordController.text,
                 context: context);
-
+      // ignore: use_build_context_synchronously
+          final provider = Provider.of<BackEndProvider>(context, listen: false);
         try {
           await FirebaseAuth.instance.currentUser!
               .updateDisplayName(displayNameController.text);
           await postUser();
-          // ignore: use_build_context_synchronously
-          final provider = Provider.of<BackEndProvider>(context, listen: false);
+    
           await createExpenseMethod(
               provider: provider,
               emname: "CASH",
@@ -72,6 +72,9 @@ class _SignUpFormState extends State<SignUpForm> {
 
         // ignore: use_build_context_synchronously
         if (value != null) {
+
+           provider.setNewUser(true);
+
           // ignore: use_build_context_synchronously
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => const BottomNavBar(),

@@ -45,14 +45,16 @@ class _LoginFormState extends State<LoginForm> {
             password: passwordController.text,
             context: context);
     print("Value ====> ${value?.user!.uid}");
+    // ignore: use_build_context_synchronously
+    final provider = Provider.of<BackEndProvider>(context, listen: false);
     if (value != null) {
-      // ignore: use_build_context_synchronously
-      final provider = Provider.of<BackEndProvider>(context, listen: false);
       provider.setBottomNavIndex(0);
       await getExpenseMethods(provider);
       setState(() {
         isLoading = !isLoading;
       });
+
+      provider.setNewUser(false);
       // ignore: use_build_context_synchronously
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const BottomNavBar(),
