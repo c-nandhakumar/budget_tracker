@@ -489,6 +489,7 @@ Future<String> getExpenses(BackEndProvider provider) async {
     // print(res.body);
     provider.resetFilteredData();
     provider.setExpenses(res.body);
+    print(res.body);
     return res.body;
   }
   if (res.statusCode == 404) {
@@ -682,6 +683,28 @@ Future<void> changeNotes(
       },
     ),
   );
+
+  ///Commented to improve performances
+  // await getExpenses(provider!);
+}
+
+Future<void> changeRecurring(
+    {bool? recurring, String? expenseId, BackEndProvider? provider}) async {
+  print(recurring);
+  var res = await http.put(
+    Uri.parse("$SERVER_URL/expense/$expenseId"),
+    headers: {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: jsonEncode(
+      {
+        "recurring": recurring,
+      },
+    ),
+  );
+
+  print(res.body);
 
   ///Commented to improve performances
   // await getExpenses(provider!);

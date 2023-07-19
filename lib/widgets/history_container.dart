@@ -1,4 +1,3 @@
-import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/models/expense_model.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:flutter/material.dart';
@@ -26,16 +25,21 @@ class _HistoryContainerState extends State<HistoryContainer> {
   TextEditingController? textEditingController;
   TextEditingController? expenseNotesEditingController;
   String? localText;
+  bool? isChecked = false;
   @override
   void initState() {
     super.initState();
     textEditingController = TextEditingController();
     _focusNode = FocusNode();
     _formFocusNode = FocusNode();
+    isChecked = widget.expense!.recurring ?? false;
     _focusNode!.addListener(() async {
       if (!_focusNode!.hasFocus) {
         print(textEditingController!.text);
         final provider1 = Provider.of<BackEndProvider>(context, listen: false);
+        setState(() {
+          localText = textEditingController!.text;
+        });
         await changeNotes(
             provider: provider1,
             expenseId: widget.expense!.expenseid,
@@ -43,9 +47,12 @@ class _HistoryContainerState extends State<HistoryContainer> {
       }
     });
     _formFocusNode!.addListener(() async {
-      if (!_focusNode!.hasFocus) {
+      if (!_formFocusNode!.hasFocus) {
         print(expenseNotesEditingController!.text);
         final provider1 = Provider.of<BackEndProvider>(context, listen: false);
+        setState(() {
+          localText = expenseNotesEditingController!.text;
+        });
         await changeNotes(
             provider: provider1,
             expenseId: widget.expense!.expenseid,
@@ -59,6 +66,7 @@ class _HistoryContainerState extends State<HistoryContainer> {
     super.dispose();
     textEditingController!.dispose();
     _focusNode!.dispose();
+    _formFocusNode!.dispose();
   }
 
   @override
@@ -71,10 +79,11 @@ class _HistoryContainerState extends State<HistoryContainer> {
       String formattedDate = DateFormat('MMM dd').format(dateTime);
       // List<ExpenseMethod> expenseMethodList = provider.expenseMethods;
       return Container(
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(5)),
             color: Theme.of(context).colorScheme.secondary),
-        height: SizeConfig.height! * 13.75,
+        // height: SizeConfig.height! * 13.75,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -234,6 +243,9 @@ class _HistoryContainerState extends State<HistoryContainer> {
                     ),
                   ]),
             ),
+            const SizedBox(
+              height: 4,
+            ),
             Consumer<BackEndProvider>(builder: (context, value, child) {
               if (value.expenses!.isNotEmpty) {
                 Expenses initialValue = value.expenses!.firstWhere((element) =>
@@ -309,6 +321,11 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                               autofocus: true,
                                               controller:
                                                   expenseNotesEditingController,
+                                              onChanged: (value) {
+                                                // setState(() {
+                                                //   localText = value;
+                                                // });
+                                              },
                                               decoration: const InputDecoration(
                                                 counterText: "",
                                                 isDense: true,
@@ -320,7 +337,7 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                               overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .bodySmall!
+                                                  .bodyLarge!
                                                   .copyWith(
                                                       fontWeight:
                                                           FontWeight.w500,
@@ -378,40 +395,68 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                     ),
                                   )),
                             ),
-                      Row(children: [
-                        Text(
-                          widget.expense!.budgetname,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: const Color(0xff808080)),
-                        ),
-                        Text(" | ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(
-                                    fontWeight: FontWeight.w400,
-                                    color: const Color(0xff808080))),
-                        Text(
-                          formattedDate,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                  fontWeight: FontWeight.w400,
-                                  color: const Color(0xff808080)),
-                        )
-                      ]),
                     ],
                   ),
                 );
               } else {
                 return Container();
               }
-            })
+            }),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Checkbox(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      checkColor: Colors.white,
+                      value: isChecked,
+                      onChanged: (bool? value) async {
+                        print(value);
+                        setState(() {
+                          isChecked = value!;
+                        });
+                        final provider1 = Provider.of<BackEndProvider>(context,
+                            listen: false);
+
+                        await changeRecurring(
+                            expenseId: widget.expense!.expenseid,
+                            provider: provider1,
+                            recurring: value);
+                      },
+                    ),
+                    Text(
+                      "Recurring expense",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Row(children: [
+                    Text(
+                      widget.expense!.budgetname,
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xff808080)),
+                    ),
+                    Text(" | ",
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xff808080))),
+                    Text(
+                      formattedDate,
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xff808080)),
+                    )
+                  ]),
+                ),
+              ],
+            ),
           ],
         ),
       );

@@ -22,6 +22,7 @@ class Expenses {
   String emname;
   String emshortname;
   String expensetransaction;
+  bool? recurring;
 
   Expenses({
     required this.budgetname,
@@ -35,6 +36,7 @@ class Expenses {
     required this.emname,
     required this.emshortname,
     required this.expensetransaction,
+    this.recurring,
   });
 
   factory Expenses.fromJson(Map<String, dynamic> json) => Expenses(
@@ -49,6 +51,7 @@ class Expenses {
         emname: json["emname"],
         emshortname: json["emshortname"],
         expensetransaction: json["expensetransaction"],
+        recurring: json["recurring"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -64,5 +67,6 @@ class Expenses {
         "emname": emname,
         "emshortname": emshortname,
         "expensetransaction": expensetransaction,
+        "recurring": recurring,
       };
 }
