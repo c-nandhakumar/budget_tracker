@@ -15,6 +15,10 @@ class RemainingContainer extends StatefulWidget {
 
 class _RemainingContainerState extends State<RemainingContainer> {
   late Future<String> total;
+  bool isOpen = false;
+  FocusNode? _formFocusNode;
+  TextEditingController amountController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -23,6 +27,19 @@ class _RemainingContainerState extends State<RemainingContainer> {
     ///To Fetch the total amount data from the server
     total = getTotal(
         provider, provider.selectedBudget!, provider.selectedBudgetIndex!);
+    _formFocusNode = FocusNode();
+    _formFocusNode!.addListener(() async {
+      if (!_formFocusNode!.hasFocus) {
+        print(amountController.text);
+        final provider1 = Provider.of<BackEndProvider>(context, listen: false);
+        await updateBudget(
+          provider1,
+          provider1.budget!,
+          provider1.selectedBudgetIndex!,
+          int.parse(amountController.text),
+        );
+      }
+    });
   }
 
   @override
@@ -47,7 +64,23 @@ class _RemainingContainerState extends State<RemainingContainer> {
           /// red ---> Low amount
           /// green ---> High amount
           Color? color = Color.lerp(Colors.red, Colors.green, percentage);
-          if (snapshot.hasData) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Container(
+              height: SizeConfig.width! * 44,
+              width: SizeConfig.width! * 44,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(16),
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+            );
+          } else {
             return Container(
               height: SizeConfig.width! * 44,
               width: SizeConfig.width! * 44,
@@ -75,34 +108,79 @@ class _RemainingContainerState extends State<RemainingContainer> {
                           color: Colors.white,
                         ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: Text(
-                      "Budget ${dotenv.get("CURRENCY")}$budgetAmount",
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
-                    ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                          onTap: () async {
+                            final provider1 = Provider.of<BackEndProvider>(
+                                context,
+                                listen: false);
+                            if (isOpen == true) {
+                              await updateBudget(
+                                provider1,
+                                provider1.budget!,
+                                provider1.selectedBudgetIndex!,
+                                int.parse(amountController.text),
+                              );
+                              setState(() {
+                                total = getTotal(
+                                    provider1,
+                                    provider1.selectedBudget!,
+                                    provider1.selectedBudgetIndex!);
+                              });
+                            }
+                            setState(() {
+                              isOpen = !isOpen;
+                            });
+                          },
+                          child: Ink(
+                            height: 24,
+                            width: 24,
+                            child: Icon(
+                              isOpen ? Icons.done : Icons.edit,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          )),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      isOpen
+                          ? Flexible(
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                child: TextFormField(
+                                  // expands: true,
+                                  maxLength: 30,
+                                  focusNode: _formFocusNode,
+                                  autofocus: true,
+                                  controller: amountController,
+                                  decoration: const InputDecoration(
+                                    counterText: "",
+                                    isDense: true,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Text(
+                              "Budget ${dotenv.get("CURRENCY")}$budgetAmount",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                    ],
                   ),
                 ],
               )),
-            );
-          } else {
-            return Container(
-              height: SizeConfig.width! * 44,
-              width: SizeConfig.width! * 44,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(16),
-                ),
-              ),
-              child: const Center(
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-              ),
             );
           }
         });

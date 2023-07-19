@@ -520,6 +520,39 @@ Future<String> getSummary(BackEndProvider provider) async {
   return "";
 }
 
+///This function is used to send PUT request to the server
+///Endpoint "/budgets/:budgetid" [PUT]
+Future<void> updateBudget(BackEndProvider provider, Budget budget, int index,
+    int budgetamount) async {
+  String budgetId = budget.budgets[index].budgetid.toString();
+  String budgetname = budget.budgets[index].budgetname;
+  String budgetcreated = DateTime.now().toIso8601String();
+
+  var res = await http.put(Uri.parse("$SERVER_URL/budgets/$budgetId"),
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({
+        "userid": FirebaseAuth.instance.currentUser!.uid,
+        "budgetname": budgetname,
+        "budgetamount": budgetamount,
+        "budgetcreated": budgetcreated,
+      }));
+  var data = {
+    "userid": FirebaseAuth.instance.currentUser!.uid,
+    "budgetname": budgetname,
+    "budgetamount": budgetamount,
+    "budgetcreated": budgetcreated,
+  };
+  print(data);
+  print(res.statusCode);
+  print(res.body);
+  if (res.statusCode == 200) {
+    await getBudgetData(provider);
+  }
+}
+
 ///This function is used to send DELETE request to the server
 ///Endpoint "/expenses/:expenseId" [DELETE]
 Future<String> deleteExpenses(
@@ -566,6 +599,8 @@ Future<void> createExpenseMethod(
 ///Endpoint "/createnewbudget/:userid" [POST]
 Future<void> createNewBudget(provider) async {}
 
+///Creates the initial budget for the user
+///Endpoint "/budgets" [POST]
 Future<void> createInitialBudget(provider, int amount) async {
   String budgetname = DateFormat('MMMM yyyy').format(DateTime.now());
   String time = DateTime.now().toIso8601String();
