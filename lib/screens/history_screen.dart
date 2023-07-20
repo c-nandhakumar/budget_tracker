@@ -247,7 +247,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                     : Colors.black,
                               ),
                             ),
-                           
                           ]),
                     ),
                   ),
@@ -287,6 +286,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   ),
                 ),
               ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 24.0, top: 12),
+              child: Text(
+                "Total: ${provider.filteredAmount} ",
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
             ),
           ),
           const Expanded(

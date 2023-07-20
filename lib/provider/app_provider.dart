@@ -47,6 +47,7 @@ class BackEndProvider extends DisposableProvider {
   }
 
   String jwt = "";
+  double filteredAmount = 0;
 
   ///This will store the current userid, which is used later
   String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -71,7 +72,7 @@ class BackEndProvider extends DisposableProvider {
   List<Categories>? categories;
   List<Expenses>? expenses;
 
-  bool isNewUser = true;
+  bool isNewUser = false;
 
   ///Sets true if the user is new
   void setNewUser(bool value) {
@@ -172,6 +173,10 @@ class BackEndProvider extends DisposableProvider {
 
   void setSearchResults(List<Expenses> expense) {
     filteredExpenses = expense;
+    filteredAmount = 0;
+    for (var element in filteredExpenses!) {
+      filteredAmount += element.expensecost;
+    }
     notifyListeners();
   }
 
@@ -251,6 +256,18 @@ class BackEndProvider extends DisposableProvider {
       isAscending = false;
       isDescending = false;
       unsortedExpenses = [...filteredExpenses!];
+      filteredAmount = 0;
+
+      filteredExpenses = filteredExpenses!.where(
+        (element) {
+          return element.budgetname == selectedBudget;
+        },
+      ).toList();
+
+      for (var element in filteredExpenses!) {
+        filteredAmount += element.expensecost;
+      }
+
       // print(filteredExpenses);
       notifyListeners();
     } else {
@@ -294,6 +311,10 @@ class BackEndProvider extends DisposableProvider {
   void setFilteredData(List<Expenses> expenses) {
     print(expenses.length);
     filteredExpenses = expenses;
+    filteredAmount = 0;
+    for (var element in expenses) {
+      filteredAmount += element.expensecost;
+    }
     unsortedExpenses = expenses;
     notifyListeners();
   }
@@ -323,6 +344,7 @@ class BackEndProvider extends DisposableProvider {
   ///Resets the memory and makes new memory for the new User;
   @override
   void disposeValues() {
+    filteredAmount = 0;
     bottomnavIndex = 0;
     budget = null;
     categories = null;
