@@ -1,4 +1,5 @@
 import 'package:budget_app/provider/app_provider.dart';
+import 'package:budget_app/widgets/edit_budget_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -16,8 +17,6 @@ class RemainingContainer extends StatefulWidget {
 class _RemainingContainerState extends State<RemainingContainer> {
   late Future<String> total;
   bool isOpen = false;
-  FocusNode? _formFocusNode;
-  TextEditingController amountController = TextEditingController();
 
   @override
   void initState() {
@@ -27,19 +26,6 @@ class _RemainingContainerState extends State<RemainingContainer> {
     ///To Fetch the total amount data from the server
     total = getTotal(
         provider, provider.selectedBudget!, provider.selectedBudgetIndex!);
-    _formFocusNode = FocusNode();
-    _formFocusNode!.addListener(() async {
-      if (!_formFocusNode!.hasFocus) {
-        print(amountController.text);
-        final provider1 = Provider.of<BackEndProvider>(context, listen: false);
-        await updateBudget(
-          provider1,
-          provider1.budget!,
-          provider1.selectedBudgetIndex!,
-          int.parse(amountController.text),
-        );
-      }
-    });
   }
 
   @override
@@ -122,13 +108,19 @@ class _RemainingContainerState extends State<RemainingContainer> {
                     children: [
                       InkWell(
                           onTap: () async {
-                            await updateBudgetAmount(context);
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return EditBudgetDialog(
+                                    callback: updateBudgetAmount);
+                              },
+                            );
                           },
                           child: Ink(
                             height: 24,
                             width: 24,
-                            child: Icon(
-                              isOpen ? Icons.done : Icons.edit,
+                            child: const Icon(
+                              Icons.edit,
                               color: Colors.white,
                               size: 18,
                             ),
@@ -136,47 +128,18 @@ class _RemainingContainerState extends State<RemainingContainer> {
                       const SizedBox(
                         width: 6,
                       ),
-                      isOpen
-                          ? Flexible(
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.only(right: 10, left: 10),
-                                child: TextFormField(
-                                  // expands: true,
-                                  maxLength: 6,
-                                  keyboardType: TextInputType.number,
-                                  focusNode: _formFocusNode,
-                                  onFieldSubmitted: (value) async {
-                                    await updateBudgetAmount(context);
-                                  },
-
-                                  autofocus: true,
-                                  controller: amountController,
-                                  decoration: const InputDecoration(
-                                    counterText: "",
-                                    isDense: true,
-                                  ),
+                      Text(
+                        "Budget ${dotenv.get("CURRENCY")}$budgetAmount",
+                        style: budgetAmount.toString().length >= 6
+                            ? Theme.of(context).textTheme.titleSmall!.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                )
+                            : Theme.of(context).textTheme.titleMedium!.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
                                 ),
-                              ),
-                            )
-                          : Text(
-                              "Budget ${dotenv.get("CURRENCY")}$budgetAmount",
-                              style: budgetAmount.toString().length >= 6
-                                  ? Theme.of(context)
-                                      .textTheme
-                                      .titleSmall!
-                                      .copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w700,
-                                      )
-                                  : Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                            ),
+                      ),
                     ],
                   ),
                 ],
@@ -186,42 +149,35 @@ class _RemainingContainerState extends State<RemainingContainer> {
         });
   }
 
-  Future<void> updateBudgetAmount(BuildContext context) async {
+  Future<void> updateBudgetAmount(String text, BuildContext context) async {
     final provider1 = Provider.of<BackEndProvider>(context, listen: false);
-    if (isOpen == true) {
-      if (amountController.text.isEmpty) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              content: const Text("Please enter the amount"),
-              actions: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text("OK"))
-              ],
-            );
-          },
-        );
-      } else {
-        await updateBudget(
-          provider1,
-          provider1.budget!,
-          provider1.selectedBudgetIndex!,
-          int.parse(amountController.text),
-        );
-        setState(() {
-          total = getTotal(provider1, provider1.selectedBudget!,
-              provider1.selectedBudgetIndex!);
 
-          isOpen = !isOpen;
-        });
-      }
+    if (text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: const Text("Please enter the amount"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OK"))
+            ],
+          );
+        },
+      );
     } else {
+      await updateBudget(
+        provider1,
+        provider1.budget!,
+        provider1.selectedBudgetIndex!,
+        int.parse(text),
+      );
       setState(() {
-        isOpen = !isOpen;
+        total = getTotal(provider1, provider1.selectedBudget!,
+            provider1.selectedBudgetIndex!);
       });
     }
   }

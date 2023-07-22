@@ -142,111 +142,13 @@ class _SwipableCardState extends State<SwipableCard> {
               ///when there is no data in the historyList, then this fallback UI will be displayed
               ///for the existing user, who have cleared all the data in the historyList
               else {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: 56,
-                          padding: const EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: Colors.grey, offset: Offset(-4, 4))
-                            ],
-                            color: Colors.white,
-                            border: Border.all(width: 1),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(5),
-                            ),
-                          ),
-                          child: const Text(
-                              "No Transactions Yet. To add transaction, Flip the category card and add the expenses"),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                return fallbackUI(context);
               }
             }
 
             ///this fallback UI will be displayed for the initial User
             else {
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 56,
-                      padding: const EdgeInsets.all(5.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        boxShadow: const [
-                          BoxShadow(color: Colors.grey, offset: Offset(-4, 4))
-                        ],
-                        color: Colors.white,
-                        border: Border.all(width: 1),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(5),
-                        ),
-                      ),
-                      child: const Text(
-                          "No Transactions Yet. To add transaction, Flip the category card and add the expenses"),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Container(
-                                  height: 48,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    boxShadow: const [
-                                      BoxShadow(
-                                          color: Colors.grey,
-                                          offset: Offset(-4, 4))
-                                    ],
-                                    color: Colors.white,
-                                    border: Border.all(width: 1),
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(5),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    "Tap the \"+\" Icon to create a new expense method",
-                                    textAlign: TextAlign.center,
-                                  )),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: SizedBox(
-                                  height: 85,
-                                  child: Transform(
-                                    alignment: Alignment.center,
-                                    transform: Matrix4.rotationZ(7.6),
-                                    child:
-                                        Image.asset('assets/images/arrow.png'),
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                )),
-              );
+              return fallbackUI(context);
             }
           });
         }
@@ -260,5 +162,43 @@ class _SwipableCardState extends State<SwipableCard> {
         }
       },
     );
+  }
+
+  Center fallbackUI(BuildContext context) {
+    return Center(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Container(
+            // height: 64,
+            padding: const EdgeInsets.all(16.0),
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0, 4),
+                    blurRadius: 3,
+                    spreadRadius: 1)
+              ],
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
+              ),
+            ),
+            child: Text(
+              "No Transactions Yet. Flip the category card and add the expense",
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16),
+            ),
+          ),
+        ),
+      ],
+    ));
   }
 }

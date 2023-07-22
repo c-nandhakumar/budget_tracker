@@ -239,8 +239,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               height: 20,
                               width: 20,
                               child: Image(
+                                filterQuality: FilterQuality.high,
                                 image: const AssetImage(
-                                    "assets/icons/desceding.png"),
+                                    "assets/icons/descending.png"),
                                 color: provider.isDescending
                                     ? Colors.white
                                     : Colors.black,
@@ -276,10 +277,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           color: Theme.of(context).colorScheme.secondary,
                           // color: Colors.white,
                           borderRadius: BorderRadius.circular(10)),
-                      child: const Icon(
-                        Icons.filter_alt_sharp,
-                        color: Colors.black,
-                        size: 18,
+                      child: const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: Image(
+                          image: AssetImage("assets/icons/filter.png"),
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),

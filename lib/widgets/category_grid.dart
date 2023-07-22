@@ -68,50 +68,81 @@ class _CategoryGridState extends State<CategoryGrid> {
                 children: <Widget>[...categoryGrid],
               );
             } else {
-              return Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 16),
-                      child: Container(
-                          height: 36,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                  color: Colors.grey, offset: Offset(-4, 4))
-                            ],
-                            color: Colors.white,
-                            border: Border.all(width: 1),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(5),
-                            ),
-                          ),
-                          child: const Text(
-                              "Tap the \"+\" Icon to create a category")),
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                        padding: const EdgeInsets.only(right: 24),
-                        height: 100,
-                        child: Transform(
-                          alignment: Alignment.center,
-                          transform: Matrix4.rotationZ(1.3),
-                          child: Image.asset('assets/images/arrow.png'),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return fallbackUI(context);
             }
           } else {
             return const Center(child: CircularProgressIndicator());
           }
         });
   }
+}
+
+Widget fallbackUI(context) {
+  return Center(
+      child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Container(
+          // height: 64,
+          padding: const EdgeInsets.all(16.0),
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0, 4),
+                  blurRadius: 3,
+                  spreadRadius: 1)
+            ],
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(5),
+            ),
+          ),
+          child: SizedBox(
+            width: double.infinity,
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                Text(
+                  "Tap the ",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Container(
+                      padding: EdgeInsets.all(0),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(48),
+                          color: Theme.of(context).colorScheme.primary),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      )),
+                ),
+                Text(" icon",
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18)),
+                Text(
+                  "to create new category",
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 18),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  ));
 }
