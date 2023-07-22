@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'common/color_schemes.dart';
 
 void main() async {
@@ -82,9 +83,13 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
     if (firebaseUser != null) {
-      return const BottomNavBar();
+      return ShowCaseWidget(builder: Builder(builder: (context) {
+        return const BottomNavBar();
+      }));
     } else {
-      return const WelcomeScreen();
+      return ShowCaseWidget(builder: Builder(builder: (context) {
+        return const WelcomeScreen();
+      }));
     }
   }
 }

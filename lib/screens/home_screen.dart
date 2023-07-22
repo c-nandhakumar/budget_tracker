@@ -8,6 +8,8 @@ import 'package:budget_app/widgets/remaining_container_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 import '../widgets/drop_down_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -19,10 +21,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool? dateNow;
+  final _key1 = GlobalKey<_HomeScreenState>();
 
   @override
   void initState() {
+    showTutorialScreen();
     super.initState();
+
     final datenow = DateTime.now();
     String currentMonth = DateFormat('MMMM yyyy').format(datenow);
     String formattedDate = DateFormat('dd').format(datenow);
@@ -54,21 +59,116 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  showTutorialScreen() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey("newUser")) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        return ShowCaseWidget.of(context).startShowCase(
+          [
+            _key1,
+          ],
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
+
     final provider = Provider.of<BackEndProvider>(context);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
+      floatingActionButton: Showcase.withWidget(
+        height: 25,
+        width: SizeConfig.screenWidth! * 0.85,
+        tooltipPosition: TooltipPosition.top,
+        targetBorderRadius: BorderRadius.circular(1000),
+        targetPadding: const EdgeInsets.all(48),
+        container: Padding(
+          padding: const EdgeInsets.all(0.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                // height: 64,
+                padding: const EdgeInsets.all(16.0),
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey,
+                        offset: Offset(0, 4),
+                        blurRadius: 3,
+                        spreadRadius: 1)
+                  ],
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(5),
+                  ),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Tap the ",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Container(
+                              padding: EdgeInsets.all(0),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(48),
+                                  color: Theme.of(context).colorScheme.primary),
+                              child: const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              )),
+                        ),
+                        Text(" icon",
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18)),
+                      ],
+                    ),
+                    Text(
+                      "to create new category",
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        disposeOnTap: true,
+        onTargetClick: () {
           showDialog(
               context: context, builder: (context) => const CategoryDialog());
         },
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        child: const Icon(
-          Icons.add,
-          color: Colors.black,
+        key: _key1,
+        child: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+                context: context, builder: (context) => const CategoryDialog());
+          },
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          child: const Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
         ),
       ),
       appBar: AppBar(

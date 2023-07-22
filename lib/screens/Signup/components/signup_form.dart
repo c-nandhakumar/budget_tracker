@@ -4,6 +4,7 @@ import 'package:budget_app/utility/showsnackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../../../common/screen_size.dart';
 import '../../../components/already_have_an_account_acheck.dart';
@@ -76,7 +77,11 @@ class _SignUpFormState extends State<SignUpForm> {
 
           // ignore: use_build_context_synchronously
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const BottomNavBar(),
+            builder: (context) => ShowCaseWidget(
+              builder: Builder(builder: (context) {
+                return const BottomNavBar();
+              }),
+            ),
           ));
         }
       }
@@ -192,16 +197,17 @@ class _SignUpFormState extends State<SignUpForm> {
                   isLoading = true;
                 });
                 await signUpWithEmail();
+
                 setState(() {
                   isLoading = false;
                 });
               },
               child: isLoading
                   ? const SizedBox(
-                      height: 10,
-                      width: 10,
+                      height: 12,
+                      width: 12,
                       child: CircularProgressIndicator(
-                        strokeWidth: 3,
+                        strokeWidth: 2.5,
                       ))
                   : Text("Sign Up".toUpperCase()),
             ),

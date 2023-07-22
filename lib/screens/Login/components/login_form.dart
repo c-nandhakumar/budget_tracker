@@ -4,6 +4,7 @@ import 'package:budget_app/services/firebase_auth_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../provider/app_provider.dart';
@@ -57,7 +58,11 @@ class _LoginFormState extends State<LoginForm> {
       provider.setNewUser(false);
       // ignore: use_build_context_synchronously
       Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const BottomNavBar(),
+        builder: (context) => ShowCaseWidget(
+          builder: Builder(builder: (context) {
+            return const BottomNavBar();
+          }),
+        ),
       ));
     }
   }

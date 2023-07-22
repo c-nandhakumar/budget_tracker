@@ -106,6 +106,9 @@ Widget fallbackUI(context) {
             width: double.infinity,
             child: Wrap(
               alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 5,
+              runSpacing: 2,
               children: [
                 Text(
                   "Tap the ",

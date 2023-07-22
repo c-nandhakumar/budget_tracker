@@ -4,6 +4,7 @@ import 'package:budget_app/services/firebase_auth_methods.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogoutScreen extends StatefulWidget {
   const LogoutScreen({super.key});
@@ -51,10 +52,13 @@ class _LogoutScreenState extends State<LogoutScreen> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 40, vertical: 12.5),
             ),
-            onPressed: () {
+            onPressed: () async {
               context.read<FirebaseAuthMethods>().signOut(context);
               // context.read<BackEndProvider>().setUserId();
               AppProviders.disposeAllDisposableProviders(context);
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+              prefs.remove('newUser');
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                 builder: (context) => const WelcomeScreen(),
               ));

@@ -78,9 +78,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
       // DealsScreen(),
       LogoutScreen()
     ];
-    return Scaffold(
-        body: isNewUser!
-            ? isLoading
+    return isNewUser!
+        ? Scaffold(
+            body: isLoading
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
@@ -159,97 +159,100 @@ class _BottomNavBarState extends State<BottomNavBar> {
                             )),
                       )
                     ],
-                  )
-            : FutureBuilder(
-                future: getBudgetDataStr,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (snapshot.hasData) {
-                    return pages[provider.bottomnavIndex];
-                  }
-                  if (snapshot.hasError) {
-                    print(snapshot);
-                    return const Center(
-                      child: Text("Oops , Something went wrong"),
-                    );
-                  } else {
-                    return const LoginScreen();
-                  }
-                },
-              ),
-        bottomNavigationBar: BottomAppBar(
-            height:
-                _bannerAd != null ? _bannerAd!.size.height.toDouble() + 56 : 56,
-            // height: 120,
-            padding: EdgeInsets.zero,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  _bannerAd != null
-                      ? Align(
-                          alignment: Alignment.topCenter,
-                          child: Container(
-                            width: _bannerAd!.size.width.toDouble(),
-                            height: _bannerAd!.size.height.toDouble(),
-                            child: AdWidget(ad: _bannerAd!),
-                          ))
-                      : Container(),
-                  Container(
-                    decoration: const BoxDecoration(boxShadow: [
-                      BoxShadow(
-                          color: Color.fromARGB(255, 224, 224, 224),
-                          offset: Offset(0, -2),
-                          blurRadius: 2)
-                    ]),
-                    child: BottomNavigationBar(
-                        type: BottomNavigationBarType.fixed,
-                        selectedItemColor:
-                            Theme.of(context).colorScheme.primary,
-                        //  backgroundColor: Colors.grey,
-                        unselectedItemColor: Colors.grey,
-                        selectedFontSize: 12,
-                        elevation: 10,
-
-                        // showUnselectedLabels: true,
-                        unselectedFontSize: 10,
-                        // ignore: prefer_const_literals_to_create_immutables
-                        items: [
-                          const BottomNavigationBarItem(
-                              icon: Icon(
-                                Icons.home,
-                              ),
-                              label: "Home"),
-                          const BottomNavigationBarItem(
-                              icon: Icon(
-                                Icons.history,
-                              ),
-                              label: "History"),
-                          const BottomNavigationBarItem(
-                              icon: Icon(
-                                Icons.insights,
-                              ),
-                              label: "Insights"),
-                          // const BottomNavigationBarItem(
-                          //     icon: Icon(
-                          //       Icons.monetization_on,
-                          //     ),
-                          //     label: ""),
-                          const BottomNavigationBarItem(
-                              icon: Icon(
-                                Icons.logout,
-                              ),
-                              label: "Logout")
-                        ],
-                        onTap: (value) {
-                          provider.setBottomNavIndex(value);
-                        },
-                        currentIndex: provider.bottomnavIndex),
                   ),
-                ])));
+          )
+        : Scaffold(
+            body: FutureBuilder(
+              future: getBudgetDataStr,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasData) {
+                  return pages[provider.bottomnavIndex];
+                }
+                if (snapshot.hasError) {
+                  print(snapshot);
+                  return const Center(
+                    child: Text("Oops , Something went wrong"),
+                  );
+                } else {
+                  return const LoginScreen();
+                }
+              },
+            ),
+            bottomNavigationBar: BottomAppBar(
+                height: _bannerAd != null
+                    ? _bannerAd!.size.height.toDouble() + 56
+                    : 56,
+                // height: 120,
+                padding: EdgeInsets.zero,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      _bannerAd != null
+                          ? Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                width: _bannerAd!.size.width.toDouble(),
+                                height: _bannerAd!.size.height.toDouble(),
+                                child: AdWidget(ad: _bannerAd!),
+                              ))
+                          : Container(),
+                      Container(
+                        decoration: const BoxDecoration(boxShadow: [
+                          BoxShadow(
+                              color: Color.fromARGB(255, 224, 224, 224),
+                              offset: Offset(0, -2),
+                              blurRadius: 2)
+                        ]),
+                        child: BottomNavigationBar(
+                            type: BottomNavigationBarType.fixed,
+                            selectedItemColor:
+                                Theme.of(context).colorScheme.primary,
+                            //  backgroundColor: Colors.grey,
+                            unselectedItemColor: Colors.grey,
+                            selectedFontSize: 12,
+                            elevation: 10,
+
+                            // showUnselectedLabels: true,
+                            unselectedFontSize: 10,
+                            // ignore: prefer_const_literals_to_create_immutables
+                            items: [
+                              const BottomNavigationBarItem(
+                                  icon: Icon(
+                                    Icons.home,
+                                  ),
+                                  label: "Home"),
+                              const BottomNavigationBarItem(
+                                  icon: Icon(
+                                    Icons.history,
+                                  ),
+                                  label: "History"),
+                              const BottomNavigationBarItem(
+                                  icon: Icon(
+                                    Icons.insights,
+                                  ),
+                                  label: "Insights"),
+                              // const BottomNavigationBarItem(
+                              //     icon: Icon(
+                              //       Icons.monetization_on,
+                              //     ),
+                              //     label: ""),
+                              const BottomNavigationBarItem(
+                                  icon: Icon(
+                                    Icons.logout,
+                                  ),
+                                  label: "Logout")
+                            ],
+                            onTap: (value) {
+                              provider.setBottomNavIndex(value);
+                            },
+                            currentIndex: provider.bottomnavIndex),
+                      ),
+                    ])));
   }
 }

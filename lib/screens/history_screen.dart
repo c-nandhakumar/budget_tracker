@@ -6,6 +6,8 @@ import 'package:budget_app/widgets/filter_widget.dart';
 import 'package:budget_app/widgets/swipable_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 import '../common/screen_size.dart';
 import '../provider/app_provider.dart';
@@ -18,42 +20,243 @@ class HistoryScreen extends StatefulWidget {
 }
 
 class _HistoryScreenState extends State<HistoryScreen> {
+  final _key1 = GlobalKey<_HistoryScreenState>();
+  final _key2 = GlobalKey<_HistoryScreenState>();
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    showTutorialScreen();
+    super.initState();
+  }
+
+  showTutorialScreen() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey("newUser")) {
+      await prefs.setBool('newUser', false);
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        return ShowCaseWidget.of(context).startShowCase(
+          [
+            _key1,
+            _key2,
+          ],
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-              context: context,
-              builder: (context) => const ExpenseMethodDialog());
-        },
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: Showcase.withWidget(
+          height: 25,
+          width: SizeConfig.screenWidth! * 0.775,
+          tooltipPosition: TooltipPosition.top,
+          targetBorderRadius: BorderRadius.circular(1000),
+          targetPadding: const EdgeInsets.all(48),
+          container: Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                    // height: 64,
+                    padding: const EdgeInsets.all(16.0),
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0, 4),
+                            blurRadius: 3,
+                            spreadRadius: 1)
+                      ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Tap the ",
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(48),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                  child: const Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                  )),
+                            ),
+                            Text(" icon",
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18)),
+                          ],
+                        ),
+                        Text(
+                          "to create expense method",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18),
+                        ),
+                      ],
+                    )),
+              ],
+            ),
+          ),
+          disposeOnTap: true,
+          onTargetClick: () {
+            showDialog(
+                context: context,
+                builder: (context) => const ExpenseMethodDialog());
+          },
+          key: _key1,
+          child: FloatingActionButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => const ExpenseMethodDialog());
+            },
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
+          )),
       appBar: AppBar(
         actions: [
-          IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      surfaceTintColor: Colors.white,
-                      insetPadding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
+          Showcase.withWidget(
+            height: SizeConfig.screenHeight,
+            width: SizeConfig.screenWidth! * 0.85,
+            tooltipPosition: TooltipPosition.bottom,
+            targetBorderRadius: BorderRadius.circular(1000),
+            targetPadding: const EdgeInsets.all(50),
+            container: Padding(
+              padding: const EdgeInsets.all(0.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    // height: 64,
+                    padding: const EdgeInsets.all(16.0),
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0, 4),
+                            blurRadius: 3,
+                            spreadRadius: 1)
+                      ],
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5),
                       ),
-                      child: const ExpenseMethodsListWidget(),
-                    );
-                  },
-                );
-              },
-              icon: const Icon(Icons.more_vert))
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Tap the ",
+                              style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(48),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                  child: const Icon(
+                                    Icons.more_vert,
+                                    color: Colors.white,
+                                  )),
+                            ),
+                            Text(" icon",
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18)),
+                          ],
+                        ),
+                        Text(
+                          "to edit expense method",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            disposeOnTap: true,
+            onTargetClick: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Dialog(
+                    surfaceTintColor: Colors.white,
+                    insetPadding: EdgeInsets.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: const ExpenseMethodsListWidget(),
+                  );
+                },
+              );
+            },
+            key: _key2,
+            child: IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        surfaceTintColor: Colors.white,
+                        insetPadding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: const ExpenseMethodsListWidget(),
+                      );
+                    },
+                  );
+                },
+                icon: const Icon(Icons.more_vert)),
+          )
         ],
         leading: IconButton(
           icon: const Icon(Icons.chevron_left),
@@ -88,66 +291,78 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Container(
+                      padding: const EdgeInsets.only(left: 12),
                       // Add padding around the search bar
+                      alignment: Alignment.centerLeft,
                       decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary),
+                          borderRadius: BorderRadius.circular(8),
+                          color: Theme.of(context).colorScheme.secondary,
+                          boxShadow: [
+                            BoxShadow(
+                                offset: Offset(0, 2),
+                                color: Colors.grey,
+                                blurRadius: 2)
+                          ]),
                       // Use a Material design search bar
-                      child: TextField(
-                        textInputAction: TextInputAction.search,
-                        onEditingComplete: () {
-                          // Perform the search here
-                          ///Compares the expense notes with the input typed
-                          List<Expenses> list = provider.expenses!;
-                          var newList = list.where((element) => element
-                              .expensenotes
-                              .toLowerCase()
-                              .contains(_searchController.text));
-                          provider
-                              .setSearchResults(List<Expenses>.from(newList));
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          constraints: const BoxConstraints(),
-                          contentPadding: EdgeInsets.zero,
+                      child: Align(
+                        child: TextField(
+                          textInputAction: TextInputAction.search,
+                          onEditingComplete: () {
+                            // Perform the search here
+                            ///Compares the expense notes with the input typed
+                            List<Expenses> list = provider.expenses!;
+                            var newList = list.where((element) => element
+                                .expensenotes
+                                .toLowerCase()
+                                .contains(_searchController.text));
+                            provider
+                                .setSearchResults(List<Expenses>.from(newList));
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                              // constraints: const BoxConstraints(),
+                              // contentPadding: EdgeInsets.zero,
+                              hintText: 'Search...',
+                              // Add a clear button to the search bar
+                              suffixIcon: IconButton(
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                icon: Icon(
+                                  Icons.clear,
+                                  size: 18,
+                                  color: Colors.grey[700],
+                                ),
+                                onPressed: () {
+                                  ///On clicking the clear icon,
+                                  ///resets the state back to its old state
+                                  _searchController.clear();
+                                  provider.changeToUnsorted();
+                                },
+                              ),
 
-                          hintText: 'Search...',
-                          // Add a clear button to the search bar
-                          suffixIcon: IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              ///On clicking the clear icon,
-                              ///resets the state back to its old state
-                              _searchController.clear();
-                              provider.changeToUnsorted();
-                            },
-                          ),
-
-                          // Add a search icon or button to the search bar
-                          prefixIcon: IconButton(
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            icon: const Icon(Icons.search),
-
-                            ///On Pressing the search icon..
-                            ///this will be implemented
-                            onPressed: () {
-                              // Perform the search here
-                              ///Compares the expense notes with the input typed
-                              List<Expenses> list = provider.expenses!;
-                              var newList = list.where((element) => element
-                                  .expensenotes
-                                  .toLowerCase()
-                                  .contains(_searchController.text));
-                              provider.setSearchResults(
-                                  List<Expenses>.from(newList));
-                            },
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
+                              ///Enable prefix search button by uncommenting this lines
+                              // Add a search icon or button to the search bar
+                              /*prefixIcon: IconButton(
+                                padding: EdgeInsets.zero,
+                                constraints: const BoxConstraints(),
+                                icon: const Icon(Icons.search),
+                      
+                                ///On Pressing the search icon..
+                                ///this will be implemented
+                                onPressed: () {
+                                  // Perform the search here
+                                  ///Compares the expense notes with the input typed
+                                  List<Expenses> list = provider.expenses!;
+                                  var newList = list.where((element) => element
+                                      .expensenotes
+                                      .toLowerCase()
+                                      .contains(_searchController.text));
+                                  provider.setSearchResults(
+                                      List<Expenses>.from(newList));
+                                },
+                              ), */
+                              border: InputBorder.none),
                         ),
                       ),
                     ),
