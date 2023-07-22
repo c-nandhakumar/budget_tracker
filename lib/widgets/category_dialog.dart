@@ -68,60 +68,61 @@ class _CategoryDialogState extends State<CategoryDialog> {
 
       return Dialog(
         // surfaceTintColor: Colors.white,
-        insetPadding: EdgeInsets.zero,
+
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
-        child: Container(
-          height: (SizeConfig.height! < 600)
-              ? SizeConfig.height! * 35
-              : SizeConfig.height! * 30,
-          width: SizeConfig.width! * 75,
-          padding: const EdgeInsets.symmetric(horizontal: 36),
-          decoration: const BoxDecoration(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Add category name",
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.tertiary,
-                    fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextField(
-                maxLength: 13,
-                controller: _namecontroller,
-                decoration: const InputDecoration(
-                  hintText: "Enter the category name",
-                  isDense: true,
-                  contentPadding: EdgeInsets.all(8),
-                  border: OutlineInputBorder(),
-                  hintStyle: TextStyle(fontSize: 14),
-                ),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              SizedBox(
-                width: SizeConfig.width! * 100,
-                child: FilledButton(
-                  style: FilledButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
-                    minimumSize: Size.zero,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 36),
+              decoration: const BoxDecoration(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Add category name",
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.tertiary,
+                        fontWeight: FontWeight.w600),
                   ),
-                  onPressed: () => createCategory(budgetname, provider2),
-                  child: const Text("Add"),
-                ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  TextField(
+                    maxLength: 13,
+                    controller: _namecontroller,
+                    decoration: const InputDecoration(
+                      hintText: "Enter the category name",
+                      isDense: true,
+                      // contentPadding: EdgeInsets.all(8),
+                      hintStyle: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  SizedBox(
+                    width: SizeConfig.width! * 100,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                        minimumSize: Size.zero,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                      ),
+                      onPressed: () => createCategory(budgetname, provider2),
+                      child: const Text("Add"),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     } else {

@@ -48,6 +48,11 @@ class BackEndProvider extends DisposableProvider {
 
   String jwt = "";
   double filteredAmount = 0;
+  bool initialCall = true;
+  void setInitialCall(bool value) {
+    initialCall = value;
+    notifyListeners();
+  }
 
   ///This will store the current userid, which is used later
   String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -621,8 +626,23 @@ Future<void> createNewBudget(provider) async {}
 
 ///Creates the initial budget for the user
 ///Endpoint "/budgets" [POST]
-Future<void> createInitialBudget(provider, int amount) async {
-  String budgetname = DateFormat('MMMM yyyy').format(DateTime.now());
+Future<void> createInitialBudget(
+    {required BackEndProvider provider,
+    required int amount,
+    required int status}) async {
+  String? budgetname;
+
+  ///Status = 1 create budget name for the current month
+  ///Status = 2 create budget name for the next month
+  if (status == 1) {
+    budgetname = DateFormat('MMMM yyyy').format(DateTime.now());
+  } else if (status == 2) {
+    var dateTime = DateTime.now();
+    dateTime = DateTime(dateTime.year, dateTime.month + 1, dateTime.day,
+        dateTime.hour, dateTime.minute, dateTime.second);
+    budgetname = DateFormat('MMMM yyyy').format(dateTime);
+  }
+
   String time = DateTime.now().toIso8601String();
 
   print(budgetname);

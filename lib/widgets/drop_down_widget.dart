@@ -3,6 +3,7 @@ import 'package:budget_app/provider/app_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 class DropDownWidget extends StatefulWidget {
   const DropDownWidget({super.key});
 
@@ -10,19 +11,11 @@ class DropDownWidget extends StatefulWidget {
   State<DropDownWidget> createState() => _DropDownWidgetState();
 }
 
-// const List<String> list = <String>[
-//   'Home Budget',
-//   'Work Budget',
-//   'Personal Budget'
-// ];
-
 class _DropDownWidgetState extends State<DropDownWidget> {
-  // List<String>? list;
-  // Future<Budget>? budgetData;
-
   @override
   void initState() {
     super.initState();
+   
   }
 
   // int index = 0;
@@ -38,11 +31,11 @@ class _DropDownWidgetState extends State<DropDownWidget> {
     int length = provider.budget!.budgets.length < 12
         ? provider.budget!.budgets.length
         : 12;
+
     for (int i = 0; i < length; i++) {
       list.add(provider.budget!.budgets[i].budgetname);
-      print(list);
     }
-    // List<String> list = [...provider.budget!.budgets.map((e) => e.budgetname)];
+    print(list);
 
     String dropdownValue = list[index!];
     return DropdownButton<String>(

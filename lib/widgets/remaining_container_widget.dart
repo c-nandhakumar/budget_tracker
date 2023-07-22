@@ -84,8 +84,10 @@ class _RemainingContainerState extends State<RemainingContainer> {
             return Container(
               height: SizeConfig.width! * 44,
               width: SizeConfig.width! * 44,
+              padding: EdgeInsets.only(left: 10, right: 10),
               decoration: BoxDecoration(
                 //color: Theme.of(context).colorScheme.primary,
+
                 color: color,
                 borderRadius: const BorderRadius.all(
                   Radius.circular(16),
@@ -98,8 +100,11 @@ class _RemainingContainerState extends State<RemainingContainer> {
                 children: [
                   Text(
                     "${dotenv.get("CURRENCY")}$balance",
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                        color: Colors.white, fontWeight: FontWeight.w600),
+                    style: balance.toString().length > 6
+                        ? Theme.of(context).textTheme.headlineMedium!.copyWith(
+                            color: Colors.white, fontWeight: FontWeight.w600)
+                        : Theme.of(context).textTheme.headlineMedium!.copyWith(
+                            color: Colors.white, fontWeight: FontWeight.w600),
                   ),
                   Text(
                     "Balance",
@@ -117,26 +122,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
                     children: [
                       InkWell(
                           onTap: () async {
-                            final provider1 = Provider.of<BackEndProvider>(
-                                context,
-                                listen: false);
-                            if (isOpen == true) {
-                              await updateBudget(
-                                provider1,
-                                provider1.budget!,
-                                provider1.selectedBudgetIndex!,
-                                int.parse(amountController.text),
-                              );
-                              setState(() {
-                                total = getTotal(
-                                    provider1,
-                                    provider1.selectedBudget!,
-                                    provider1.selectedBudgetIndex!);
-                              });
-                            }
-                            setState(() {
-                              isOpen = !isOpen;
-                            });
+                            await updateBudgetAmount(context);
                           },
                           child: Ink(
                             height: 24,
@@ -153,11 +139,17 @@ class _RemainingContainerState extends State<RemainingContainer> {
                       isOpen
                           ? Flexible(
                               child: Container(
-                                padding: EdgeInsets.all(12),
+                                padding:
+                                    const EdgeInsets.only(right: 10, left: 10),
                                 child: TextFormField(
                                   // expands: true,
-                                  maxLength: 30,
+                                  maxLength: 6,
+                                  keyboardType: TextInputType.number,
                                   focusNode: _formFocusNode,
+                                  onFieldSubmitted: (value) async {
+                                    await updateBudgetAmount(context);
+                                  },
+
                                   autofocus: true,
                                   controller: amountController,
                                   decoration: const InputDecoration(
@@ -169,13 +161,21 @@ class _RemainingContainerState extends State<RemainingContainer> {
                             )
                           : Text(
                               "Budget ${dotenv.get("CURRENCY")}$budgetAmount",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                              style: budgetAmount.toString().length >= 6
+                                  ? Theme.of(context)
+                                      .textTheme
+                                      .titleSmall!
+                                      .copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                      )
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                      ),
                             ),
                     ],
                   ),
@@ -184,5 +184,45 @@ class _RemainingContainerState extends State<RemainingContainer> {
             );
           }
         });
+  }
+
+  Future<void> updateBudgetAmount(BuildContext context) async {
+    final provider1 = Provider.of<BackEndProvider>(context, listen: false);
+    if (isOpen == true) {
+      if (amountController.text.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: const Text("Please enter the amount"),
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("OK"))
+              ],
+            );
+          },
+        );
+      } else {
+        await updateBudget(
+          provider1,
+          provider1.budget!,
+          provider1.selectedBudgetIndex!,
+          int.parse(amountController.text),
+        );
+        setState(() {
+          total = getTotal(provider1, provider1.selectedBudget!,
+              provider1.selectedBudgetIndex!);
+
+          isOpen = !isOpen;
+        });
+      }
+    } else {
+      setState(() {
+        isOpen = !isOpen;
+      });
+    }
   }
 }

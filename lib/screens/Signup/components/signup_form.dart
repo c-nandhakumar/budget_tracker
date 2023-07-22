@@ -49,13 +49,13 @@ class _SignUpFormState extends State<SignUpForm> {
                 email: emailController.text,
                 password: passwordController.text,
                 context: context);
-      // ignore: use_build_context_synchronously
-          final provider = Provider.of<BackEndProvider>(context, listen: false);
+        // ignore: use_build_context_synchronously
+        final provider = Provider.of<BackEndProvider>(context, listen: false);
         try {
           await FirebaseAuth.instance.currentUser!
               .updateDisplayName(displayNameController.text);
           await postUser();
-    
+
           await createExpenseMethod(
               provider: provider,
               emname: "CASH",
@@ -72,8 +72,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
         // ignore: use_build_context_synchronously
         if (value != null) {
-
-           provider.setNewUser(true);
+          provider.setNewUser(true);
 
           // ignore: use_build_context_synchronously
           Navigator.of(context).push(MaterialPageRoute(
@@ -159,7 +158,7 @@ class _SignUpFormState extends State<SignUpForm> {
             child: TextFormField(
               controller: confirmPasswordController,
               textInputAction: TextInputAction.done,
-              obscureText: isNotVisible,
+              obscureText: isConfirmPasswordVisible,
               cursorColor: kPrimaryColor,
               decoration: InputDecoration(
                   hintText: "Confirm password",
@@ -199,7 +198,11 @@ class _SignUpFormState extends State<SignUpForm> {
               },
               child: isLoading
                   ? const SizedBox(
-                      height: 10, width: 10, child: CircularProgressIndicator())
+                      height: 10,
+                      width: 10,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                      ))
                   : Text("Sign Up".toUpperCase()),
             ),
           ),

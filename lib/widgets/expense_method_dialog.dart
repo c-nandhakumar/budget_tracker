@@ -11,11 +11,14 @@ class ExpenseMethodDialog extends StatefulWidget {
   State<ExpenseMethodDialog> createState() => _ExpenseMethodDialogState();
 }
 
-List<String> expenseNameList = [
-  "CREDIT CARD",
-  "DEBIT CARD",
-  "MOBILE TRANSFER",
-  "BANK TRANSFER"
+List<dynamic> expenseNameList = [
+  {"name": "Credit Card", "icon": const Icon(Icons.credit_card)},
+  {"name": "Debit Card", "icon": const Icon(Icons.view_compact_alt_rounded)},
+  {
+    "name": "Mobile Transfer",
+    "icon": const Icon(Icons.mobile_screen_share_rounded)
+  },
+  {"name": "Bank Transfer", "icon": const Icon(Icons.account_balance)},
 ];
 
 class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
@@ -24,7 +27,7 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
 
   bool isChecked = false;
   int nameLength = 0;
-  String initialValue = expenseNameList[0];
+  dynamic initialValue = expenseNameList[0];
   @override
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
@@ -41,7 +44,7 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
         final provider = Provider.of<BackEndProvider>(context, listen: false);
         await createExpenseMethod(
             provider: provider,
-            emname: initialValue,
+            emname: initialValue['name'],
             emdetail: _expenseDetailController.text,
             emisdefault: isChecked,
             emshortname: _expenseShortNameController.text.toUpperCase());
@@ -64,15 +67,11 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
     }
 
     return Dialog(
-      insetPadding: EdgeInsets.zero,
-      child: Container(
-        height: (SizeConfig.height! < 600)
-            ? SizeConfig.height! * 70
-            : SizeConfig.height! * 65,
-        width: SizeConfig.width! * 90,
-        padding: const EdgeInsets.symmetric(horizontal: 36),
-        decoration: const BoxDecoration(),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 36),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 36),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -80,159 +79,134 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
                 style: Theme.of(context)
                     .textTheme
                     .titleLarge!
-                    .copyWith(fontWeight: FontWeight.w700)),
+                    .copyWith(fontWeight: FontWeight.w600)),
             const SizedBox(
               height: 26,
             ),
             Row(
               children: [
-                Expanded(
-                  flex: 2,
-                  child: Text("Expense Type : ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(fontWeight: FontWeight.w600)),
-                ),
+                Text("Expense Type : ",
+                    style: TextStyle(fontSize: 14, color: Colors.grey[700])),
                 const SizedBox(
-                  width: 8,
+                  width: 4,
                 ),
-                Expanded(
-                  flex: 2,
-                  child: PopupMenuButton<String>(
-                    offset: const Offset(0, 24),
-                    itemBuilder: (context) {
-                      return expenseNameList.map((str) {
-                        return PopupMenuItem(
-                          value: str,
-                          child: Text(str),
-                        );
-                      }).toList();
-                    },
+                PopupMenuButton<dynamic>(
+                  offset: const Offset(0, 24),
+                  itemBuilder: (context) {
+                    return expenseNameList.map((str) {
+                      return PopupMenuItem(
+                        value: str,
+                        child: Row(
+                          children: [
+                            str['icon'],
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            Text(str['name']),
+                          ],
+                        ),
+                      );
+                    }).toList();
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(5)),
                     child: Row(
                       // mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          initialValue,
+                          initialValue['name'],
                           style: Theme.of(context)
                               .textTheme
                               .bodyLarge!
                               .copyWith(
-                                  fontSize: initialValue.length > 14 ? 12 : 14),
+                                  fontSize: initialValue['name'].length > 14
+                                      ? 12
+                                      : 14,
+                                  color: Colors.white),
                         ),
-                        const Icon(Icons.arrow_drop_down),
+                        const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
                       ],
                     ),
-                    onSelected: (value) {
+                  ),
+                  onSelected: (value) {
+                    setState(() {
+                      initialValue = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            Divider(
+              color: Colors.grey[600],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: _expenseDetailController,
+              maxLength: 20,
+              decoration: const InputDecoration(
+                hintText: "Expense Detail",
+                counterText: "",
+                isDense: true,
+                hintStyle: TextStyle(fontSize: 14),
+              ),
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            TextFormField(
+              maxLength: 4,
+              onChanged: (value) {
+                setState(() {
+                  nameLength = value.length;
+                });
+              },
+              controller: _expenseShortNameController,
+              decoration: InputDecoration(
+                // hintText: "Expense Short Name (Max 4 characters)",
+                suffixText: "$nameLength/4",
+                hintText: "Short Name",
+                suffixStyle: const TextStyle(color: Colors.grey, fontSize: 14),
+                counterText: "",
+                counterStyle: const TextStyle(
+                  fontSize: 10,
+                ),
+                isDense: true,
+
+                hintStyle: const TextStyle(fontSize: 14),
+              ),
+            ),
+            const SizedBox(
+              height: 18,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(
+                  child: Checkbox(
+                    visualDensity: VisualDensity.adaptivePlatformDensity,
+                    value: isChecked,
+                    onChanged: (bool? value) {
                       setState(() {
-                        initialValue = value;
+                        isChecked = value!;
                       });
                     },
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 30,
-              child: Divider(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text("Expense Detail : ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(fontWeight: FontWeight.w600)),
-                ),
-                Expanded(
-                  flex: 2,
-                  // ignore: avoid_unnecessary_containers
-                  child: Container(
-                    // width: SizeConfig.width! * 40,
-                    child: TextField(
-                      controller: _expenseDetailController,
-                      decoration: const InputDecoration(
-                        // hintText: "Expense Detail",
-                        isDense: true,
-                        contentPadding: EdgeInsets.all(10),
-                        border: OutlineInputBorder(),
-                        hintStyle: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 30,
-              child: Divider(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text("Short Name : ",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium!
-                          .copyWith(fontWeight: FontWeight.w600)),
-                ),
-                Expanded(
-                  flex: 2,
-                  // ignore: sized_box_for_whitespace
-                  child: Container(
-                    width: SizeConfig.width! * 40,
-                    child: TextFormField(
-                      maxLength: 4,
-                      onChanged: (value) {
-                        setState(() {
-                          nameLength = value.length;
-                        });
-                      },
-                      controller: _expenseShortNameController,
-                      decoration: InputDecoration(
-                        // hintText: "Expense Short Name (Max 4 characters)",
-                        suffixText: "$nameLength/4",
-                        suffixStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 12),
-                        counterText: "",
-                        counterStyle: const TextStyle(
-                          fontSize: 10,
-                        ),
-                        isDense: true,
-                        contentPadding: EdgeInsets.all(10),
-                        border: OutlineInputBorder(),
-                        hintStyle: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 30,
-              child: Divider(),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Checkbox(
-                  value: isChecked,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      isChecked = value!;
-                    });
-                  },
                 ),
                 const Text("Make this as default")
               ],
             ),
             const SizedBox(
-              height: 25,
+              height: 18,
             ),
             SizedBox(
               width: SizeConfig.width! * 100,

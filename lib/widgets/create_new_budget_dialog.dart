@@ -1,24 +1,20 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'dart:convert';
-
 import 'package:budget_app/common/screen_size.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../provider/app_provider.dart';
 
-class DialogWidget extends StatefulWidget {
-  const DialogWidget({super.key});
+class CreateNewBudgetDialog extends StatefulWidget {
+  final int status;
+  const CreateNewBudgetDialog({required this.status, super.key});
 
   @override
-  State<DialogWidget> createState() => _DialogWidgetState();
+  State<CreateNewBudgetDialog> createState() => _CreateNewBudgetDialogState();
 }
 
-class _DialogWidgetState extends State<DialogWidget> {
-  final _namecontroller = TextEditingController();
+class _CreateNewBudgetDialogState extends State<CreateNewBudgetDialog> {
   final _costcontroller = TextEditingController();
 
   @override
@@ -26,28 +22,27 @@ class _DialogWidgetState extends State<DialogWidget> {
     // ignore: unused_local_variable
     final mainprovider = Provider.of<BackEndProvider>(context);
     Future createBudget() async {
-      String budgetname = _namecontroller.text;
       String budgetamount = _costcontroller.text;
-      String time = DateTime.now().toIso8601String();
-      if (budgetname.isNotEmpty && budgetamount.isNotEmpty) {
-        var res = await http.post(
-          Uri.parse("$SERVER_URL/budgets"),
-          headers: {
-            'Content-type': 'application/json',
-            'Accept': 'application/json',
-          },
-          body: jsonEncode({
-            "userid": FirebaseAuth.instance.currentUser!.uid,
-            "budgetname": budgetname,
-            "budgetamount": budgetamount,
-            "budgetcreated": time
-          }),
-        );
-        print("BudgetCreation ${res.body}");
-        Navigator.of(context).pop();
+
+      if (budgetamount.isNotEmpty) {
         final provider = Provider.of<BackEndProvider>(context, listen: false);
+        await createInitialBudget(
+            provider: provider,
+            amount: int.parse(budgetamount),
+            status: widget.status);
+        Navigator.of(context).pop();
+
+        String? budgetname;
+        if (widget.status == 1) {
+          budgetname = DateFormat('MMMM yyyy').format(DateTime.now());
+        } else if (widget.status == 2) {
+          var dateTime = DateTime.now();
+          dateTime = DateTime(dateTime.year, dateTime.month + 1, dateTime.day,
+              dateTime.hour, dateTime.minute, dateTime.second);
+          budgetname = DateFormat('MMMM yyyy').format(dateTime);
+        }
         await getBudgetData(provider);
-        await getTotal(provider, budgetname, provider.selectedBudgetIndex!);
+        await getTotal(provider, budgetname!, provider.selectedBudgetIndex!);
       } else {
         showDialog(
           context: context,
@@ -81,33 +76,20 @@ class _DialogWidgetState extends State<DialogWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Create new Budget",
+                  "Enter budget amount",
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       color: Theme.of(context).colorScheme.tertiary,
+                      height: 1.25,
                       fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                TextField(
-                  controller: _namecontroller,
-                  maxLength: 20,
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    contentPadding: EdgeInsets.all(8),
-                    hintText: "Enter the Budget Name",
-                    border: OutlineInputBorder(),
-                    hintStyle: TextStyle(fontSize: 14),
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
                 ),
                 Text(
-                  "Add Budget",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.tertiary,
-                      fontWeight: FontWeight.w600),
+                  widget.status == 2
+                      ? "(for the next month)"
+                      : "(for the current month)",
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                      color: const Color(0xFF808080),
+                      fontWeight: FontWeight.w400),
                 ),
                 const SizedBox(
                   height: 16,
@@ -119,7 +101,6 @@ class _DialogWidgetState extends State<DialogWidget> {
                     hintText: "${dotenv.get("CURRENCY")}0",
                     isDense: true,
                     contentPadding: const EdgeInsets.all(8),
-                    border: const OutlineInputBorder(),
                     hintStyle: const TextStyle(fontSize: 14),
                   ),
                   keyboardType: TextInputType.number,

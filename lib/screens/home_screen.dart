@@ -2,10 +2,11 @@ import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:budget_app/widgets/category_dialog.dart';
 import 'package:budget_app/widgets/category_grid.dart';
+import 'package:budget_app/widgets/create_new_budget_dialog.dart';
 import 'package:budget_app/widgets/date_remaining_container.dart';
-import 'package:budget_app/widgets/dialog_widget.dart';
 import 'package:budget_app/widgets/remaining_container_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../widgets/drop_down_widget.dart';
 
@@ -17,9 +18,40 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool? dateNow;
+
   @override
   void initState() {
     super.initState();
+    final datenow = DateTime.now();
+    String currentMonth = DateFormat('MMMM yyyy').format(datenow);
+    String formattedDate = DateFormat('dd').format(datenow);
+    final provider = Provider.of<BackEndProvider>(context, listen: false);
+
+    ///Logic to create new budget for the next month
+    ///if the budget's month is not equal to the current month or
+    ///if the next month is near by (i.e) 2 more days for the current month to end
+    ///then it will show the dialog to create budget for the next month
+    if (!provider.budget!.budgets[0].budgetname.contains(currentMonth) ||
+        int.parse(formattedDate) > 28) {
+      dateNow = true;
+      if (provider.initialCall) {
+        provider.setInitialCall(false);
+        Future.delayed(
+            const Duration(seconds: 3),
+            () => showDialog(
+                  context: context,
+                  builder: (context) {
+                    int status = int.parse(formattedDate) > 20 ? 2 : 1;
+                    return CreateNewBudgetDialog(
+                      status: status,
+                    );
+                  },
+                ));
+      }
+    } else {
+      dateNow = false;
+    }
   }
 
   @override
@@ -49,23 +81,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: Theme.of(context).textTheme.labelSmall,
                 ),
           actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: IconButton(
-                padding: const EdgeInsets.all(5),
-                constraints: const BoxConstraints(),
-                style: IconButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) => const DialogWidget());
-                },
-                color: Colors.white,
-                icon: const Icon(Icons.add),
-              ),
-            )
+            dateNow!
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: IconButton(
+                      padding: const EdgeInsets.all(5),
+                      constraints: const BoxConstraints(),
+                      style: IconButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              final datenow = DateTime.now();
+                              String formattedDate =
+                                  DateFormat('dd').format(datenow);
+                              int status =
+                                  int.parse(formattedDate) > 20 ? 2 : 1;
+                              return CreateNewBudgetDialog(
+                                status: status,
+                              );
+                            });
+                      },
+                      color: Colors.white,
+                      icon: const Icon(Icons.add),
+                    ),
+                  )
+                : Container(),
           ]),
       body: provider.selectedBudget != null
           ? ListView(
