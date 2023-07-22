@@ -7,14 +7,14 @@ import '../common/screen_size.dart';
 import '../provider/app_provider.dart';
 
 ///This widget displays the Pie chart
-class PieChartWidget extends StatefulWidget {
-  const PieChartWidget({super.key});
+class RecurringExpenseChart extends StatefulWidget {
+  const RecurringExpenseChart({super.key});
 
   @override
-  State<PieChartWidget> createState() => _PieChartWidgetState();
+  State<RecurringExpenseChart> createState() => _RecurringExpenseChartState();
 }
 
-class _PieChartWidgetState extends State<PieChartWidget> {
+class _RecurringExpenseChartState extends State<RecurringExpenseChart> {
   late Future<String> expenses;
   late TooltipBehavior _tooltip;
   @override
@@ -30,27 +30,23 @@ class _PieChartWidgetState extends State<PieChartWidget> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<BackEndProvider>(context);
-    // getTotal(provider, provider.selectedBudget!, provider.selectedBudgetIndex);
 
-    ///This function sums up all the category values and store it in
-    ///a single category of the budget
+    ///This function sums up all the category values which are recurring
+    ///and store it in a single category of the budget
     if (provider.expenses != null) {
       final recentMap = {};
       // ignore: avoid_function_literals_in_foreach_calls
       provider.expenses!.forEach((e) {
         if (e.budgetname == provider.selectedInsights) {
-          if (recentMap.containsKey(e.categoryname)) {
+          if (recentMap.containsKey(e.categoryname) && e.recurring == true) {
             recentMap.update(e.categoryname, (value) => value += e.expensecost);
           }
-
-          recentMap.putIfAbsent(e.categoryname, () => e.expensecost);
+          if (e.recurring == true) {
+            recentMap.putIfAbsent(e.categoryname, () => e.expensecost);
+          }
         }
       });
-      // var total = 0;
 
-      // recentMap.forEach((key, value) {
-      //   total += value as int;
-      // });
       List<Data> data = [];
       int index = 0;
 
@@ -66,9 +62,9 @@ class _PieChartWidgetState extends State<PieChartWidget> {
         Container(
           padding:
               const EdgeInsets.only(top: 16.0, bottom: 0, left: 16, right: 16),
-          child: Text(
-            '${provider.selectedInsights ?? provider.selectedBudget}',
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          child: const Text(
+            'Recurring Expense Chart',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
         recentMap.isNotEmpty

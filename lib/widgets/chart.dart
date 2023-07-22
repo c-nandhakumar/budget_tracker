@@ -16,15 +16,13 @@ class _ChartWidgetState extends State<ChartWidget> {
   late List<_ChartData> data;
   late List<_ChartData> totalData;
   late TooltipBehavior _tooltip;
-  late Future<String> expenseSummary;
+
   @override
   void initState() {
     _tooltip = TooltipBehavior(
       enable: true,
     );
     super.initState();
-    final provider = Provider.of<BackEndProvider>(context, listen: false);
-    expenseSummary = getSummary(provider);
   }
 
   @override
@@ -48,101 +46,74 @@ class _ChartWidgetState extends State<ChartWidget> {
 
       data = data.sublist(0, data.length % 13);
 
-      return FutureBuilder(
-          future: expenseSummary,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final provider = Provider.of<BackEndProvider>(context);
-              Map<String, dynamic> expenseSummary = provider.expenseSummary;
-              // print("Expense Summary ===> $expenseSummary");
+      Map<String, dynamic> expenseSummary = provider.expenseSummary;
+      List<TotalSpentData> totalSpentDataList = [];
 
-              ///Total Amount Spent List [Update]
-              List<TotalSpentData> totalSpentDataList = [];
+      expenseSummary.forEach((key, value) {
+        totalSpentDataList
+            .add(TotalSpentData(key, value["ExpenseBudgetTotal"] as int));
+      });
 
-              expenseSummary.forEach((key, value) {
-                totalSpentDataList.add(
-                    TotalSpentData(key, value["ExpenseBudgetTotal"] as int));
-              });
+      SfCartesianChart chart = SfCartesianChart(
+        plotAreaBorderWidth: 0,
+        primaryXAxis: CategoryAxis(
+            majorGridLines: const MajorGridLines(width: 0),
+            minorGridLines: const MinorGridLines(width: 0)),
+        primaryYAxis: NumericAxis(
+          minimum: 0,
+          maximum: maximum + 100,
+          interval: maximum / 5,
+          borderColor: const Color.fromARGB(0, 255, 255, 255),
+          majorGridLines: const MajorGridLines(width: 0),
+          minorGridLines: const MinorGridLines(width: 0),
+          //edgeLabelPlacement: EdgeLabelPlacement.shift
+        ),
+        tooltipBehavior: _tooltip,
+        onAxisLabelTapped: (axisLabelTapArgs) {
+          print(axisLabelTapArgs.text);
 
-              SfCartesianChart chart = SfCartesianChart(
-                plotAreaBorderWidth: 0,
-                primaryXAxis: CategoryAxis(
-                    majorGridLines: const MajorGridLines(width: 0),
-                    minorGridLines: const MinorGridLines(width: 0)),
-                primaryYAxis: NumericAxis(
-                  minimum: 0,
-                  maximum: maximum + 100,
-                  interval: maximum / 5,
-                  borderColor: const Color.fromARGB(0, 255, 255, 255),
-                  majorGridLines: const MajorGridLines(width: 0),
-                  minorGridLines: const MinorGridLines(width: 0),
-                  //edgeLabelPlacement: EdgeLabelPlacement.shift
-                ),
-                tooltipBehavior: _tooltip,
-                onAxisLabelTapped: (axisLabelTapArgs) {
-                  print(axisLabelTapArgs.text);
-
-                  provider.setSelectedInsights(axisLabelTapArgs.text);
-                },
-                // series: <ChartSeries<_ChartData, String>>[
-                series: [
-                  ColumnSeries<_ChartData, String>(
-                      dataLabelSettings: DataLabelSettings(
-                        isVisible: true,
-                        textStyle:
-                            TextStyle(fontSize: (data.length <= 4) ? 12 : 10),
-                      ),
-                      dataSource: data,
-                      borderRadius: BorderRadius.circular(3.5),
-                      xValueMapper: (_ChartData data, _) => data.x,
-                      yValueMapper: (_ChartData data, _) => data.y,
-                      //pointColorMapper: (_ChartData data, _) => data.color,
-                      name: 'Expense',
-                      color: Theme.of(context).colorScheme.primary),
-                  ColumnSeries<TotalSpentData, String>(
-                      dataLabelSettings: DataLabelSettings(
-                        isVisible: true,
-                        textStyle:
-                            TextStyle(fontSize: (data.length <= 4) ? 12 : 10),
-                      ),
-                      dataSource: totalSpentDataList,
-                      borderRadius: BorderRadius.circular(3.5),
-                      xValueMapper: (TotalSpentData data, _) => data.x,
-                      yValueMapper: (TotalSpentData data, _) => data.y,
-                      //pointColorMapper: (_ChartData data, _) => data.color,
-                      name: 'Total Spent',
-                      color: Theme.of(context).colorScheme.inversePrimary),
-                ],
-              );
-              return Padding(
-                padding: const EdgeInsets.all(12),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                      width: (data.length % 13) * 100 > SizeConfig.width! * 100
-                          ? (data.length % 13) * 100
-                          : SizeConfig.width! * 100,
-                      height: SizeConfig.height! * 27.5,
-                      child: chart),
-                ),
-              );
-            } else if (snapshot.hasError) {
-              print(snapshot.data);
-              return SizedBox(
-                height: SizeConfig.height! * 27.5,
-                child: const Center(
-                  child: Text("Oops , Something went wrong"),
-                ),
-              );
-            } else {
-              return SizedBox(
-                height: SizeConfig.height! * 27.5,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
-          });
+          provider.setSelectedInsights(axisLabelTapArgs.text);
+        },
+        // series: <ChartSeries<_ChartData, String>>[
+        series: [
+          ColumnSeries<_ChartData, String>(
+              dataLabelSettings: DataLabelSettings(
+                isVisible: true,
+                textStyle: TextStyle(fontSize: (data.length <= 4) ? 12 : 10),
+              ),
+              dataSource: data,
+              borderRadius: BorderRadius.circular(3.5),
+              xValueMapper: (_ChartData data, _) => data.x,
+              yValueMapper: (_ChartData data, _) => data.y,
+              //pointColorMapper: (_ChartData data, _) => data.color,
+              name: 'Expense',
+              color: Theme.of(context).colorScheme.primary),
+          ColumnSeries<TotalSpentData, String>(
+              dataLabelSettings: DataLabelSettings(
+                isVisible: true,
+                textStyle: TextStyle(fontSize: (data.length <= 4) ? 12 : 10),
+              ),
+              dataSource: totalSpentDataList,
+              borderRadius: BorderRadius.circular(3.5),
+              xValueMapper: (TotalSpentData data, _) => data.x,
+              yValueMapper: (TotalSpentData data, _) => data.y,
+              //pointColorMapper: (_ChartData data, _) => data.color,
+              name: 'Total Spent',
+              color: Theme.of(context).colorScheme.inversePrimary),
+        ],
+      );
+      return Padding(
+        padding: const EdgeInsets.all(12),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+              width: (data.length % 13) * 100 > SizeConfig.width! * 100
+                  ? (data.length % 13) * 100
+                  : SizeConfig.width! * 100,
+              height: SizeConfig.height! * 27.5,
+              child: chart),
+        ),
+      );
     } else {
       return Padding(
         padding: const EdgeInsets.all(16.0),

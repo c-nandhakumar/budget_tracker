@@ -32,7 +32,17 @@ class _DropDownWidgetState extends State<DropDownWidget> {
     int? index = provider.selectedBudgetIndex;
     final provider2 = Provider.of<BackEndProvider>(context, listen: false);
 
-    List<String> list = [...provider.budget!.budgets.map((e) => e.budgetname)];
+    List<String> list = [];
+
+    ///Only shows latest 12 budgets
+    int length = provider.budget!.budgets.length < 12
+        ? provider.budget!.budgets.length
+        : 12;
+    for (int i = 0; i < length; i++) {
+      list.add(provider.budget!.budgets[i].budgetname);
+      print(list);
+    }
+    // List<String> list = [...provider.budget!.budgets.map((e) => e.budgetname)];
 
     String dropdownValue = list[index!];
     return DropdownButton<String>(

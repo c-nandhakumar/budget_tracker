@@ -508,10 +508,8 @@ Future<String> getExpenses(BackEndProvider provider) async {
 
   if (res.statusCode == 200) {
     print("Success in getting expenses");
-    // print(res.body);
     provider.resetFilteredData();
     provider.setExpenses(res.body);
-    print(res.body);
     return res.body;
   }
   if (res.statusCode == 404) {
@@ -534,7 +532,7 @@ Future<String> getExpenses(BackEndProvider provider) async {
 Future<String> getSummary(BackEndProvider provider) async {
   var res = await http.get(Uri.parse(
       "$SERVER_URL/expenses/summary/${FirebaseAuth.instance.currentUser!.uid}"));
-  // print(res.body);
+  print(res.body);
   if (res.statusCode == 200) {
     print("Success in getting summary");
     provider.setExpenseSummary(res.body);
@@ -614,7 +612,6 @@ Future<void> createExpenseMethod(
         "emcreated": DateTime.now().toIso8601String()
       }));
 
-  // print(res.body);
   getExpenseMethods(provider!);
 }
 
@@ -749,7 +746,6 @@ Future<void> changeDefault(
   if (emisdefault == true && res.statusCode == 200) {
     await getExpenseMethods(provider);
   }
-  // print(res.body);
 }
 
 ///Delete the expense method
