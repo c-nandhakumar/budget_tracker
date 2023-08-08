@@ -1,9 +1,11 @@
 import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/screens/bottomnavigation.dart';
 import 'package:budget_app/services/firebase_auth_methods.dart';
+import 'package:budget_app/utility/showsnackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../../../components/already_have_an_account_acheck.dart';
@@ -36,34 +38,51 @@ class _LoginFormState extends State<LoginForm> {
   ///Make the user to Login if the credentials are true,
   ///if not then it displays a snackbar
   Future<void> loginUser() async {
-    setState(() {
-      isLoading = !isLoading;
-    });
-    final UserCredential? value = await context
-        .read<FirebaseAuthMethods>()
-        .loginWithEmail(
-            email: emailController.text,
-            password: passwordController.text,
-            context: context);
-    print("Value ====> ${value?.user!.uid}");
-    // ignore: use_build_context_synchronously
-    final provider = Provider.of<BackEndProvider>(context, listen: false);
-    if (value != null) {
-      provider.setBottomNavIndex(0);
-      await getExpenseMethods(provider);
+    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
       setState(() {
         isLoading = !isLoading;
       });
+      final UserCredential? value = await context
+          .read<FirebaseAuthMethods>()
+          .loginWithEmail(
+              email: emailController.text,
+              password: passwordController.text,
+              context: context);
 
-      provider.setNewUser(false);
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => ShowCaseWidget(
-          builder: Builder(builder: (context) {
-            return const BottomNavBar();
-          }),
-        ),
-      ));
+      if (value != null) {
+        print("Value ====> ${value.user!.uid}");
+        // ignore: use_build_context_synchronously
+        final provider = Provider.of<BackEndProvider>(context, listen: false);
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (prefs.containsKey("newUserHistory") == false) {
+          prefs.setBool("newUserHistory", true);
+        }
+        if (prefs.containsKey("newUserHome") == false) {
+          prefs.setBool("newUserHome", true);
+        }
+
+        provider.setBottomNavIndex(0);
+        await getExpenseMethods(provider);
+        setState(() {
+          isLoading = !isLoading;
+        });
+
+        provider.setNewUser(false);
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => ShowCaseWidget(
+            builder: Builder(builder: (context) {
+              return const BottomNavBar();
+            }),
+          ),
+        ));
+      } else {
+        setState(() {
+          isLoading = !isLoading;
+        });
+      }
+    } else {
+      showSnackBar(context, "Please enter the necessary details to continue");
     }
   }
 

@@ -276,7 +276,7 @@ class BackEndProvider extends DisposableProvider {
       // print(filteredExpenses);
       notifyListeners();
     } else {
-      print('Inside the Setter Else Expense Method');
+      // print('Inside the Setter Else Expense Method');
       expenses = [];
       notifyListeners();
     }
@@ -518,7 +518,7 @@ Future<String> getExpenses(BackEndProvider provider) async {
     return res.body;
   }
   if (res.statusCode == 404) {
-    print("New User Expense");
+    // print("New User Expense");
     // print(res.body);
     provider.setExpenses("");
     return res.body;

@@ -171,7 +171,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   );
                 }
                 if (snapshot.hasData) {
-                  return pages[provider.bottomnavIndex];
+                  return isNewUser!
+                      ? Container()
+                      : pages[provider.bottomnavIndex];
                 }
                 if (snapshot.hasError) {
                   print(snapshot);

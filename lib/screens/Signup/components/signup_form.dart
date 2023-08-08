@@ -4,6 +4,7 @@ import 'package:budget_app/utility/showsnackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import '../../../common/screen_size.dart';
@@ -28,6 +29,8 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final TextEditingController displayNameController = TextEditingController();
+  final currentNode = FocusNode();
+  final nextNode = FocusNode();
   bool isNotVisible = true;
   bool isConfirmPasswordVisible = true;
   bool isLoading = false;
@@ -39,42 +42,53 @@ class _SignUpFormState extends State<SignUpForm> {
   }
 
   Future<void> signUpWithEmail() async {
-    if ((passwordController.text.isNotEmpty &&
-            confirmPasswordController.text.isNotEmpty) &&
-        (passwordController.text.isNotEmpty ==
-            confirmPasswordController.text.isNotEmpty)) {
-      if (displayNameController.text.isNotEmpty) {
+    if (displayNameController.text.isNotEmpty &&
+        emailController.text.isNotEmpty) {
+      if ((passwordController.text.isNotEmpty &&
+              confirmPasswordController.text.isNotEmpty) &&
+          (passwordController.text.isNotEmpty ==
+              confirmPasswordController.text.isNotEmpty)) {
+        setState(() {
+          isLoading = true;
+        });
         final UserCredential? value = await context
             .read<FirebaseAuthMethods>()
             .signUpWithEmail(
                 email: emailController.text,
                 password: passwordController.text,
                 context: context);
-        // ignore: use_build_context_synchronously
-        final provider = Provider.of<BackEndProvider>(context, listen: false);
-        try {
-          await FirebaseAuth.instance.currentUser!
-              .updateDisplayName(displayNameController.text);
-          await postUser();
 
-          await createExpenseMethod(
-              provider: provider,
-              emname: "CASH",
-              emdetail: "CASH",
-              emisdefault: true,
-              emshortname: "CASH");
-          // ignore: use_build_context_synchronously
-          // final provider = Provider.of<BackEndProvider>(context, listen: false);
-          // await getExpenseMethods(provider);
-        } on FirebaseAuthException catch (e) {
-          // ignore: use_build_context_synchronously
-          showSnackBar(context, e.message.toString());
-        }
-
-        // ignore: use_build_context_synchronously
         if (value != null) {
-          provider.setNewUser(true);
+          // ignore: use_build_context_synchronously
+          final provider = Provider.of<BackEndProvider>(context, listen: false);
+          try {
+            await FirebaseAuth.instance.currentUser!
+                .updateDisplayName(displayNameController.text);
+            await postUser();
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            prefs.setBool("newUserHistory", true);
+            prefs.setBool("newUserHome", true);
+            await createExpenseMethod(
+                provider: provider,
+                emname: "CASH",
+                emdetail: "CASH",
+                emisdefault: true,
+                emshortname: "CASH");
+            // ignore: use_build_context_synchronously
+            // final provider = Provider.of<BackEndProvider>(context, listen: false);
+            // await getExpenseMethods(provider);
+          } on FirebaseAuthException catch (e) {
+            // ignore: use_build_context_synchronously
+            showSnackBar(context, e.message.toString());
+          }
 
+          // ignore: use_build_context_synchronously
+
+          provider.setNewUser(true);
+          setState(() {
+            isLoading = false;
+          });
           // ignore: use_build_context_synchronously
           Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => ShowCaseWidget(
@@ -83,10 +97,16 @@ class _SignUpFormState extends State<SignUpForm> {
               }),
             ),
           ));
+        } else {
+          setState(() {
+            isLoading = false;
+          });
         }
+      } else {
+        showSnackBar(context, "Please enter the same password");
       }
     } else {
-      showSnackBar(context, "Please enter the same password");
+      showSnackBar(context, "Please enter the necessary details to continue");
     }
   }
 
@@ -133,7 +153,12 @@ class _SignUpFormState extends State<SignUpForm> {
             padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
             child: TextFormField(
               controller: passwordController,
-              textInputAction: TextInputAction.done,
+              textInputAction: TextInputAction.next,
+              focusNode: currentNode,
+              onFieldSubmitted: (term) {
+                currentNode.unfocus();
+                FocusScope.of(context).requestFocus(nextNode);
+              },
               obscureText: isNotVisible,
               cursorColor: kPrimaryColor,
               decoration: InputDecoration(
@@ -161,6 +186,7 @@ class _SignUpFormState extends State<SignUpForm> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding / 2),
             child: TextFormField(
+              focusNode: nextNode,
               controller: confirmPasswordController,
               textInputAction: TextInputAction.done,
               obscureText: isConfirmPasswordVisible,
@@ -193,14 +219,7 @@ class _SignUpFormState extends State<SignUpForm> {
             width: SizeConfig.width! * 90,
             child: ElevatedButton(
               onPressed: () async {
-                setState(() {
-                  isLoading = true;
-                });
                 await signUpWithEmail();
-
-                setState(() {
-                  isLoading = false;
-                });
               },
               child: isLoading
                   ? const SizedBox(

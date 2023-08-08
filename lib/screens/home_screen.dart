@@ -33,12 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String formattedDate = DateFormat('dd').format(datenow);
     final provider = Provider.of<BackEndProvider>(context, listen: false);
 
-    ///Logic to create new budget for the next month
-    ///if the budget's month is not equal to the current month or
-    ///if the next month is near by (i.e) 2 more days for the current month to end
-    ///then it will show the dialog to create budget for the next month
-    if (!provider.budget!.budgets[0].budgetname.contains(currentMonth) ||
-        int.parse(formattedDate) > 28) {
+    if (int.parse(formattedDate) > 28) {
       dateNow = true;
       if (provider.initialCall) {
         provider.setInitialCall(false);
@@ -47,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
             () => showDialog(
                   context: context,
                   builder: (context) {
-                    int status = int.parse(formattedDate) > 20 ? 2 : 1;
+                    int status = int.parse(formattedDate) > 28 ? 2 : 1;
                     return CreateNewBudgetDialog(
                       status: status,
                     );
@@ -61,7 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   showTutorialScreen() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey("newUser")) {
+    if (prefs.containsKey("newUserHome") &&
+        prefs.getBool("newUserHome") == true) {
+      prefs.setBool("newUserHome", false);
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         return ShowCaseWidget.of(context).startShowCase(
           [

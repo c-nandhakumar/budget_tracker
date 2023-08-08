@@ -32,8 +32,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   showTutorialScreen() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (!prefs.containsKey("newUser")) {
-      await prefs.setBool('newUser', false);
+    if (prefs.containsKey("newUserHistory") && prefs.getBool('newUserHistory') == true) {
+      await prefs.setBool('newUserHistory', false);
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         return ShowCaseWidget.of(context).startShowCase(
           [
