@@ -2,7 +2,7 @@ import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:budget_app/widgets/category_dialog.dart';
 import 'package:budget_app/widgets/category_grid.dart';
-import 'package:budget_app/widgets/create_new_budget_dialog.dart';
+import 'package:budget_app/widgets/create_next_new_budget_dialog.dart';
 import 'package:budget_app/widgets/date_remaining_container.dart';
 import 'package:budget_app/widgets/remaining_container_widget.dart';
 import 'package:flutter/material.dart';
@@ -29,28 +29,30 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     final datenow = DateTime.now();
-    String currentMonth = DateFormat('MMMM yyyy').format(datenow);
     String formattedDate = DateFormat('dd').format(datenow);
     final provider = Provider.of<BackEndProvider>(context, listen: false);
+    String currentMonth = DateFormat('MMMM yyyy').format(datenow);
 
-    if (int.parse(formattedDate) > 28) {
+    ///If its the end of the month or if the current month is not equal to the budget's first month
+    ///then it will enable the createnextnewbudget
+    if (int.parse(formattedDate) > 28 ||
+        !provider.budget!.budgets[0].budgetname.contains(currentMonth)) {
       dateNow = true;
       if (provider.initialCall) {
-        provider.setInitialCall(false);
-        Future.delayed(
-            const Duration(seconds: 3),
-            () => showDialog(
-                  context: context,
-                  builder: (context) {
-                    int status = int.parse(formattedDate) > 28 ? 2 : 1;
-                    return CreateNewBudgetDialog(
-                      status: status,
-                    );
-                  },
-                ));
+        Future.delayed(const Duration(seconds: 3), () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const CreateNextNewBudgetDialog();
+            },
+          );
+          provider.setInitialCall(false);
+        });
       }
     } else {
-      dateNow = false;
+      ///for testing dateNow is set to true
+      // dateNow = false;
+      dateNow = true;
     }
   }
 
@@ -191,14 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         showDialog(
                             context: context,
                             builder: (context) {
-                              final datenow = DateTime.now();
-                              String formattedDate =
-                                  DateFormat('dd').format(datenow);
-                              int status =
-                                  int.parse(formattedDate) > 20 ? 2 : 1;
-                              return CreateNewBudgetDialog(
-                                status: status,
-                              );
+                              return const CreateNextNewBudgetDialog();
                             });
                       },
                       color: Colors.white,

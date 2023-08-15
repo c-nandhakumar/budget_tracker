@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/screens/bottomnavigation.dart';
 import 'package:budget_app/services/firebase_auth_methods.dart';
@@ -51,7 +53,7 @@ class _LoginFormState extends State<LoginForm> {
 
       if (value != null) {
         print("Value ====> ${value.user!.uid}");
-        // ignore: use_build_context_synchronously
+
         final provider = Provider.of<BackEndProvider>(context, listen: false);
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         if (prefs.containsKey("newUserHistory") == false) {
@@ -68,7 +70,7 @@ class _LoginFormState extends State<LoginForm> {
         });
 
         provider.setNewUser(false);
-        // ignore: use_build_context_synchronously
+
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => ShowCaseWidget(
             builder: Builder(builder: (context) {
@@ -77,6 +79,20 @@ class _LoginFormState extends State<LoginForm> {
           ),
         ));
       } else {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: const Text(
+                "A Verification Link has been sent to your entered email. Please Verify it to Login"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("OK"))
+            ],
+          ),
+        );
         setState(() {
           isLoading = !isLoading;
         });

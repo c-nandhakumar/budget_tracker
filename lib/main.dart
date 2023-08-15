@@ -82,7 +82,7 @@ class AuthWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User?>();
-    if (firebaseUser != null) {
+    if (firebaseUser != null && firebaseUser.emailVerified) {
       return ShowCaseWidget(builder: Builder(builder: (context) {
         return const BottomNavBar();
       }));

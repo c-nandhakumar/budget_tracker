@@ -45,7 +45,7 @@ class FirebaseAuthMethods {
       if (!_auth.currentUser!.emailVerified) {
         // ignore: use_build_context_synchronously
         await sendEmailVerification(context);
-
+        return null;
         ///This line will send verification code to the user
         ///you can make the email verification mandatory by not returing the value
       }

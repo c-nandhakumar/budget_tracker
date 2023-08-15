@@ -1,11 +1,11 @@
-import 'package:budget_app/screens/bottomnavigation.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:budget_app/services/firebase_auth_methods.dart';
 import 'package:budget_app/utility/showsnackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:showcaseview/showcaseview.dart';
 
 import '../../../common/screen_size.dart';
 import '../../../components/already_have_an_account_acheck.dart';
@@ -59,44 +59,56 @@ class _SignUpFormState extends State<SignUpForm> {
                 context: context);
 
         if (value != null) {
-          // ignore: use_build_context_synchronously
           final provider = Provider.of<BackEndProvider>(context, listen: false);
           try {
             await FirebaseAuth.instance.currentUser!
                 .updateDisplayName(displayNameController.text);
+
+            ///Creates user in the backend
             await postUser();
+
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
             prefs.setBool("newUserHistory", true);
             prefs.setBool("newUserHome", true);
+            prefs.setBool("newUser", true);
+
+            ///sets the substatus as free
+            prefs.setString("substatus", "free");
+
             await createExpenseMethod(
                 provider: provider,
                 emname: "CASH",
                 emdetail: "CASH",
                 emisdefault: true,
                 emshortname: "CASH");
-            // ignore: use_build_context_synchronously
+
             // final provider = Provider.of<BackEndProvider>(context, listen: false);
             // await getExpenseMethods(provider);
           } on FirebaseAuthException catch (e) {
-            // ignore: use_build_context_synchronously
             showSnackBar(context, e.message.toString());
           }
-
-          // ignore: use_build_context_synchronously
 
           provider.setNewUser(true);
           setState(() {
             isLoading = false;
           });
-          // ignore: use_build_context_synchronously
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ShowCaseWidget(
-              builder: Builder(builder: (context) {
-                return const BottomNavBar();
-              }),
+
+          Navigator.of(context).pop();
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: const Text(
+                  "A Verification Link has been sent to your entered email. Please Verify it to Login"),
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("OK"))
+              ],
             ),
-          ));
+          );
         } else {
           setState(() {
             isLoading = false;

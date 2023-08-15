@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import "package:http/http.dart" as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import '../models/expense_model.dart';
@@ -406,12 +407,17 @@ Future<void> postUser() async {
       'Content-type': 'application/json',
       'Accept': 'application/json',
     },
-    body: jsonEncode(
-        {"userid": uid, "email": email, "display_name": displayName}),
+    body: jsonEncode({
+      "userid": uid,
+      "email": email,
+      "display_name": displayName,
+      "substatus": "free"
+    }),
   );
 
   if (res.statusCode == 200) {
-    // print("Success in Creating user");
+    print("Success in Creating user");
+    print(res.body);
   } else {
     // print(res.body);
   }
@@ -420,11 +426,19 @@ Future<void> postUser() async {
 ///This function is used to send GET request to the server
 ///Endpoint "/budgets/user/:userid" [GET]
 Future<String> getBudgetData(BackEndProvider provider) async {
-  print("Backend===> ${FirebaseAuth.instance.currentUser!.uid}");
-  print(provider.getUserId());
+  print("User ID :  ${FirebaseAuth.instance.currentUser!.uid}");
+
   var res = await http.get(Uri.parse(
       "$SERVER_URL/budgets/user/${FirebaseAuth.instance.currentUser!.uid}"));
-  print("<===== Get Budget Data Status Code =====> ${res.statusCode}");
+  print("Get Budget Data Status Code - ${res.statusCode}");
+
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  ///set the subscription status of the user
+  String value = json.decode(res.body)['user']['substatus'];
+  print(value);
+  prefs.setString("substatus", value);
+
   if (res.statusCode == 200) {
     // print("Success in getting header");
     provider.setBudgets(res.body);
@@ -553,24 +567,19 @@ Future<void> updateBudget(BackEndProvider provider, Budget budget, int index,
   String budgetId = budget.budgets[index].budgetid.toString();
   String budgetname = budget.budgets[index].budgetname;
   String budgetcreated = DateTime.now().toIso8601String();
-
-  var res = await http.put(Uri.parse("$SERVER_URL/budgets/$budgetId"),
-      headers: {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: jsonEncode({
-        "userid": FirebaseAuth.instance.currentUser!.uid,
-        "budgetname": budgetname,
-        "budgetamount": budgetamount,
-        "budgetcreated": budgetcreated,
-      }));
   var data = {
     "userid": FirebaseAuth.instance.currentUser!.uid,
     "budgetname": budgetname,
     "budgetamount": budgetamount,
     "budgetcreated": budgetcreated,
   };
+  var res = await http.put(Uri.parse("$SERVER_URL/budgets/$budgetId"),
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode(data));
+
   print(data);
   print(res.statusCode);
   print(res.body);
@@ -622,7 +631,15 @@ Future<void> createExpenseMethod(
 
 ///Creates the new budget for the user
 ///Endpoint "/createnewbudget/:userid" [POST]
-Future<void> createNewBudget(provider) async {}
+Future<void> createNewBudget(provider) async {
+  var res = await http.post(Uri.parse(
+      "$SERVER_URL/createnewbudget/${FirebaseAuth.instance.currentUser!.uid}"));
+  print(res.body);
+  if (res.statusCode < 299) {
+    print("New Budget Created Successfully...");
+    await getBudgetData(provider);
+  }
+}
 
 ///Creates the initial budget for the user
 ///Endpoint "/budgets" [POST]
@@ -660,7 +677,9 @@ Future<void> createInitialBudget(
       "budgetcreated": time
     }),
   );
-  await getBudgetData(provider);
+  if (res.statusCode < 299) {
+    await getBudgetData(provider);
+  }
 }
 
 ///To get the expense methods

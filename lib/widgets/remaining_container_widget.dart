@@ -131,11 +131,11 @@ class _RemainingContainerState extends State<RemainingContainer> {
                       Text(
                         "Budget ${dotenv.get("CURRENCY")}$budgetAmount",
                         style: budgetAmount.toString().length >= 6
-                            ? Theme.of(context).textTheme.titleSmall!.copyWith(
+                            ? Theme.of(context).textTheme.bodyMedium!.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
                                 )
-                            : Theme.of(context).textTheme.titleMedium!.copyWith(
+                            : Theme.of(context).textTheme.titleSmall!.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700,
                                 ),
