@@ -36,7 +36,6 @@ class _DropDownWidgetState extends State<DropDownWidget> {
         "budgetid": provider.budget!.budgets[i].budgetid
       });
     }
-    print(list);
 
     Map<String, dynamic> dropdownValue = list[index!];
     return DropdownButton<Map<String, dynamic>>(

@@ -634,7 +634,7 @@ Future<void> createExpenseMethod(
 Future<void> createNewBudget(provider) async {
   var res = await http.post(Uri.parse(
       "$SERVER_URL/createnewbudget/${FirebaseAuth.instance.currentUser!.uid}"));
-  print(res.body);
+
   if (res.statusCode < 299) {
     print("New Budget Created Successfully...");
     await getBudgetData(provider);

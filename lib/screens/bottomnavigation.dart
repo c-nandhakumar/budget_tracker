@@ -127,7 +127,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                     TextField(
                                       controller: textEditingController,
                                       decoration: const InputDecoration(
-                                          hintText: "Enter amount"),
+                                          hintText: "Enter the budget amount"),
                                       maxLength: 6,
                                     ),
                                     const SizedBox(

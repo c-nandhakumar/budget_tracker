@@ -6,7 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CreateNextNewBudgetDialog extends StatefulWidget {
-  const CreateNextNewBudgetDialog({super.key});
+  final Function() callback;
+  const CreateNextNewBudgetDialog({required this.callback, super.key});
 
   @override
   State<CreateNextNewBudgetDialog> createState() =>
@@ -24,10 +25,11 @@ class _CreateNextNewBudgetDialogState extends State<CreateNextNewBudgetDialog> {
       ///If the Subscription is Free then we have to allow 2 budget creations
       if (subscriptionStatus == 'free') {
         ///TODO:Navigate the Users to subscription portal
-        createNewBudget(provider);
+        await createNewBudget(provider);
       } else {
-        createNewBudget(provider);
+        await createNewBudget(provider);
       }
+      widget.callback();
       Navigator.of(context).pop();
     }
 

@@ -29,21 +29,29 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     final datenow = DateTime.now();
-    String formattedDate = DateFormat('dd').format(datenow);
+    DateTime firstDayOfNextMonth = DateTime(datenow.year, datenow.month + 1, 1);
+    Duration remainingDuration = firstDayOfNextMonth.difference(datenow);
+    int remainingDays = remainingDuration.inDays;
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     String currentMonth = DateFormat('MMMM yyyy').format(datenow);
 
+    String nextMonth = DateFormat('MMMM yyyy')
+        .format(DateTime(datenow.year, datenow.month + 1, datenow.day));
+
     ///If its the end of the month or if the current month is not equal to the budget's first month
     ///then it will enable the createnextnewbudget
-    if (int.parse(formattedDate) > 28 ||
-        !provider.budget!.budgets[0].budgetname.contains(currentMonth)) {
+
+    if ((remainingDays <= 2 ||
+            !provider.budget!.budgets[0].budgetname.contains(currentMonth)) &&
+        !provider.budget!.budgets[0].budgetname.contains(nextMonth)) {
       dateNow = true;
       if (provider.initialCall) {
         Future.delayed(const Duration(seconds: 3), () {
           showDialog(
             context: context,
             builder: (context) {
-              return const CreateNextNewBudgetDialog();
+              return CreateNextNewBudgetDialog(
+                  callback: checkCurrentMonthAndNextMonth);
             },
           );
           provider.setInitialCall(false);
@@ -51,8 +59,20 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } else {
       ///for testing dateNow is set to true
-      // dateNow = false;
-      dateNow = true;
+      dateNow = false;
+      // dateNow = true;
+    }
+  }
+
+  checkCurrentMonthAndNextMonth() {
+    final datenow = DateTime.now();
+    String nextMonth = DateFormat('MMMM yyyy')
+        .format(DateTime(datenow.year, datenow.month + 1, datenow.day));
+    final provider = Provider.of<BackEndProvider>(context, listen: false);
+    if (provider.budget!.budgets[0].budgetname.contains(nextMonth)) {
+      setState(() {
+        dateNow = false;
+      });
     }
   }
 
@@ -193,7 +213,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         showDialog(
                             context: context,
                             builder: (context) {
-                              return const CreateNextNewBudgetDialog();
+                              return CreateNextNewBudgetDialog(
+                                  callback: checkCurrentMonthAndNextMonth);
                             });
                       },
                       color: Colors.white,
