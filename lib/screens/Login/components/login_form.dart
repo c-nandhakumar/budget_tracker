@@ -53,14 +53,21 @@ class _LoginFormState extends State<LoginForm> {
 
       if (value != null) {
         print("Value ====> ${value.user!.uid}");
-
+        print(value.additionalUserInfo?.isNewUser);
         final provider = Provider.of<BackEndProvider>(context, listen: false);
         final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        ///If the user uninstalls and reinstalls the app again
+        ///this will not show the tutorial screen
         if (prefs.containsKey("newUserHistory") == false) {
-          prefs.setBool("newUserHistory", true);
+          prefs.setBool("newUserHistory", false);
         }
         if (prefs.containsKey("newUserHome") == false) {
-          prefs.setBool("newUserHome", true);
+          prefs.setBool("newUserHome", false);
+        }
+
+        if (prefs.containsKey("newUser") == false) {
+          prefs.setBool("newUser", false);
         }
 
         provider.setBottomNavIndex(0);

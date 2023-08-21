@@ -53,7 +53,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   getData() async {
     final provider = Provider.of<BackEndProvider>(context, listen: false);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    isNewUser = prefs.getBool("newUser");
+    isNewUser = prefs.getBool("newUser") ?? false;
     isDataFetched = true;
 
     ///If the user is new then it does nothing
