@@ -25,9 +25,25 @@ class _CreateNextNewBudgetDialogState extends State<CreateNextNewBudgetDialog> {
       ///If the Subscription is Free then we have to allow 2 budget creations
       if (subscriptionStatus == 'free') {
         ///TODO:Navigate the Users to subscription portal
-        await createNewBudget(provider);
-      } else {
-        await createNewBudget(provider);
+        var map = await createNewBudget(provider);
+
+        if (map.isNotEmpty) {
+          ///This logic represents if the user is free or not
+          if (map.containsKey("status") && map["status"] == "free") {
+            prefs.setString("substatus", map["status"]);
+            print("User maximum limit not exceeded");
+          }
+
+          ///This logic represents if the user budget creation limit is exceeded
+          ///then it has to show the Premium popup
+          else if (map['message'] ==
+              "Maximum budget limit reached for free users") {
+            print("Buy premium popup here");
+          }
+        } else {
+          var map = await createNewBudget(provider);
+          print(map);
+        }
       }
       widget.callback();
       Navigator.of(context).pop();

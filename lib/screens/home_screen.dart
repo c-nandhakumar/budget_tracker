@@ -59,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     } else {
       ///for testing dateNow is set to true
-      dateNow = false;
-      // dateNow = true;
+      // dateNow = false;
+      dateNow = true;
     }
   }
 

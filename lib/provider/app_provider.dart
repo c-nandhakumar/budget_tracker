@@ -631,14 +631,16 @@ Future<void> createExpenseMethod(
 
 ///Creates the new budget for the user
 ///Endpoint "/createnewbudget/:userid" [POST]
-Future<void> createNewBudget(provider) async {
+Future<Map<String, dynamic>> createNewBudget(provider) async {
   var res = await http.post(Uri.parse(
       "$SERVER_URL/createnewbudget/${FirebaseAuth.instance.currentUser!.uid}"));
-
+  print(res.body);
   if (res.statusCode < 299) {
     print("New Budget Created Successfully...");
     await getBudgetData(provider);
+    return jsonDecode(res.body);
   }
+  return {};
 }
 
 ///Creates the initial budget for the user
