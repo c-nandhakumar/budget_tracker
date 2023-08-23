@@ -54,6 +54,13 @@ class _DateRemainingContainerState extends State<DateRemainingContainer> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
+                      "Today",
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                    ),
+                    Text(
                       formattedDate,
                       style: Theme.of(context)
                           .textTheme
@@ -62,7 +69,7 @@ class _DateRemainingContainerState extends State<DateRemainingContainer> {
                               color: Colors.white, fontWeight: FontWeight.w600),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
+                      padding: const EdgeInsets.only(top: 10.0),
                       child: Text(
                         remainingDays.toString(),
                         style:

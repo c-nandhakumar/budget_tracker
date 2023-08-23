@@ -6,6 +6,7 @@ import 'package:budget_app/screens/insights_screen.dart';
 import 'package:budget_app/screens/logout_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -86,6 +87,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
       // DealsScreen(),
       LogoutScreen()
     ];
+
+    final datenow = DateTime.now();
+    String currentMonth = DateFormat('MMMM').format(datenow);
     return !isDataFetched
         ? const Scaffold(
             body: Center(
@@ -126,8 +130,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
                                     ),
                                     TextField(
                                       controller: textEditingController,
-                                      decoration: const InputDecoration(
-                                          hintText: "Enter the budget amount"),
+                                      decoration: InputDecoration(
+                                          hintText:
+                                              "Enter $currentMonth Month Budget"),
                                       maxLength: 6,
                                     ),
                                     const SizedBox(
