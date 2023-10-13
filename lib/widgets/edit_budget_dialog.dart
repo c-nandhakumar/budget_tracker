@@ -1,3 +1,4 @@
+import 'package:budget_app/common/screen_size.dart';
 import 'package:flutter/material.dart';
 
 class EditBudgetDialog extends StatefulWidget {
@@ -15,6 +16,8 @@ class _EditBudgetDialogState extends State<EditBudgetDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      insetPadding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.screenWidth! > tabWidth ? 120 : 36),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,10 +36,11 @@ class _EditBudgetDialogState extends State<EditBudgetDialog> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
+                    Text(
                       "Edit Budget",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(
                       height: 32,

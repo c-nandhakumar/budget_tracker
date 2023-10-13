@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+const tabWidth = 768;
 
 ///Used to get the size of the mobile device
 ///Useful for Responsiveness

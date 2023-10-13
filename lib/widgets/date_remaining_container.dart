@@ -37,11 +37,11 @@ class _DateRemainingContainerState extends State<DateRemainingContainer> {
           child: Stack(
             children: [
               Positioned(
-                bottom: -20,
-                right: -20,
+                bottom: SizeConfig.screenWidth! > tabWidth ? -50 : -20,
+                right: SizeConfig.screenWidth! > tabWidth ? -50 : -20,
                 child: Container(
-                  height: 120,
-                  width: 120,
+                  height: SizeConfig.screenWidth! > tabWidth ? 250 : 120,
+                  width: SizeConfig.screenWidth! > tabWidth ? 250 : 120,
                   decoration: const BoxDecoration(
                     color: Color(0xFF7C3BB9),
                     shape: BoxShape.circle,

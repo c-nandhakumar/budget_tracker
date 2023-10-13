@@ -70,7 +70,7 @@ class _RemainingContainerState extends State<RemainingContainer> {
             return Container(
               height: SizeConfig.width! * 44,
               width: SizeConfig.width! * 44,
-              padding: EdgeInsets.only(left: 10, right: 10),
+              padding: const EdgeInsets.only(left: 10, right: 10),
               decoration: BoxDecoration(
                 //color: Theme.of(context).colorScheme.primary,
 

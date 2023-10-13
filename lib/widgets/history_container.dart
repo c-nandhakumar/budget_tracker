@@ -1,3 +1,4 @@
+import 'package:budget_app/common/screen_size.dart';
 import 'package:budget_app/models/expense_model.dart';
 import 'package:budget_app/provider/app_provider.dart';
 import 'package:flutter/material.dart';
@@ -97,15 +98,20 @@ class _HistoryContainerState extends State<HistoryContainer> {
                     Text(
                       widget.expense!.categoryname,
                       overflow: TextOverflow.ellipsis,
-                      style: widget.expense!.categoryname.length > 11
+                      style: (SizeConfig.screenWidth! > 768)
                           ? Theme.of(context)
                               .textTheme
                               .titleLarge!
                               .copyWith(fontWeight: FontWeight.w600)
-                          : Theme.of(context)
-                              .textTheme
-                              .headlineSmall!
-                              .copyWith(fontWeight: FontWeight.w600),
+                          : widget.expense!.categoryname.length > 11
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .titleLarge!
+                                  .copyWith(fontWeight: FontWeight.w600)
+                              : Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall!
+                                  .copyWith(fontWeight: FontWeight.w600),
                     ),
                     Text(
                       "${dotenv.get("CURRENCY")}${widget.expense!.expensecost}",
@@ -160,7 +166,7 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                   }).toList();
                                 },
                                 child: SizedBox(
-                                  width: 64,
+                                  // width: 64,
                                   child: Row(
                                     // mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
@@ -177,7 +183,7 @@ class _HistoryContainerState extends State<HistoryContainer> {
                                             .bodyLarge!
                                             .copyWith(color: Colors.white),
                                       ),
-                                      const Spacer(),
+                                      // const Spacer(),
                                       const Icon(
                                         Icons.arrow_drop_down,
                                         color: Colors.white,

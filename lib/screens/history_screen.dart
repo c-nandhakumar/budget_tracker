@@ -32,7 +32,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   showTutorialScreen() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey("newUserHistory") && prefs.getBool('newUserHistory') == true) {
+    if (prefs.containsKey("newUserHistory") &&
+        prefs.getBool('newUserHistory') == true) {
       await prefs.setBool('newUserHistory', false);
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         return ShowCaseWidget.of(context).startShowCase(
@@ -324,6 +325,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                               // constraints: const BoxConstraints(),
                               // contentPadding: EdgeInsets.zero,
                               hintText: 'Search...',
+                              hintStyle: TextStyle(
+                                  fontSize: SizeConfig.screenWidth! > 768
+                                      ? 16
+                                      : null),
                               // Add a clear button to the search bar
                               suffixIcon: IconButton(
                                 padding: EdgeInsets.zero,
@@ -512,8 +517,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
               padding: const EdgeInsets.only(left: 24.0, top: 12),
               child: Text(
                 "Total: ${provider.filteredAmount} ",
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                    fontSize: SizeConfig.screenWidth! > tabWidth ? 20 : 16,
+                    fontWeight: FontWeight.w600),
               ),
             ),
           ),

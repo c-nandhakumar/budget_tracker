@@ -42,7 +42,7 @@ class _DropDownWidgetState extends State<DropDownWidget> {
       menuMaxHeight: SizeConfig.height! * 27.5,
       borderRadius: BorderRadius.circular(10),
       value: dropdownValue,
-      isExpanded: true,
+      isExpanded: SizeConfig.screenWidth! > tabWidth ? false : true,
       icon: Container(
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
@@ -77,8 +77,13 @@ class _DropDownWidgetState extends State<DropDownWidget> {
         return DropdownMenuItem<Map<String, dynamic>>(
           value: value,
           child: Container(
-            width: SizeConfig.width! * 66,
+            width: SizeConfig.screenWidth! > tabWidth
+                ? null
+                : SizeConfig.width! * 66,
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+            padding: SizeConfig.screenWidth! > tabWidth
+                ? const EdgeInsets.only(right: 12)
+                : null,
             child: Text(
               value['budgetname'],
               overflow: TextOverflow.ellipsis,

@@ -68,7 +68,8 @@ class _CategoryDialogState extends State<CategoryDialog> {
 
       return Dialog(
         // surfaceTintColor: Colors.white,
-
+        insetPadding: EdgeInsets.symmetric(
+            horizontal: SizeConfig.screenWidth! > tabWidth ? 120 : 36),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),

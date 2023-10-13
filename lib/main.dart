@@ -65,8 +65,11 @@ class MyApp extends StatelessWidget {
             colorScheme: lightColorScheme,
             fontFamily: 'Inter',
             textTheme: Theme.of(context).textTheme.apply(
-                fontSizeFactor:
-                    (SizeConfig.screenHeight! < 750) ? 0.725 : 0.875,
+                fontSizeFactor: (SizeConfig.screenWidth! > 768)
+                    ? 1.125
+                    : (SizeConfig.screenHeight! < 750)
+                        ? 0.725
+                        : 0.875,
                 fontSizeDelta: 1.75,
                 fontFamily: 'Inter'),
             useMaterial3: true),

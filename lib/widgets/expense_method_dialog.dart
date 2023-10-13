@@ -67,7 +67,8 @@ class _ExpenseMethodDialogState extends State<ExpenseMethodDialog> {
     }
 
     return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 36),
+      insetPadding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.screenWidth! > tabWidth ? 120 : 36),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 36),
         child: Column(
